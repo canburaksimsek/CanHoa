@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 
 const FEATURES = [
-  { icon: CreditCard, title: 'Automated Payments', desc: 'Collect dues, late fees, and special assessments automatically. ACH, credit card, and autopay support with full Stripe integration.', color: '#22c55e' },
+  { icon: CreditCard, title: 'Automated Payments', desc: 'Collect dues, late fees, and special assessments automatically. ACH, credit card, and autopay support with full Stripe integration.', color: '#2b52a0' },
   { icon: Megaphone, title: 'Mass Communication', desc: 'Send email, SMS, and phone call alerts to all residents or targeted groups. Emergency broadcasts in one click.', color: '#3b82f6' },
   { icon: Wrench, title: 'Maintenance Tracking', desc: 'Custom request forms, vendor assignment, photo uploads, and real-time status updates for every work order.', color: '#f59e0b' },
   { icon: Vote, title: 'Online Voting', desc: 'Conduct board elections and resident surveys with anonymous ballot support and quorum tracking.', color: '#8b5cf6' },
@@ -94,7 +94,7 @@ function Navbar({ scrolled }) {
           <Home size={18} color="white" />
         </div>
         <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 22, color: scrolled ? 'var(--text-primary)' : 'white' }}>
-          Can<span style={{ color: scrolled ? 'var(--accent-primary)' : '#4ade80' }}>Hoa</span>
+          Can<span style={{ color: scrolled ? 'var(--accent-primary)' : '#5c84d6' }}>Hoa</span>
         </span>
       </Link>
 
@@ -141,13 +141,13 @@ export default function LandingPage() {
         <div className="container" style={{ position: 'relative', zIndex: 1, paddingTop: 120, paddingBottom: 80 }}>
           <div style={{ maxWidth: 780, margin: '0 auto', textAlign: 'center' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: 100, marginBottom: 24 }}>
-              <Zap size={14} color="#4ade80" />
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#4ade80' }}>Trusted by 5,000+ HOA Communities Nationwide</span>
+              <Zap size={14} color="#5c84d6" />
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#5c84d6' }}>Trusted by 5,000+ HOA Communities Nationwide</span>
             </div>
 
             <h1 style={{ color: 'white', marginBottom: 24, fontFamily: 'var(--font-display)' }}>
               The Smartest Way to<br />
-              <span style={{ color: '#4ade80' }}>Manage Your HOA</span>
+              <span style={{ color: '#5c84d6' }}>Manage Your HOA</span>
             </h1>
 
             <p style={{ fontSize: 20, color: 'rgba(255,255,255,0.75)', marginBottom: 40, lineHeight: 1.6 }}>
@@ -155,7 +155,7 @@ export default function LandingPage() {
             </p>
 
             <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
-              <Link to="/register" className="btn btn-primary btn-xl" style={{ background: '#22c55e', fontSize: 17 }}>
+              <Link to="/register" className="btn btn-primary btn-xl" style={{ background: '#2b52a0', fontSize: 17 }}>
                 Start Free 14-Day Trial
                 <ArrowRight size={18} />
               </Link>
@@ -174,7 +174,7 @@ export default function LandingPage() {
           <div className="grid-4" style={{ marginTop: 72, maxWidth: 900, margin: '72px auto 0' }}>
             {STATS.map(s => (
               <div key={s.label} style={{ textAlign: 'center', padding: '20px 16px', background: 'rgba(255,255,255,0.07)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)' }}>
-                <div style={{ fontSize: 32, fontFamily: 'var(--font-display)', fontWeight: 900, color: '#4ade80', marginBottom: 4 }}>{s.value}</div>
+                <div style={{ fontSize: 32, fontFamily: 'var(--font-display)', fontWeight: 900, color: '#5c84d6', marginBottom: 4 }}>{s.value}</div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}>{s.label}</div>
               </div>
             ))}
@@ -375,7 +375,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ background: 'linear-gradient(135deg, #052e16 0%, #166534 100%)', padding: '96px 24px', textAlign: 'center' }}>
+      <section style={{ background: 'linear-gradient(135deg, #070d1a 0%, #0a1628 100%)', padding: '96px 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <h2 style={{ color: 'white', marginBottom: 20, fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
             Ready to Modernize Your HOA?
@@ -384,7 +384,7 @@ export default function LandingPage() {
             Join 5,000+ communities that have transformed HOA management with CanHoa. Setup takes less than 10 minutes.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/register" className="btn btn-xl" style={{ background: '#22c55e', color: 'white', fontSize: 17 }}>
+            <Link to="/register" className="btn btn-xl" style={{ background: '#2b52a0', color: 'white', fontSize: 17 }}>
               Start Free 14-Day Trial <ArrowRight size={18} />
             </Link>
             <button className="btn btn-xl" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1.5px solid rgba(255,255,255,0.3)', fontSize: 17 }}>
@@ -407,7 +407,7 @@ export default function LandingPage() {
                   <Home size={18} color="white" />
                 </div>
                 <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 22, color: 'white' }}>
-                  Can<span style={{ color: '#4ade80' }}>Hoa</span>
+                  Can<span style={{ color: '#5c84d6' }}>Hoa</span>
                 </span>
               </div>
               <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 20, maxWidth: 280 }}>
@@ -433,7 +433,7 @@ export default function LandingPage() {
                   {col.links.map(link => {
                     const [label, path] = Array.isArray(link) ? link : [link, '#']
                     return (
-                      <Link key={label} to={path} style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#4ade80'} onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.55)'}>
+                      <Link key={label} to={path} style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#5c84d6'} onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.55)'}>
                         {label}
                       </Link>
                     )

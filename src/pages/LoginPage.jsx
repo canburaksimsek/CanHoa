@@ -126,7 +126,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right panel */}
-      <div style={{ flex: 1, background: 'linear-gradient(135deg, #052e16 0%, #166534 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ flex: 1, background: 'linear-gradient(135deg, #070d1a 0%, #0a1628 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(74,222,128,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(74,222,128,0.05) 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 440, textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 20 }}>🏡</div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {['Automated dues collection & late fees', 'Mass email, SMS & phone alerts', 'Online voting & board elections', '30+ financial reports & exports', 'Fair Housing Act compliant enforcement'].map(f => (
               <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left' }}>
-                <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0 }} />
+                <CheckCircle size={18} color="#5c84d6" style={{ flexShrink: 0 }} />
                 <span style={{ fontSize: 15, color: 'rgba(255,255,255,0.8)' }}>{f}</span>
               </div>
             ))}

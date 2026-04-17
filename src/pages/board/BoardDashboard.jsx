@@ -100,9 +100,9 @@ export default function BoardDashboard() {
       {/* KPI Row */}
       <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label:'Operating Fund', value:`$${FINANCIAL_SUMMARY.operatingBalance.toLocaleString()}`, sub:'Book balance', color:'#16a34a', icon:DollarSign },
+          { label:'Operating Fund', value:`$${FINANCIAL_SUMMARY.operatingBalance.toLocaleString()}`, sub:'Book balance', color:'#1A365D', icon:DollarSign },
           { label:'Reserve Fund', value:`$${(FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)}K`, sub:`62% funded of $${(COMMUNITY.reserveTarget/1000).toFixed(0)}K`, color:'#0284c7', icon:Shield },
-          { label:'Collection Rate', value:`${FINANCIAL_SUMMARY.collectionRate}%`, sub:`${FINANCIAL_SUMMARY.delinquentUnits} units delinquent`, color:FINANCIAL_SUMMARY.collectionRate>=90?'#16a34a':'#d97706', icon:TrendingUp },
+          { label:'Collection Rate', value:`${FINANCIAL_SUMMARY.collectionRate}%`, sub:`${FINANCIAL_SUMMARY.delinquentUnits} units delinquent`, color:FINANCIAL_SUMMARY.collectionRate>=90?'#1A365D':'#d97706', icon:TrendingUp },
           { label:'Open Violations', value:openViolations, sub:`${VIOLATIONS.filter(v=>v.status==='Hearing Scheduled').length} hearings scheduled`, color:'#ef4444', icon:AlertTriangle },
         ].map(s => (
           <div key={s.label} className="stat-card">
@@ -143,8 +143,8 @@ export default function BoardDashboard() {
                 <AreaChart data={MONTHLY_COLLECTIONS} margin={{top:5,right:10,left:0,bottom:0}}>
                   <defs>
                     <linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#16a34a" stopOpacity={0.15}/>
-                      <stop offset="95%" stopColor="#16a34a" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#1A365D" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#1A365D" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)"/>
@@ -152,7 +152,7 @@ export default function BoardDashboard() {
                   <YAxis tick={{fontSize:10,fill:'var(--text-muted)'}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
                   <Tooltip content={<CT/>}/>
                   <Area type="monotone" dataKey="target" name="Target" stroke="var(--border-strong)" strokeDasharray="4 2" strokeWidth={1.5} fill="none"/>
-                  <Area type="monotone" dataKey="collected" name="Collected" stroke="#16a34a" strokeWidth={2.5} fill="url(#bg1)" dot={{fill:'#16a34a',r:3}} activeDot={{r:5}}/>
+                  <Area type="monotone" dataKey="collected" name="Collected" stroke="#1A365D" strokeWidth={2.5} fill="url(#bg1)" dot={{fill:'#1A365D',r:3}} activeDot={{r:5}}/>
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -274,7 +274,7 @@ export default function BoardDashboard() {
                 <div style={{ position:'relative', width:120, height:120, margin:'0 auto' }}>
                   <svg viewBox="0 0 120 120" style={{ transform:'rotate(-90deg)' }}>
                     <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-tertiary)" strokeWidth="12"/>
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="#16a34a" strokeWidth="12"
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#1A365D" strokeWidth="12"
                       strokeDasharray={`${0.62*314} ${(1-0.62)*314}`} strokeLinecap="round"/>
                   </svg>
                   <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
@@ -512,14 +512,14 @@ export default function BoardDashboard() {
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:16 }}>
             {[
-              {id:'income', title:'Income Statement (P&L)', desc:'Revenue, expenses, net income', icon:DollarSign, color:'#16a34a', hasExcel:true},
+              {id:'income', title:'Income Statement (P&L)', desc:'Revenue, expenses, net income', icon:DollarSign, color:'#1A365D', hasExcel:true},
               {id:'balance', title:'Balance Sheet', desc:'Assets, liabilities, fund balance', icon:BarChart3, color:'#0284c7', hasExcel:true},
               {id:'cashflow', title:'Cash Flow Statement', desc:'Monthly inflows and outflows', icon:TrendingUp, color:'#7c3aed', hasExcel:true},
               {id:'budget', title:'Budget vs. Actual', desc:'Budgeted vs actual by category', icon:CheckCircle, color:'#d97706', hasExcel:true},
               {id:'aging', title:'AR Aging Report', desc:'30/60/90+ day delinquency', icon:Clock, color:'#ef4444', hasExcel:true},
               {id:'reserve', title:'Reserve Fund Analysis', desc:'Balance, funding %, components', icon:Shield, color:'#0d9488', hasExcel:false},
               {id:'ledger', title:'General Ledger', desc:'All accounts and transactions', icon:BookOpen, color:'#6366f1', hasExcel:true},
-              {id:'annual', title:'Annual Report', desc:'Full year — PDF + Excel package', icon:Star, color:'#052e16', hasExcel:true},
+              {id:'annual', title:'Annual Report', desc:'Full year — PDF + Excel package', icon:Star, color:'#070d1a', hasExcel:true},
               {id:'board_packet', title:'Board Meeting Packet', desc:'Complete multi-section packet', icon:FileText, color:'#4f46e5', hasExcel:false},
               {id:'reconciliation', title:'Bank Reconciliation', desc:'Book vs bank balance', icon:CheckCircle, color:'#0284c7', hasExcel:false},
               {id:'vendor', title:'Vendor & 1099 Report', desc:'Vendor spending + IRS 1099', icon:Users, color:'#f59e0b', hasExcel:true},

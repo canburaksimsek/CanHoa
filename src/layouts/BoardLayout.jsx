@@ -75,7 +75,7 @@ export default function BoardLayout() {
         <header className="top-bar">
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
             <button className="btn btn-ghost btn-icon" onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>
-            <div style={{ padding:'4px 10px', background:'#f5f3ff', borderRadius:'var(--radius-full)', fontSize:12, fontWeight:700, color:'#7c3aed' }}>
+            <div style={{ padding:'4px 10px', background:'var(--accent-subtle)', borderRadius:'var(--radius-full)', fontSize:12, fontWeight:700, color:'var(--accent-primary)' }}>
               🏛 Board of Directors Portal
             </div>
           </div>

@@ -1,52 +1,58 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { ThemeProvider, AuthProvider, ToastProvider, SidebarProvider, useAuth } from './context/AppContext.jsx'
+import { ThemeProvider, AuthProvider, ToastProvider, SidebarProvider, useAuth, CookieConsent } from './context/AppContext.jsx'
 
-// Layouts
 import ManagerLayout from './layouts/ManagerLayout.jsx'
 import ResidentLayout from './layouts/ResidentLayout.jsx'
+import BoardLayout from './layouts/BoardLayout.jsx'
 
-// Public Pages
 import LandingPage from './pages/LandingPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import { FeaturesPage, PricingPage, LegalPage } from './pages/FeaturesPage.jsx'
+import NotFound from './pages/NotFound.jsx'
 
-// Manager Pages — all from single file to avoid re-export issues
 import Dashboard from './pages/manager/Dashboard.jsx'
 import { Residents, Payments } from './pages/manager/Residents.jsx'
 import Maintenance from './pages/manager/Maintenance.jsx'
 import Reports from './pages/manager/Reports.jsx'
 import { Violations, Documents, Announcements, Voting, Amenities, Vendors, Settings } from './pages/manager/Violations.jsx'
+import WebsiteBuilder from './pages/manager/WebsiteBuilder.jsx'
+import Integrations from './pages/manager/Integrations.jsx'
 
-// Resident Pages — all from single file
+import BoardDashboard from './pages/board/BoardDashboard.jsx'
+
 import { ResidentDashboard, ResidentPayments, ResidentRequests, ResidentDocuments, ResidentAnnouncements, ResidentVoting } from './pages/resident/ResidentDashboard.jsx'
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return user.role === 'resident' ? <Navigate to="/portal" replace /> : <Navigate to="/dashboard" replace />
+    if (user.role==='resident') return <Navigate to="/portal" replace />
+    if (user.role==='board') return <Navigate to="/board" replace />
+    return <Navigate to="/dashboard" replace />
   }
   return children
 }
 
 function AppRoutes() {
   const { user } = useAuth()
+  const getHome = () => {
+    if (!user) return '/login'
+    if (user.role==='resident') return '/portal'
+    if (user.role==='board') return '/board'
+    return '/dashboard'
+  }
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/features" element={<FeaturesPage />} />
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/legal/:type" element={<LegalPage />} />
-      <Route path="/login" element={user ? <Navigate to={user.role === 'resident' ? '/portal' : '/dashboard'} /> : <LoginPage />} />
-      <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <RegisterPage />} />
+      <Route path="/login" element={user?<Navigate to={getHome()}/>:<LoginPage />} />
+      <Route path="/register" element={user?<Navigate to="/dashboard"/>:<RegisterPage />} />
 
-      <Route path="/dashboard" element={
-        <ProtectedRoute allowedRoles={['manager', 'board', 'super_admin']}>
-          <ManagerLayout />
-        </ProtectedRoute>
-      }>
+      <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['manager','super_admin']}><ManagerLayout/></ProtectedRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="residents" element={<Residents />} />
         <Route path="payments" element={<Payments />} />
@@ -58,14 +64,17 @@ function AppRoutes() {
         <Route path="amenities" element={<Amenities />} />
         <Route path="reports" element={<Reports />} />
         <Route path="vendors" element={<Vendors />} />
+        <Route path="website" element={<WebsiteBuilder />} />
+        <Route path="integrations" element={<Integrations />} />
         <Route path="settings" element={<Settings />} />
       </Route>
 
-      <Route path="/portal" element={
-        <ProtectedRoute allowedRoles={['resident']}>
-          <ResidentLayout />
-        </ProtectedRoute>
-      }>
+      <Route path="/board" element={<ProtectedRoute allowedRoles={['board','manager','super_admin']}><BoardLayout/></ProtectedRoute>}>
+        <Route index element={<BoardDashboard />} />
+        <Route path="reports" element={<Reports />} />
+      </Route>
+
+      <Route path="/portal" element={<ProtectedRoute allowedRoles={['resident']}><ResidentLayout/></ProtectedRoute>}>
         <Route index element={<ResidentDashboard />} />
         <Route path="payments" element={<ResidentPayments />} />
         <Route path="requests" element={<ResidentRequests />} />
@@ -74,7 +83,7 @@ function AppRoutes() {
         <Route path="voting" element={<ResidentVoting />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }
@@ -87,6 +96,7 @@ export default function App() {
           <ToastProvider>
             <SidebarProvider>
               <AppRoutes />
+              <CookieConsent />
             </SidebarProvider>
           </ToastProvider>
         </AuthProvider>

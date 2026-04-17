@@ -35,14 +35,14 @@ export default function ResidentLayout() {
       <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`} style={{ zIndex: 100 }}>
         <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 36, height: 36, background: 'var(--accent-primary)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, background: 'var(--bg-sidebar)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Home size={18} color="white" />
             </div>
             <div>
               <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--text-primary)' }}>
                 Can<span style={{ color: 'var(--accent-primary)' }}>Hoa</span>
               </div>
-              <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 500 }}>Resident Portal</div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}>Resident Portal</div>
             </div>
           </div>
         </div>
@@ -50,10 +50,10 @@ export default function ResidentLayout() {
         {/* Resident info */}
         <div style={{ padding: '12px 16px', margin: '12px 8px 4px', background: 'var(--accent-light)', borderRadius: 'var(--radius-md)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div className="avatar avatar-md" style={{ background: 'var(--accent-primary)', color: 'white' }}>{user?.avatar}</div>
+            <div className="avatar avatar-md" style={{ background: 'var(--bg-sidebar)', color: 'white' }}>{user?.avatar}</div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{user?.name}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Unit {user?.unit} · {COMMUNITY.name.split(' ')[0]}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>Unit {user?.unit} · {COMMUNITY.name.split(' ')[0]}</div>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function ResidentLayout() {
             <button className="btn btn-ghost btn-icon" onClick={() => setSidebarOpen(true)}>
               <Menu size={20} />
             </button>
-            <span style={{ fontSize: 14, color: 'var(--text-muted)', display: 'none' }}>
+            <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', display: 'none' }}>
               {COMMUNITY.name}
             </span>
           </div>
