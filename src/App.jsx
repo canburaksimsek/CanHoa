@@ -1,49 +1,65 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { ThemeProvider, AuthProvider, ToastProvider, SidebarProvider, useAuth } from './context/AppContext.jsx'
+import { ThemeProvider, AuthProvider, ToastProvider, SidebarProvider, useAuth, CookieConsent } from './context/AppContext.jsx'
 
 // Layouts
 import ManagerLayout from './layouts/ManagerLayout.jsx'
 import ResidentLayout from './layouts/ResidentLayout.jsx'
+import BoardLayout from './layouts/BoardLayout.jsx'
 
 // Public Pages
 import LandingPage from './pages/LandingPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import { FeaturesPage, PricingPage, LegalPage } from './pages/FeaturesPage.jsx'
+import NotFound from './pages/NotFound.jsx'
 
-// Manager Pages — all from single file to avoid re-export issues
+// Manager Pages
 import Dashboard from './pages/manager/Dashboard.jsx'
 import { Residents, Payments } from './pages/manager/Residents.jsx'
 import Maintenance from './pages/manager/Maintenance.jsx'
 import Reports from './pages/manager/Reports.jsx'
 import { Violations, Documents, Announcements, Voting, Amenities, Vendors, Settings } from './pages/manager/Violations.jsx'
 
-// Resident Pages — all from single file
+// Board Pages
+import BoardDashboard from './pages/board/BoardDashboard.jsx'
+
+// Resident Pages
 import { ResidentDashboard, ResidentPayments, ResidentRequests, ResidentDocuments, ResidentAnnouncements, ResidentVoting } from './pages/resident/ResidentDashboard.jsx'
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return user.role === 'resident' ? <Navigate to="/portal" replace /> : <Navigate to="/dashboard" replace />
+    if (user.role === 'resident') return <Navigate to="/portal" replace />
+    if (user.role === 'board') return <Navigate to="/board" replace />
+    return <Navigate to="/dashboard" replace />
   }
   return children
 }
 
 function AppRoutes() {
   const { user } = useAuth()
+  const getHome = () => {
+    if (!user) return '/login'
+    if (user.role === 'resident') return '/portal'
+    if (user.role === 'board') return '/board'
+    return '/dashboard'
+  }
+
   return (
     <Routes>
+      {/* Public */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/features" element={<FeaturesPage />} />
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/legal/:type" element={<LegalPage />} />
-      <Route path="/login" element={user ? <Navigate to={user.role === 'resident' ? '/portal' : '/dashboard'} /> : <LoginPage />} />
+      <Route path="/login" element={user ? <Navigate to={getHome()} /> : <LoginPage />} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <RegisterPage />} />
 
+      {/* Manager Routes */}
       <Route path="/dashboard" element={
-        <ProtectedRoute allowedRoles={['manager', 'board', 'super_admin']}>
+        <ProtectedRoute allowedRoles={['manager','super_admin']}>
           <ManagerLayout />
         </ProtectedRoute>
       }>
@@ -61,6 +77,17 @@ function AppRoutes() {
         <Route path="settings" element={<Settings />} />
       </Route>
 
+      {/* Board Routes */}
+      <Route path="/board" element={
+        <ProtectedRoute allowedRoles={['board','manager','super_admin']}>
+          <BoardLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<BoardDashboard />} />
+        <Route path="reports" element={<Reports />} />
+      </Route>
+
+      {/* Resident Routes */}
       <Route path="/portal" element={
         <ProtectedRoute allowedRoles={['resident']}>
           <ResidentLayout />
@@ -87,6 +114,7 @@ export default function App() {
           <ToastProvider>
             <SidebarProvider>
               <AppRoutes />
+              <CookieConsent />
             </SidebarProvider>
           </ToastProvider>
         </AuthProvider>

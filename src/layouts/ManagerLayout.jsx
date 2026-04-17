@@ -136,7 +136,7 @@ export default function ManagerLayout() {
         {/* Top Bar */}
         <header className="top-bar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button className="btn btn-ghost btn-icon" onClick={() => setSidebarOpen(true)} style={{ display: 'none' }}>
+            <button className="btn btn-ghost btn-icon" onClick={() => setSidebarOpen(true)}>
               <Menu size={20} />
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -236,14 +236,7 @@ export default function ManagerLayout() {
       </div>
 
       {/* Mobile sidebar toggle */}
-      <style>{`
-        @media (max-width: 1024px) {
-          .app-layout .sidebar { transform: translateX(-100%); }
-          .app-layout .sidebar.open { transform: translateX(0); }
-          .app-layout .main-content { margin-left: 0 !important; }
-          .top-bar button[style*="display: none"] { display: flex !important; }
-        }
-      `}</style>
+
     </div>
   )
 }
