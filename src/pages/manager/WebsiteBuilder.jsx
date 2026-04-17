@@ -74,7 +74,7 @@ export default function WebsiteBuilder() {
 
       <div className="tabs">
         {[['design','🎨 Design & Theme'],['sections','📐 Page Sections'],['chatbot','🤖 AI Chatbot'],['domain','🌐 Domain & SEO'],['florida','⚖️ Florida Compliance']].map(([id,label])=>(
-          <div key={id} className={`tab ${tab===id?'active':''}`} onClick={()=>setTab(id)}>{label}</div>
+          <div key={id} className={'tab ' + (tab===id?'active':'')} onClick={()=>setTab(id)}>{label}</div>
         ))}
       </div>
 
@@ -170,7 +170,7 @@ export default function WebsiteBuilder() {
                 </div>
                 <div style={{ display:'flex', gap:8, alignItems:'center' }}>
                   <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>addToast('Edit section opened for '+section.label,'info')}><Edit size={14}/></button>
-                  <button className={`toggle ${section.enabled?'on':''}`} onClick={()=>toggleSection(section.id)}/>
+                  <button className={'toggle ' + (section.enabled?'on':'')} onClick={()=>toggleSection(section.id)}/>
                 </div>
               </div>
             ))}
@@ -195,7 +195,7 @@ export default function WebsiteBuilder() {
                   <div style={{ fontWeight:700, fontSize:14 }}>Enable AI Chatbot on Website</div>
                   <div style={{ fontSize:13, color:'var(--text-muted)' }}>Answers resident questions 24/7 based on your HOA documents</div>
                 </div>
-                <button className={`toggle ${chatbotEnabled?'on':''}`} onClick={()=>setChatbotEnabled(!chatbotEnabled)}/>
+                <button className={'toggle ' + (chatbotEnabled?'on':'')} onClick={()=>setChatbotEnabled(!chatbotEnabled)}/>
               </div>
               {chatbotEnabled && (
                 <>
@@ -330,7 +330,7 @@ export default function WebsiteBuilder() {
                   <div style={{ fontWeight:600, fontSize:13 }}>{item.req}</div>
                   <div style={{ fontSize:12, color:'var(--text-muted)' }}>{item.note}</div>
                 </div>
-                <span className={`badge ${item.status==='✓'?'badge-green':'badge-yellow'}`}>{item.status==='✓'?'Compliant':'Action Needed'}</span>
+                <span className={'badge ' + (item.status==='✓'?'badge-green':'badge-yellow')}>{item.status==='✓'?'Compliant':'Action Needed'}</span>
               </div>
             ))}
           </div>

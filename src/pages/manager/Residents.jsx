@@ -94,7 +94,7 @@ export function Residents() {
 
       {/* Tabs */}
       <div className="tabs">
-        {tabs.map(t=><div key={t.id} className={`tab ${tab===t.id?'active':''}`} onClick={()=>setTab(t.id)}>{t.label}</div>)}
+        {tabs.map(t=><div key={t.id} className={'tab ' + (tab===t.id?'active':'')} onClick={()=>setTab(t.id)}>{t.label}</div>)}
       </div>
 
       {/* DIRECTORY */}
@@ -142,7 +142,7 @@ export function Residents() {
                       <div style={{ fontSize:13 }}>{r.email}</div>
                       <div style={{ fontSize:12, color:'var(--text-muted)' }}>{r.phone}</div>
                     </td>
-                    <td><span className={`badge ${r.isOwner?'badge-green':'badge-blue'}`}>{r.isOwner?'Owner':'Tenant'}</span></td>
+                    <td><span className={'badge ' + (r.isOwner?'badge-green':'badge-blue')}>{r.isOwner?'Owner':'Tenant'}</span></td>
                     <td style={{ fontFamily:'var(--font-display)', fontWeight:900, fontSize:15, color:r.balance>0?'var(--danger)':'var(--success)' }}>
                       {r.balance>0?`$${r.balance.toFixed(2)}`:'Current'}
                       {r.daysOverdue && <div style={{ fontSize:11, color:'var(--danger)', fontWeight:600 }}>{r.daysOverdue} days overdue</div>}
@@ -153,14 +153,14 @@ export function Residents() {
                         : <span className="badge badge-gray">Manual</span>}
                     </td>
                     <td>
-                      <span className={`badge ${r.status==='current'?'badge-green':'badge-red'}`}>
+                      <span className={'badge ' + (r.status==='current'?'badge-green':'badge-red')}>
                         {r.status.charAt(0).toUpperCase()+r.status.slice(1)}
                       </span>
                     </td>
                     <td onClick={e=>e.stopPropagation()}>
                       <div style={{ display:'flex', gap:5 }}>
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>addToast(`Email sent to ${r.name}`,'success')} title="Send email"><Mail size={14}/></button>
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>addToast(`Opening charge modal for ${r.name}`,'info')} title="Add charge"><DollarSign size={14}/></button>
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>addToast('Email sent to '+(r.name),'success')} title="Send email"><Mail size={14}/></button>
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>addToast('Opening charge modal for '+(r.name),'info')} title="Add charge"><DollarSign size={14}/></button>
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>setShowTransferModal(r)} title="Transfer ownership"><Home size={14}/></button>
                       </div>
                     </td>
@@ -183,8 +183,8 @@ export function Residents() {
                   </div>
                 </div>
                 <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>addToast(`Email sent to ${selected.name}`,'success')}><Mail size={13}/> Email</button>
-                  <button className="btn btn-secondary btn-sm" onClick={()=>addToast(`SMS sent to ${selected.name}`,'success')}><Phone size={13}/> SMS</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>addToast('Email sent to '+(selected.name),'success')}><Mail size={13}/> Email</button>
+                  <button className="btn btn-secondary btn-sm" onClick={()=>addToast('SMS sent to '+(selected.name),'success')}><Phone size={13}/> SMS</button>
                   <button className="btn btn-primary btn-sm" onClick={()=>addToast('Charge form opened','info')}><DollarSign size={13}/> Add Charge</button>
                 </div>
               </div>
@@ -194,8 +194,8 @@ export function Residents() {
                   { label:'Phone', value:selected.phone, icon:Phone },
                   { label:'Balance', value:selected.balance>0?`$${selected.balance.toFixed(2)} overdue`:'Current ($0.00)', icon:DollarSign },
                   { label:'Parking Spot', value:selected.parking||'Not assigned', icon:Car },
-                  { label:'Vehicles', value:selected.vehicles?.length>0?selected.vehicles.map(v=>`${v.make} ${v.model} (${v.plate})`).join(', '):'None registered', icon:Car },
-                  { label:'Pets', value:selected.pets?.length>0?selected.pets.map(p=>`${p.name} (${p.breed})`).join(', '):'None registered', icon:Heart },
+                  { label:'Vehicles', value:selected.vehicles?.length>0?selected.vehicles.map(v=>''+(v.make)+' ${v.model} (${v.plate})').join(', '):'None registered', icon:Car },
+                  { label:'Pets', value:selected.pets?.length>0?selected.pets.map(p=>''+(p.name)+' (${p.breed})').join(', '):'None registered', icon:Heart },
                 ].map(item=>(
                   <div key={item.label} style={{ padding:'10px 14px', background:'var(--bg-secondary)', borderRadius:10 }}>
                     <div style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', marginBottom:4 }}>{item.label}</div>
@@ -233,7 +233,7 @@ export function Residents() {
                       <td><span style={{ fontFamily:'monospace', fontWeight:700, fontSize:14, background:'var(--bg-secondary)', padding:'3px 10px', borderRadius:6 }}>{v.plate}</span></td>
                       <td style={{ fontSize:13, color:'var(--text-muted)' }}>{v.color}</td>
                       <td>
-                        <button className="btn btn-ghost btn-sm" onClick={()=>addToast(`Violation created for plate ${v.plate}`,'info')}>Issue Violation</button>
+                        <button className="btn btn-ghost btn-sm" onClick={()=>addToast('Violation created for plate '+(v.plate),'info')}>Issue Violation</button>
                       </td>
                     </tr>
                   ))
@@ -333,7 +333,7 @@ export function Residents() {
                     <div style={{ fontWeight:700, fontSize:14, marginBottom:2 }}>{s.label}</div>
                     <div style={{ fontSize:13, color:'var(--text-muted)' }}>{s.desc}</div>
                   </div>
-                  <span className={`badge ${s.status==='required'?'badge-red':s.status==='auto'?'badge-green':'badge-yellow'}`} style={{ fontSize:10, alignSelf:'flex-start', flexShrink:0 }}>
+                  <span className={'badge ' + (s.status==='required'?'badge-red':s.status==='auto'?'badge-green':'badge-yellow')} style={{ fontSize:10, alignSelf:'flex-start', flexShrink:0 }}>
                     {s.status==='required'?'Required':s.status==='auto'?'Automatic':'Manual'}
                   </span>
                 </div>
@@ -372,7 +372,7 @@ export function Residents() {
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={()=>setShowTransferModal(null)}>Cancel</button>
-              <button className="btn btn-primary" onClick={()=>{ setShowTransferModal(null); addToast(`Transfer initiated for Unit ${showTransferModal.unit}. Welcome email sent to new owner.`,'success') }}>
+              <button className="btn btn-primary" onClick={()=>{ setShowTransferModal(null); addToast('Transfer initiated for Unit '+(showTransferModal.unit)+'. Welcome email sent to new owner.','success') }}>
                 <ArrowRight size={15}/> Complete Transfer
               </button>
             </div>
@@ -464,7 +464,7 @@ export function Payments() {
       {/* Tabs */}
       <div className="tabs">
         {[['transactions','Transactions'],['paymentplans','Payment Plans'],['assessments','Special Assessments'],['ledger','General Ledger'],['reconciliation','Reconciliation']].map(([id,label])=>(
-          <div key={id} className={`tab ${tab===id?'active':''}`} onClick={()=>setTab(id)}>{label}</div>
+          <div key={id} className={'tab ' + (tab===id?'active':'')} onClick={()=>setTab(id)}>{label}</div>
         ))}
       </div>
 
@@ -486,13 +486,13 @@ export function Payments() {
                       ${p.amount.toFixed(2)}
                     </td>
                     <td>
-                      <span className={`badge ${p.status==='Completed'?'badge-green':p.status==='Failed'?'badge-red':'badge-yellow'}`}>{p.status}</span>
+                      <span className={'badge ' + (p.status==='Completed'?'badge-green':p.status==='Failed'?'badge-red':'badge-yellow')}>{p.status}</span>
                       {p.status==='Failed' && p.failReason && <div style={{ fontSize:10, color:'var(--danger)' }}>{p.failReason}</div>}
                     </td>
                     <td>
                       <div style={{ display:'flex', gap:5 }}>
                         {p.receipt && <button className="btn btn-ghost btn-sm btn-icon" onClick={()=>addToast('Receipt PDF downloaded','success')} title="Download receipt"><Download size={13}/></button>}
-                        {p.status==='Failed' && <button className="btn btn-secondary btn-sm" onClick={()=>addToast(`NSF fee of $${COMMUNITY.lateFee} applied to ${p.resident}`,'success')}>Apply NSF Fee</button>}
+                        {p.status==='Failed' && <button className="btn btn-secondary btn-sm" onClick={()=>addToast('NSF fee of $'+(COMMUNITY.lateFee)+' applied to '+(p.resident),'success')}>Apply NSF Fee</button>}
                       </div>
                     </td>
                   </tr>
@@ -529,7 +529,7 @@ export function Payments() {
                   <span className="badge badge-green">{plan.status}</span>
                 </div>
                 <div className="progress-bar" style={{ height:10, marginBottom:8 }}>
-                  <div className="progress-fill" style={{ width:`${(plan.paid/plan.total)*100}%` }}/>
+                  <div className="progress-fill" style={{ width:((plan.paid/plan.total)*100)+"%" }}/>
                 </div>
                 <div style={{ display:'flex', justifyContent:'space-between', fontSize:13 }}>
                   <span style={{ color:'var(--success)', fontWeight:700 }}>Paid: ${plan.paid}</span>
@@ -574,11 +574,11 @@ export function Payments() {
                     <td>
                       <div style={{ fontWeight:700, color:a.collected>=a.total?'var(--success)':'var(--warning)' }}>${a.collected.toLocaleString()}</div>
                       <div className="progress-bar" style={{ height:5, marginTop:4 }}>
-                        <div className="progress-fill" style={{ width:`${(a.collected/a.total)*100}%` }}/>
+                        <div className="progress-fill" style={{ width:((a.collected/a.total)*100)+"%" }}/>
                       </div>
                       <div style={{ fontSize:10, color:'var(--text-muted)', marginTop:2 }}>{Math.round((a.collected/a.total)*100)}% collected</div>
                     </td>
-                    <td><span className={`badge ${a.status==='Completed'?'badge-green':'badge-yellow'}`}>{a.status}</span></td>
+                    <td><span className={'badge ' + (a.status==='Completed'?'badge-green':'badge-yellow')}>{a.status}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -604,7 +604,7 @@ export function Payments() {
                     <tr key={a.id}>
                       <td style={{ fontFamily:'monospace', fontSize:13, color:'var(--text-muted)' }}>{a.code}</td>
                       <td style={{ fontWeight:600, fontSize:14 }}>{a.name}</td>
-                      <td><span className={`badge ${a.type==='Asset'?'badge-green':a.type==='Income'?'badge-blue':a.type==='Expense'?'badge-red':a.type==='Liability'?'badge-yellow':'badge-gray'}`}>{a.type}</span></td>
+                      <td><span className={'badge ' + (a.type==='Asset'?'badge-green':a.type==='Income'?'badge-blue':a.type==='Expense'?'badge-red':a.type==='Liability'?'badge-yellow':'badge-gray')}>{a.type}</span></td>
                       <td style={{ fontFamily:'var(--font-display)', fontWeight:900, fontSize:14, color:a.type==='Expense'?'var(--danger)':a.type==='Income'?'var(--success)':'var(--text-primary)' }}>${a.balance.toLocaleString()}</td>
                     </tr>
                   ))}
@@ -645,7 +645,7 @@ export function Payments() {
           </div>
 
           <div className="grid-2" style={{ marginBottom:20 }}>
-            <div className="card" style={{ padding:24, background:FINANCIAL_SUMMARY.reconciliationDiff===0?'var(--accent-subtle)':'#fffbeb', border:`1px solid ${FINANCIAL_SUMMARY.reconciliationDiff===0?'var(--accent-primary)':'#fde68a'}` }}>
+            <div className="card" style={{ padding:24, background:FINANCIAL_SUMMARY.reconciliationDiff===0?'var(--accent-subtle)':'#fffbeb', border:'1px solid '+(FINANCIAL_SUMMARY.reconciliationDiff===0?'var(--accent-primary)':'#fde68a') }}>
               <div style={{ fontSize:13, fontWeight:700, color:'var(--text-muted)', marginBottom:8 }}>BOOK BALANCE (CanHoa Ledger)</div>
               <div style={{ fontFamily:'var(--font-display)', fontSize:36, fontWeight:900, color:'var(--text-primary)', marginBottom:4 }}>${FINANCIAL_SUMMARY.bookBalance.toLocaleString()}</div>
               <div style={{ fontSize:13, color:'var(--text-muted)' }}>As of {FINANCIAL_SUMMARY.lastReconciled}</div>
@@ -712,7 +712,7 @@ export function Payments() {
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={()=>setShowChargeModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={()=>{ setShowChargeModal(false); addToast(`$${chargeForm.amount} ${chargeForm.type} charge added to Unit ${chargeForm.unit}`,'success'); setChargeForm({unit:'',amount:'',type:'Monthly Dues',memo:''}) }}>
+              <button className="btn btn-primary" onClick={()=>{ setShowChargeModal(false); addToast('$'+(chargeForm.amount)+' '+(chargeForm.type)+' charge added to Unit '+(chargeForm.unit),'success'); setChargeForm({unit:'',amount:'',type:'Monthly Dues',memo:''}) }}>
                 <Plus size={15}/> Apply Charge
               </button>
             </div>

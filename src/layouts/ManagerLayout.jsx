@@ -68,7 +68,7 @@ export default function ManagerLayout() {
       {sidebarOpen && <div style={{ position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:99 }} onClick={()=>setSidebarOpen(false)}/>}
 
       {/* ── SIDEBAR ── */}
-      <nav className={`sidebar ${sidebarOpen?'open':''}`} style={{ zIndex:100 }}>
+      <nav className={'sidebar ' + (sidebarOpen?'open':'')} style={{ zIndex:100 }}>
         {/* Logo */}
         <div style={{ padding:'20px 16px 16px', borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -103,7 +103,7 @@ export default function ManagerLayout() {
             <div key={section.label}>
               <div className="nav-section-label">{section.label}</div>
               {section.items.map(item=>(
-                <NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>`nav-item ${isActive?'active':''}`}>
+                <NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>'nav-item' + (isActive?' active':'')}>
                   <item.icon size={16}/>{item.label}
                 </NavLink>
               ))}

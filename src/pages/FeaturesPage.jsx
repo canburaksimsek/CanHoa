@@ -84,7 +84,7 @@ export function PricingPage() {
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 52, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1, marginBottom: 4 }}>${plan.price}</div>
               <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>/month</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-primary)', marginBottom: 24 }}>{plan.units}</div>
-              <Link to="/register" className={`btn w-full ${plan.featured ? 'btn-primary' : 'btn-outline'}`} style={{ justifyContent: 'center', marginBottom: 24 }}>
+              <Link to="/register" className={'btn w-full ' + (plan.featured ? 'btn-primary' : 'btn-outline')} style={{ justifyContent: 'center', marginBottom: 24 }}>
                 Start Free Trial
               </Link>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

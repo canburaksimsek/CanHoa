@@ -22,7 +22,7 @@ export default function BoardLayout() {
     <div className="app-layout">
       {sidebarOpen && <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:99 }} onClick={()=>setSidebarOpen(false)}/>}
 
-      <nav className={`sidebar ${sidebarOpen?'open':''}`} style={{ zIndex:100 }}>
+      <nav className={'sidebar ' + (sidebarOpen?'open':'')} style={{ zIndex:100 }}>
         <div style={{ padding:'20px 16px 16px', borderBottom:'1px solid var(--border-color)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
             <div style={{ width:36, height:36, background:'var(--accent-primary)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center' }}>

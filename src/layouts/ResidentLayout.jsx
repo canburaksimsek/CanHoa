@@ -32,7 +32,7 @@ export default function ResidentLayout() {
       )}
 
       {/* Sidebar */}
-      <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`} style={{ zIndex: 100 }}>
+      <nav className={'sidebar ' + (sidebarOpen ? 'open' : '')} style={{ zIndex: 100 }}>
         <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, background: 'var(--bg-sidebar)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

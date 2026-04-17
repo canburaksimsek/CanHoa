@@ -137,7 +137,7 @@ export default function BoardDashboard() {
       {/* Tabs */}
       <div className="tabs">
         {[['overview','📊 Overview'],['financials','💰 Financials'],['approvals','✅ Approvals'],['governance','🏛 Governance'],['reports','📄 Reports']].map(([id,label]) => (
-          <div key={id} className={`tab ${tab===id?'active':''}`} onClick={()=>setTab(id)}>
+          <div key={id} className={'tab ' + (tab===id?'active':'')} onClick={()=>setTab(id)}>
             {label}
             {id==='approvals' && pendingItems>0 && <span style={{ marginLeft:6, background:'var(--danger)', color:'white', fontSize:10, padding:'1px 6px', borderRadius:10, fontWeight:700 }}>{pendingItems}</span>}
           </div>
@@ -191,7 +191,7 @@ export default function BoardDashboard() {
                         <span>{pctNum}% voted</span>
                       </div>
                       <div className="progress-bar" style={{height:6}}>
-                        <div className="progress-fill" style={{width:`${pctNum}%`, background: pctNum>=v.quorum?'var(--success)':'var(--warning)'}}/>
+                        <div className="progress-fill" style={{width:(pctNum)+"%", background: pctNum>=v.quorum?'var(--success)':'var(--warning)'}}/>
                       </div>
                       <div style={{ fontSize:11, marginTop:4, color: pctNum>=v.quorum?'var(--success)':'var(--warning)', fontWeight:600 }}>
                         {pctNum>=v.quorum?'✓ Quorum Met':`Need ${v.quorum}% quorum`}
@@ -230,7 +230,7 @@ export default function BoardDashboard() {
               {BOARD_MEMBERS.map(bm => {
                 const expiringSoon = new Date(bm.termEnd) < new Date('2027-01-01')
                 return (
-                  <div key={bm.id} style={{ padding:'16px', background:'var(--bg-secondary)', borderRadius:12, border:`1px solid ${expiringSoon?'#fde68a':'var(--border-color)'}` }}>
+                  <div key={bm.id} style={{ padding:'16px', background:'var(--bg-secondary)', borderRadius:12, border:'1px solid '+(expiringSoon?'#fde68a':'var(--border-color)') }}>
                     <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
                       <div className="avatar avatar-md" style={{ background:'var(--accent-primary)', color:'white' }}>{bm.avatar}</div>
                       <div>
@@ -273,7 +273,7 @@ export default function BoardDashboard() {
                       </span>
                     </div>
                     <div className="progress-bar" style={{ height:7 }}>
-                      <div className="progress-fill" style={{ width:`${Math.min((cat.amount/cat.budget)*100,100)}%`, background:cat.amount>cat.budget?'var(--danger)':cat.color }}/>
+                      <div className="progress-fill" style={{ width:(Math.min((cat.amount/cat.budget)*100,100))+"%", background:cat.amount>cat.budget?'var(--danger)':cat.color }}/>
                     </div>
                   </div>
                 ))}
@@ -291,7 +291,7 @@ export default function BoardDashboard() {
                   <svg viewBox="0 0 120 120" style={{ transform:'rotate(-90deg)' }}>
                     <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-tertiary)" strokeWidth="12"/>
                     <circle cx="60" cy="60" r="50" fill="none" stroke="#1A365D" strokeWidth="12"
-                      strokeDasharray={`${0.62*314} ${(1-0.62)*314}`} strokeLinecap="round"/>
+                      strokeDasharray={(0.62*314)+' ${(1-0.62)*314}'} strokeLinecap="round"/>
                   </svg>
                   <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
                     <div style={{ fontSize:22, fontFamily:'var(--font-display)', fontWeight:900, color:'var(--accent-primary)' }}>62%</div>
@@ -329,7 +329,7 @@ export default function BoardDashboard() {
                   <div style={{ width:80, fontSize:12, fontWeight:600, color:'var(--text-muted)', flexShrink:0 }}>{row.bucket}</div>
                   <div style={{ flex:1 }}>
                     <div className="progress-bar" style={{ height:8 }}>
-                      <div className="progress-fill" style={{ width:`${row.pct}%`, background:row.bucket==='Current'?'var(--success)':row.bucket==='1-30 days'?'var(--warning)':'var(--danger)'}}/>
+                      <div className="progress-fill" style={{ width:(row.pct)+"%", background:row.bucket==='Current'?'var(--success)':row.bucket==='1-30 days'?'var(--warning)':'var(--danger)'}}/>
                     </div>
                   </div>
                   <span style={{ fontSize:12, fontWeight:700, width:50, textAlign:'right' }}>{row.units} units</span>
@@ -360,7 +360,7 @@ export default function BoardDashboard() {
                   <div>
                     <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6, flexWrap:'wrap' }}>
                       <h3 style={{ fontSize:16, margin:0 }}>{item.title}</h3>
-                      <span className={`badge ${item.priority==='High'?'badge-red':'badge-yellow'}`}>{item.priority}</span>
+                      <span className={'badge ' + (item.priority==='High'?'badge-red':'badge-yellow')}>{item.priority}</span>
                       <span className="badge badge-blue">{item.type}</span>
                     </div>
                     <div style={{ fontSize:13, color:'var(--text-muted)' }}>Submitted by {item.submittedBy} · {item.date}</div>
@@ -368,10 +368,10 @@ export default function BoardDashboard() {
                   </div>
                 </div>
                 <div style={{ display:'flex', gap:10 }}>
-                  <button className="btn btn-primary" onClick={() => addToast(`${item.title} — Approved! Action logged.`, 'success')}>
+                  <button className="btn btn-primary" onClick={() => addToast((item.title)+' — Approved! Action logged.', 'success')}>
                     <CheckCircle size={15} /> Approve
                   </button>
-                  <button className="btn btn-danger" onClick={() => addToast(`${item.title} — Rejected. Resident notified.`, 'warning')}>
+                  <button className="btn btn-danger" onClick={() => addToast((item.title)+' — Rejected. Resident notified.', 'warning')}>
                     Reject
                   </button>
                   <button className="btn btn-secondary" onClick={() => addToast('Deferred to next meeting', 'info')}>

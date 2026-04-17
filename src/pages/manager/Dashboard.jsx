@@ -201,7 +201,7 @@ export default function Dashboard() {
                 <div style={{ width:76, fontSize:12, fontWeight:600, color:'var(--text-muted)', flexShrink:0 }}>{row.bucket}</div>
                 <div style={{ flex:1 }}>
                   <div className="progress-bar" style={{ height:8 }}>
-                    <div className="progress-fill" style={{ width:`${row.pct}%`, background:row.bucket==='Current'?'var(--success)':row.bucket==='1-30 days'?'var(--warning)':'var(--danger)'}}/>
+                    <div className="progress-fill" style={{ width:(row.pct)+"%", background:row.bucket==='Current'?'var(--success)':row.bucket==='1-30 days'?'var(--warning)':'var(--danger)'}}/>
                   </div>
                 </div>
                 <span style={{ fontSize:12, fontWeight:700, width:46, textAlign:'right' }}>{row.units}</span>
@@ -225,7 +225,7 @@ export default function Dashboard() {
             {expiringSoon.map((item,i)=>{
               const daysLeft = Math.ceil((new Date(item.expires)-new Date())/86400000)
               return (
-                <div key={i} style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:daysLeft<60?'#fffbeb':'var(--bg-secondary)', borderRadius:10, border:`1px solid ${daysLeft<60?'#fde68a':'var(--border-color)'}` }}>
+                <div key={i} style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 12px', background:daysLeft<60?'#fffbeb':'var(--bg-secondary)', borderRadius:10, border:'1px solid '+(daysLeft<60?'#fde68a':'var(--border-color)') }}>
                   <Bell size={16} color={daysLeft<60?'#d97706':'var(--text-muted)'}/>
                   <div style={{ flex:1 }}>
                     <div style={{ fontWeight:600, fontSize:13 }}>{item.name}</div>
@@ -279,15 +279,15 @@ export default function Dashboard() {
           </div>
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             {MAINTENANCE_REQUESTS.filter(r=>r.status!=='Resolved').slice(0,5).map(req=>(
-              <div key={req.id} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'10px 12px', background:req.priority==='Emergency'?'#fef2f2':req.priority==='High'?'#fffbeb':'var(--bg-secondary)', borderRadius:10, border:`1px solid ${req.priority==='Emergency'?'#fecaca':req.priority==='High'?'#fde68a':'var(--border-color)'}` }}>
+              <div key={req.id} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'10px 12px', background:req.priority==='Emergency'?'#fef2f2':req.priority==='High'?'#fffbeb':'var(--bg-secondary)', borderRadius:10, border:'1px solid '+(req.priority==='Emergency'?'#fecaca':req.priority==='High'?'#fde68a':'var(--border-color)') }}>
                 <div style={{ flex:1 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:3 }}>
                     <span style={{ fontWeight:700, fontSize:13 }}>{req.title}</span>
-                    <span className={`badge ${req.priority==='Emergency'?'badge-red':req.priority==='High'?'badge-yellow':'badge-gray'}`} style={{ fontSize:10 }}>{req.priority}</span>
+                    <span className={'badge ' + (req.priority==='Emergency'?'badge-red':req.priority==='High'?'badge-yellow':'badge-gray')} style={{ fontSize:10 }}>{req.priority}</span>
                   </div>
                   <div style={{ fontSize:12, color:'var(--text-muted)' }}>Unit {req.unit} · {req.status} · {req.assignedTo||'Unassigned'}</div>
                 </div>
-                <span className={`badge ${req.status==='New'?'badge-red':req.status==='Assigned'?'badge-blue':'badge-yellow'}`} style={{ fontSize:10, flexShrink:0 }}>{req.status}</span>
+                <span className={'badge ' + (req.status==='New'?'badge-red':req.status==='Assigned'?'badge-blue':'badge-yellow')} style={{ fontSize:10, flexShrink:0 }}>{req.status}</span>
               </div>
             ))}
           </div>

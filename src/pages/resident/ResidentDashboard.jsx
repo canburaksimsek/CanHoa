@@ -56,7 +56,7 @@ export function ResidentDashboard() {
           <div>
             <div style={{ fontSize:14, fontWeight:600, opacity:0.85, marginBottom:8 }}>{balance>0?'Amount Due':'Account Balance'}</div>
             <div style={{ fontFamily:'var(--font-display)', fontSize:48, fontWeight:900, lineHeight:1, marginBottom:8 }}>${balance.toFixed(2)}</div>
-            <div style={{ fontSize:14, opacity:0.8 }}>{balance>0?`Due by ${dueDate} · Grace period: ${COMMUNITY.gracePeriod} days`:'All payments current — Thank you!'}</div>
+            <div style={{ fontSize:14, opacity:0.8 }}>{balance>0?'Due by '+(dueDate)+' · Grace period: ${COMMUNITY.gracePeriod} days':'All payments current — Thank you!'}</div>
             {balance>0 && <div style={{ fontSize:12, opacity:0.7, marginTop:4 }}>Late fee of ${COMMUNITY.lateFee} applies after {COMMUNITY.gracePeriod}-day grace period</div>}
           </div>
           {balance>0 && (
@@ -160,7 +160,7 @@ export function ResidentDashboard() {
                   <div style={{ fontWeight:600, fontSize:14, marginBottom:3 }}>{req.title}</div>
                   <div style={{ fontSize:12, color:'var(--text-muted)' }}>{req.category} · {req.created}</div>
                 </div>
-                <span className={`badge ${req.status==='Resolved'?'badge-green':req.status==='New'?'badge-gray':'badge-yellow'}`} style={{ fontSize:11, flexShrink:0 }}>{req.status}</span>
+                <span className={'badge ' + (req.status==='Resolved'?'badge-green':req.status==='New'?'badge-gray':'badge-yellow')} style={{ fontSize:11, flexShrink:0 }}>{req.status}</span>
               </div>
             </div>
           ))}
@@ -187,7 +187,7 @@ export function ResidentDashboard() {
                 <label className="form-label">Payment Method</label>
                 <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                   {[{id:'ach',label:'ACH Bank Transfer',sub:'Free · 2-3 business days',icon:'🏦'},{id:'card',label:'Credit/Debit Card',sub:'3.5% processing fee + $0.50',icon:'💳'},{id:'apple',label:'Apple Pay / Google Pay',sub:'3.5% processing fee',icon:'📱'}].map(m=>(
-                    <div key={m.id} onClick={()=>setPayMethod(m.id)} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', border:`2px solid ${payMethod===m.id?'var(--accent-primary)':'var(--border-color)'}`, borderRadius:10, cursor:'pointer', background:payMethod===m.id?'var(--accent-subtle)':'var(--bg-card)' }}>
+                    <div key={m.id} onClick={()=>setPayMethod(m.id)} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', border:'2px solid '+(payMethod===m.id?'var(--accent-primary)':'var(--border-color)')+'', borderRadius:10, cursor:'pointer', background:payMethod===m.id?'var(--accent-subtle)':'var(--bg-card)' }}>
                       <span style={{ fontSize:20 }}>{m.icon}</span>
                       <div style={{ flex:1 }}>
                         <div style={{ fontWeight:600, fontSize:14 }}>{m.label}</div>
@@ -251,7 +251,7 @@ export function ResidentPayments() {
       doc.text(payment.receipt||'RCP-'+Date.now(), W-14, 20, {align:'right'})
       doc.setFillColor(240,253,244); doc.rect(0,28,W,10,'F')
       doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(22,101,52)
-      doc.text(`${COMMUNITY.name} | ${COMMUNITY.address} | EIN: ${COMMUNITY.ein}`, 14, 34)
+      doc.text(''+(COMMUNITY.name)+' | ${COMMUNITY.address} | EIN: ${COMMUNITY.ein}', 14, 34)
       let y=46
       doc.setFontSize(28); doc.setFont('helvetica','bold'); doc.setTextColor(22,101,52)
       doc.text(`$${payment.amount.toFixed(2)}`, W/2, y+10, {align:'center'}); y+=20
@@ -279,7 +279,7 @@ export function ResidentPayments() {
       doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(255,255,255)
       doc.text('CanHoa — Payment Statement', 14, 13)
       doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(187,247,208)
-      doc.text(`${user?.name} · Unit ${user?.unit} · ${COMMUNITY.name}`, 14, 20)
+      doc.text(''+(user?.name)+' · Unit ${user?.unit} · ${COMMUNITY.name}', 14, 20)
       autoTable(doc, {
         startY:35,
         head:[['Date','Type','Method','Amount','Status','Receipt']],
@@ -329,7 +329,7 @@ export function ResidentPayments() {
 
       <div className="tabs">
         {[['history','Payment History'],['autopay','Autopay Settings'],['statements','Tax Statements']].map(([id,label])=>(
-          <div key={id} className={`tab ${tab===id?'active':''}`} onClick={()=>setTab(id)}>{label}</div>
+          <div key={id} className={'tab ' + (tab===id?'active':'')} onClick={()=>setTab(id)}>{label}</div>
         ))}
       </div>
 
@@ -344,7 +344,7 @@ export function ResidentPayments() {
                   <td><div style={{ fontWeight:600, fontSize:14 }}>{p.type}</div><div style={{ fontSize:12, color:'var(--text-muted)' }}>Unit {p.unit}</div></td>
                   <td><span className="badge badge-gray">{p.method}</span></td>
                   <td style={{ fontFamily:'var(--font-display)', fontWeight:900, fontSize:15, color:p.status==='Failed'?'var(--danger)':'var(--text-primary)' }}>${p.amount.toFixed(2)}</td>
-                  <td><span className={`badge ${p.status==='Completed'?'badge-green':p.status==='Failed'?'badge-red':'badge-yellow'}`}>{p.status}</span></td>
+                  <td><span className={'badge ' + (p.status==='Completed'?'badge-green':p.status==='Failed'?'badge-red':'badge-yellow')}>{p.status}</span></td>
                   <td>
                     {p.receipt ? (
                       <button className="btn btn-ghost btn-sm" onClick={()=>downloadReceipt(p)} disabled={loading[p.id]}>
@@ -366,7 +366,7 @@ export function ResidentPayments() {
               <h3 style={{ marginBottom:4 }}>Autopay Status</h3>
               <p style={{ margin:0, fontSize:14 }}>Automatically pay dues on the {COMMUNITY.dueDay}st of each month</p>
             </div>
-            <button className={`toggle ${autopay?'on':''}`} onClick={()=>{ setAutopay(!autopay); addToast(autopay?'Autopay disabled':'Autopay enabled!',autopay?'warning':'success') }}/>
+            <button className={'toggle ' + (autopay?'on':'')} onClick={()=>{ setAutopay(!autopay); addToast(autopay?'Autopay disabled':'Autopay enabled!',autopay?'warning':'success') }}/>
           </div>
           {autopay ? (
             <div>
@@ -380,7 +380,7 @@ export function ResidentPayments() {
                 </div>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:20 }}>
-                {[['Bank','Chase Bank (****4821)'],['Account Type','Checking'],['Next Charge',`${COMMUNITY.dueDay < 10 ? '0'+COMMUNITY.dueDay : COMMUNITY.dueDay}/01/2026`],['Amount','$'+COMMUNITY.monthlyDues+'.00']].map(([k,v])=>(
+                {[['Bank','Chase Bank (****4821)'],['Account Type','Checking'],['Next Charge',''+(COMMUNITY.dueDay < 10 ? '0'+COMMUNITY.dueDay : COMMUNITY.dueDay)+'/01/2026'],['Amount','$'+COMMUNITY.monthlyDues+'.00']].map(([k,v])=>(
                   <div key={k} style={{ display:'flex', justifyContent:'space-between', padding:'10px 14px', background:'var(--bg-secondary)', borderRadius:8 }}>
                     <span style={{ fontSize:13, color:'var(--text-muted)' }}>{k}</span>
                     <span style={{ fontSize:13, fontWeight:700 }}>{v}</span>
@@ -483,8 +483,8 @@ export function ResidentRequests() {
                 <div>
                   <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:6 }}>
                     <h3 style={{ fontSize:16, margin:0 }}>{req.title}</h3>
-                    <span className={`badge ${PRIORITY_COLOR[req.priority]||'badge-gray'}`}>{req.priority}</span>
-                    <span className={`badge ${STATUS_COLOR[req.status]||'badge-gray'}`}>{req.status}</span>
+                    <span className={'badge ' + (PRIORITY_COLOR[req.priority]||'badge-gray')}>{req.priority}</span>
+                    <span className={'badge ' + (STATUS_COLOR[req.status]||'badge-gray')}>{req.status}</span>
                   </div>
                   <div style={{ fontSize:13, color:'var(--text-muted)' }}>{req.category} · Submitted {req.created} · ID: {req.id}</div>
                 </div>
@@ -497,7 +497,7 @@ export function ResidentRequests() {
                   <div style={{ fontSize:13, fontWeight:600, marginBottom:8 }}>How would you rate this repair?</div>
                   <div style={{ display:'flex', gap:8 }}>
                     {[1,2,3,4,5].map(star=>(
-                      <button key={star} className="btn btn-secondary btn-sm" onClick={()=>addToast(`Thank you for rating ${star} stars!`,'success')}>{'⭐'.repeat(star)} {star}</button>
+                      <button key={star} className="btn btn-secondary btn-sm" onClick={()=>addToast('Thank you for rating '+(star)+' stars!','success')}>{'⭐'.repeat(star)} {star}</button>
                     ))}
                   </div>
                 </div>
@@ -661,12 +661,12 @@ export function ResidentAnnouncements() {
         {filtered.map(ann=>{
           const style = TYPE_STYLE[ann.type] || TYPE_STYLE.Community
           return (
-            <div key={ann.id} style={{ background:style.bg, border:`1px solid ${style.border}`, borderLeft:`4px solid ${style.border}`, borderRadius:14, padding:22 }}>
+            <div key={ann.id} style={{ background:style.bg, border:'1px solid '+(style.border), borderLeft:'4px solid '+(style.border), borderRadius:14, padding:22 }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:12, marginBottom:12 }}>
                 <div style={{ flex:1 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:6 }}>
                     <h3 style={{ fontSize:16, margin:0 }}>{ann.title}</h3>
-                    <span className={`badge ${style.badge}`}>{ann.type}</span>
+                    <span className={'badge ' + (style.badge)}>{ann.type}</span>
                   </div>
                   <div style={{ fontSize:12, color:'var(--text-muted)' }}>Posted by {ann.author} · {ann.sent} · Sent via {ann.channels.join(', ')}</div>
                 </div>
@@ -698,7 +698,7 @@ export function ResidentVoting() {
 
   const handleVote = (voteId, choice) => {
     setVoted(v=>({...v,[voteId]:choice}))
-    addToast(`Vote recorded: ${choice}. Your vote is anonymous and encrypted.`,'success')
+    addToast('Vote recorded: '+(choice)+'. Your vote is anonymous and encrypted.','success')
   }
 
   return (
@@ -740,7 +740,7 @@ export function ResidentVoting() {
                   </span>
                 </div>
                 <div className="progress-bar" style={{ height:10 }}>
-                  <div className="progress-fill" style={{ width:`${pctVoted}%`, background:pctVoted>=vote.quorum?'var(--success)':'var(--warning)'}}/>
+                  <div className="progress-fill" style={{ width:(pctVoted)+"%", background:pctVoted>=vote.quorum?'var(--success)':'var(--warning)'}}/>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginTop:12 }}>
                   {[['Yes',vote.yesVotes,'#2b52a0'],['No',vote.noVotes,'#ef4444'],['Abstain',vote.abstain,'#9ca3af']].map(([label,count,color])=>(
@@ -783,7 +783,7 @@ export function ResidentVoting() {
               <div>
                 <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:6 }}>
                   <h3 style={{ fontSize:15, margin:0 }}>{vote.title}</h3>
-                  <span className={`badge ${vote.passed?'badge-green':'badge-red'}`}>{vote.passed?'PASSED':'FAILED'}</span>
+                  <span className={'badge ' + (vote.passed?'badge-green':'badge-red')}>{vote.passed?'PASSED':'FAILED'}</span>
                 </div>
                 <div style={{ fontSize:13, color:'var(--text-muted)' }}>Closed: {vote.deadline} · Yes: {vote.yesVotes} · No: {vote.noVotes} · Abstain: {vote.abstain}</div>
                 {vote.certifiedDate && <div style={{ fontSize:12, color:'var(--accent-primary)', fontWeight:600, marginTop:4 }}>Certified: {vote.certifiedDate}</div>}

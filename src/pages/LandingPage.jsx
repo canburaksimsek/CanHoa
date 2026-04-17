@@ -287,7 +287,7 @@ export default function LandingPage() {
 
           <div className="grid-3">
             {PRICING_PLANS.map(plan => (
-              <div key={plan.name} className={`pricing-card ${plan.featured ? 'featured' : ''}`} style={{ position: 'relative' }}>
+              <div key={plan.name} className={'pricing-card ' + (plan.featured ? 'featured' : '')} style={{ position: 'relative' }}>
                 {plan.featured && (
                   <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', background: 'var(--accent-primary)', color: 'white', padding: '4px 16px', borderRadius: 100, fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>
                     {plan.badge}
@@ -304,7 +304,7 @@ export default function LandingPage() {
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent-primary)', marginBottom: 8 }}>{plan.units}</div>
                 <p style={{ fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>{plan.desc}</p>
-                <Link to={plan.name === 'Enterprise' ? '/contact' : '/register'} className={`btn w-full ${plan.featured ? 'btn-primary' : 'btn-outline'}`} style={{ marginBottom: 28, justifyContent: 'center' }}>
+                <Link to={plan.name === 'Enterprise' ? '/contact' : '/register'} className={'btn w-full ' + (plan.featured ? 'btn-primary' : 'btn-outline')} style={{ marginBottom: 28, justifyContent: 'center' }}>
                   {plan.cta} <ArrowRight size={15} />
                 </Link>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

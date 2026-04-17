@@ -44,12 +44,12 @@ export default function Maintenance() {
 
   const updateStatus = (id, status) => {
     setRequests(rs => rs.map(r => r.id === id ? { ...r, status } : r))
-    addToast(`Work order updated to: ${status}`, 'success')
+    addToast('Work order updated to: '+(status), 'success')
   }
 
   const assignVendor = (id, vendor) => {
     setRequests(rs => rs.map(r => r.id === id ? { ...r, assignedTo: vendor, status: 'Assigned' } : r))
-    addToast(`Assigned to ${vendor} — notification sent`, 'success')
+    addToast('Assigned to '+(vendor)+' — notification sent', 'success')
   }
 
   const RECURRING_SCHEDULES = [
@@ -101,7 +101,7 @@ export default function Maintenance() {
             <AlertTriangle size={16} color="var(--danger)"/>
             <strong style={{ fontSize:14, color:'#991b1b' }}>SLA Breach Alert: </strong>
             <span style={{ fontSize:13, color:'#991b1b' }}>
-              {requests.filter(r=>r.status!=='Resolved'&&getSLAStatus(r)?.breached).map(r=>`${r.id} (${r.priority})`).join(', ')} — immediate action required
+              {requests.filter(r=>r.status!=='Resolved'&&getSLAStatus(r)?.breached).map(r=>''+(r.id)+' (${r.priority})').join(', ')} — immediate action required
             </span>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function Maintenance() {
       {/* Tabs */}
       <div className="tabs">
         {[['requests','Work Orders'],['analytics','Analytics'],['recurring','Recurring']].map(([id,label])=>(
-          <div key={id} className={`tab ${tab===id?'active':''}`} onClick={()=>setTab(id)}>{label}</div>
+          <div key={id} className={'tab ' + (tab===id?'active':'')} onClick={()=>setTab(id)}>{label}</div>
         ))}
       </div>
 
@@ -144,10 +144,10 @@ export default function Maintenance() {
                         <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:6 }}>
                           <span style={{ fontSize:11, color:'var(--text-muted)', fontFamily:'monospace' }}>{req.id}</span>
                           <h3 style={{ fontSize:16, margin:0 }}>{req.title}</h3>
-                          <span className={`badge ${PRIORITY_COLOR[req.priority]||'badge-gray'}`}>{req.priority}</span>
-                          <span className={`badge ${STATUS_COLOR[req.status]||'badge-gray'}`}>{req.status}</span>
+                          <span className={'badge ' + (PRIORITY_COLOR[req.priority]||'badge-gray')}>{req.priority}</span>
+                          <span className={'badge ' + (STATUS_COLOR[req.status]||'badge-gray')}>{req.status}</span>
                         </div>
-                        <div style={{ fontSize:13, color:'var(--text-muted)' }}>Unit {req.unit} · {req.category} · {req.created} · {req.photos>0?`${req.photos} photos`:''}</div>
+                        <div style={{ fontSize:13, color:'var(--text-muted)' }}>Unit {req.unit} · {req.category} · {req.created} · {req.photos>0?''+(req.photos)+' photos':''}</div>
                       </div>
                     </div>
                     <p style={{ fontSize:14, marginBottom:12 }}>{req.description}</p>
@@ -164,7 +164,7 @@ export default function Maintenance() {
                           </span>
                         </div>
                         <div className="progress-bar" style={{ height:6 }}>
-                          <div className="progress-fill" style={{ width:`${sla.pct}%`, background:sla.pct>100?'var(--danger)':sla.pct>75?'var(--warning)':'var(--success)' }}/>
+                          <div className="progress-fill" style={{ width:(sla.pct)+"%", background:sla.pct>100?'var(--danger)':sla.pct>75?'var(--warning)':'var(--success)' }}/>
                         </div>
                       </div>
                     )}
@@ -226,14 +226,14 @@ export default function Maintenance() {
                   </div>
                   <div style={{ display:'flex', flexDirection:'column', gap:10, minHeight:100 }}>
                     {requests.filter(r=>r.status===status).map(req=>(
-                      <div key={req.id} style={{ padding:'12px 14px', background:'var(--bg-card)', border:`1px solid var(--border-color)`, borderTop:`3px solid ${req.priority==='Emergency'?'#ef4444':req.priority==='High'?'#f59e0b':'var(--accent-primary)'}`, borderRadius:10, cursor:'pointer', transition:'var(--transition)', boxShadow:'var(--shadow-sm)' }}
+                      <div key={req.id} style={{ padding:'12px 14px', background:'var(--bg-card)', border:`1px solid var(--border-color)`, borderTop:'3px solid '+(req.priority==='Emergency'?'#ef4444':req.priority==='High'?'#f59e0b':'var(--accent-primary)'), borderRadius:10, cursor:'pointer', transition:'var(--transition)', boxShadow:'var(--shadow-sm)' }}
                         onMouseEnter={e=>e.currentTarget.style.boxShadow='var(--shadow-md)'}
                         onMouseLeave={e=>e.currentTarget.style.boxShadow='var(--shadow-sm)'}>
                         <div style={{ fontSize:11, color:'var(--text-muted)', fontFamily:'monospace', marginBottom:4 }}>{req.id}</div>
                         <div style={{ fontWeight:700, fontSize:13, marginBottom:6 }}>{req.title}</div>
                         <div style={{ fontSize:11, color:'var(--text-muted)', marginBottom:6 }}>Unit {req.unit} · {req.category}</div>
                         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                          <span className={`badge ${PRIORITY_COLOR[req.priority]||'badge-gray'}`} style={{ fontSize:10 }}>{req.priority}</span>
+                          <span className={'badge ' + (PRIORITY_COLOR[req.priority]||'badge-gray')} style={{ fontSize:10 }}>{req.priority}</span>
                           {req.cost>0 && <span style={{ fontSize:11, fontWeight:700 }}>${req.cost}</span>}
                         </div>
                         {req.assignedTo && <div style={{ fontSize:10, color:'var(--accent-primary)', marginTop:6, fontWeight:600 }}>→ {req.assignedTo}</div>}
@@ -263,7 +263,7 @@ export default function Maintenance() {
                       <span style={{ color:'var(--text-muted)' }}>{count} requests</span>
                     </div>
                     <div className="progress-bar" style={{ height:7 }}>
-                      <div className="progress-fill" style={{ width:`${total>0?(count/total)*100:0}%` }}/>
+                      <div className="progress-fill" style={{ width:(total>0?(count/total)*100:0)+"%" }}/>
                     </div>
                   </div>
                 )
@@ -370,7 +370,7 @@ export default function Maintenance() {
                 const newReq = { id:'maint-'+Date.now(), unit:form.unit||'N/A', resident:form.resident||'Management', category:form.category, title:form.title||'Untitled', description:form.description, priority:form.priority, status:form.vendor?'Assigned':'New', created:new Date().toISOString().slice(0,10), assignedTo:form.vendor||null, cost:+form.estimatedCost||0, photos:0, slaHours:SLA_CONFIG[form.priority]||72, satisfactionRating:null, internalNotes:[], resolutionDate:null }
                 setRequests(rs=>[newReq,...rs])
                 setShowModal(false)
-                addToast(`Work order #${newReq.id} created. Resident notified via SMS/email.`,'success')
+                addToast('Work order #'+(newReq.id)+' created. Resident notified via SMS/email.','success')
                 setForm({ unit:'',resident:'',category:'Plumbing',title:'',description:'',priority:'Normal',vendor:'',estimatedCost:'' })
               }}>
                 <Plus size={15}/> Create Work Order

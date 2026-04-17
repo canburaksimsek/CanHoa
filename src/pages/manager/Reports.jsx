@@ -91,7 +91,7 @@ export default function Reports() {
 
   const categories = ['All','Financial','Collections','Operations','Executive']
   const filtered = catFilter==='All' ? REPORTS : REPORTS.filter(r=>r.category===catFilter)
-  const periodLabel = dateRange.from && dateRange.to ? `${dateRange.from} to ${dateRange.to}` : 'All Time'
+  const periodLabel = dateRange.from && dateRange.to ? ''+(dateRange.from)+' to ${dateRange.to}' : 'All Time'
 
   return (
     <div>
@@ -150,7 +150,7 @@ export default function Reports() {
       {/* Tabs */}
       <div className="tabs">
         {[['dashboard','📊 Dashboard'],['generate','📄 All Reports'],['charts','📈 Charts']].map(([id,label])=>(
-          <div key={id} className={`tab ${tab===id?'active':''}`} onClick={()=>setTab(id)}>{label}</div>
+          <div key={id} className={'tab ' + (tab===id?'active':'')} onClick={()=>setTab(id)}>{label}</div>
         ))}
       </div>
 
@@ -218,7 +218,7 @@ export default function Reports() {
                       <span><strong style={{ color:cat.amount>cat.budget?'var(--danger)':'var(--success)' }}>${cat.amount.toLocaleString()}</strong>{' / '}${cat.budget.toLocaleString()}</span>
                     </div>
                     <div className="progress-bar" style={{ height:7 }}>
-                      <div className="progress-fill" style={{ width:`${Math.min((cat.amount/cat.budget)*100,100)}%`, background:cat.amount>cat.budget?'var(--danger)':cat.color}}/>
+                      <div className="progress-fill" style={{ width:(Math.min((cat.amount/cat.budget)*100,100))+"%", background:cat.amount>cat.budget?'var(--danger)':cat.color}}/>
                     </div>
                   </div>
                 ))}
@@ -239,7 +239,7 @@ export default function Reports() {
                     <div style={{ width:76, fontSize:12, fontWeight:600, color:'var(--text-muted)', flexShrink:0 }}>{row.bucket}</div>
                     <div style={{ flex:1 }}>
                       <div className="progress-bar" style={{ height:8 }}>
-                        <div className="progress-fill" style={{ width:`${row.pct}%`, background:row.bucket==='Current'?'var(--success)':row.bucket==='1-30 days'?'var(--warning)':'var(--danger)'}}/>
+                        <div className="progress-fill" style={{ width:(row.pct)+"%", background:row.bucket==='Current'?'var(--success)':row.bucket==='1-30 days'?'var(--warning)':'var(--danger)'}}/>
                       </div>
                     </div>
                     <span style={{ fontSize:12, fontWeight:700, width:46, textAlign:'right' }}>{row.units}</span>
@@ -269,7 +269,7 @@ export default function Reports() {
           {catFilter==='All' && (
             <div className="grid-3" style={{ marginBottom:20 }}>
               {REPORTS.filter(r=>r.featured).map(report=>(
-                <div key={report.id} className="card" style={{ border:`2px solid ${report.color}`, background:report.color+'08', padding:24 }}>
+                <div key={report.id} className="card" style={{ border:'2px solid '+(report.color)+'', background:report.color+'08', padding:24 }}>
                   <div style={{ display:'flex', alignItems:'flex-start', gap:12, marginBottom:14 }}>
                     <div style={{ width:44, height:44, background:report.color+'20', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                       <report.icon size={20} color={report.color}/>
@@ -427,7 +427,7 @@ export default function Reports() {
                     <span style={{ fontSize:12, fontWeight:500, width:130, flexShrink:0 }}>{item.name}</span>
                     <div style={{ flex:1 }}>
                       <div className="progress-bar" style={{ height:8 }}>
-                        <div className="progress-fill" style={{ width:`${item.funded}%`, background:item.color}}/>
+                        <div className="progress-fill" style={{ width:(item.funded)+"%", background:item.color}}/>
                       </div>
                     </div>
                     <span style={{ fontSize:12, fontWeight:700, color:item.color, width:38, textAlign:'right' }}>{item.funded}%</span>

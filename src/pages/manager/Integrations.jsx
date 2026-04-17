@@ -125,7 +125,7 @@ export default function Integrations() {
                 </div>
                 <div style={{ display:'flex', gap:8 }}>
                   <button
-                    className={`btn btn-sm ${intg.status==='connected'?'btn-secondary':'btn-primary'}`}
+                    className={'btn btn-sm ' + (intg.status==='connected'?'btn-secondary':'btn-primary')}
                     style={{ flex:1, justifyContent:'center', ...(intg.status==='coming_soon'?{opacity:0.6}:{}) }}
                     onClick={()=>handleConnect(intg.id, intg.name, intg.status)}
                     disabled={connecting[intg.id]}

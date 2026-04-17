@@ -60,7 +60,7 @@ export function Violations() {
     const nextStep = ESCALATION_STEPS[nextLevel - 1]
     setViolations(vs => vs.map(v => v.id===viol.id ? {...v, escalationLevel:nextLevel, noticesSent:(v.noticesSent||0)+1, status:nextLevel>=3?'Hearing Scheduled':'Open'} : v))
     setShowEscalateModal(null)
-    addToast(`Escalated to Level ${nextLevel}: ${nextStep?.label} — ${viol.resident} notified`, 'success')
+    addToast('Escalated to Level '+(nextLevel)+': '+(nextStep?.label)+' — '+(viol.resident)+' notified', 'success')
   }
 
   const getDaysRemaining = (dueDate) => {
@@ -103,7 +103,7 @@ export function Violations() {
         <div style={{ display:'flex', alignItems:'center', gap:0, overflowX:'auto' }}>
           {ESCALATION_STEPS.map((step, i) => (
             <React.Fragment key={step.level}>
-              <div style={{ minWidth:140, padding:'12px 14px', background:i===0?'var(--accent-subtle)':i>=3?'#fef2f2':'var(--bg-secondary)', border:`1px solid ${i===0?'var(--accent-primary)':i>=3?'#fecaca':'var(--border-color)'}`, borderRadius:10, textAlign:'center' }}>
+              <div style={{ minWidth:140, padding:'12px 14px', background:i===0?'var(--accent-subtle)':i>=3?'#fef2f2':'var(--bg-secondary)', border:'1px solid '+(i===0?'var(--accent-primary)':i>=3?'#fecaca':'var(--border-color)'), borderRadius:10, textAlign:'center' }}>
                 <div style={{ fontSize:10, fontWeight:700, textTransform:'uppercase', color:i>=3?'var(--danger)':'var(--accent-primary)', marginBottom:4 }}>Level {step.level}</div>
                 <div style={{ fontWeight:700, fontSize:12, marginBottom:4, color:'var(--text-primary)' }}>{step.label}</div>
                 <div style={{ fontSize:10, color:'var(--text-muted)', lineHeight:1.4 }}>{step.action}</div>
@@ -154,7 +154,7 @@ export function Violations() {
                     {v.status!=='Resolved' && daysLeft!==null && (
                       <div style={{ display:'flex', flex:'column', gap:2 }}>
                         <span style={{ fontSize:12, fontWeight:700, color:daysLeft<=3?'var(--danger)':daysLeft<=7?'var(--warning)':'var(--text-muted)' }}>
-                          {daysLeft>0?`${daysLeft} days left`:'OVERDUE'}
+                          {daysLeft>0?''+(daysLeft)+' days left':'OVERDUE'}
                         </span>
                         <div style={{ fontSize:11, color:'var(--text-muted)' }}>{v.dueDate}</div>
                       </div>
@@ -245,7 +245,7 @@ export function Violations() {
                 const newViolation = { id:'vio-'+Date.now(), unit:form.unit||'N/A', resident:form.resident||'Unknown', type:form.type, description:form.description, status:'Open', fine:form.fine, created:new Date().toISOString().slice(0,10), dueDate:new Date(Date.now()+14*86400000).toISOString().slice(0,10), noticesSent:1, escalationLevel:1, photos:0, hearingRequested:false }
                 setViolations(vs=>[newViolation,...vs])
                 setShowModal(false)
-                addToast(`Violation recorded for Unit ${form.unit}. 1st notice sent via ${[form.sendEmail&&'email',form.sendSMS&&'SMS',form.sendUSPS&&'USPS'].filter(Boolean).join(', ')||'portal'}.`,'success')
+                addToast('Violation recorded for Unit '+(form.unit)+'. 1st notice sent via '+([form.sendEmail&&'email',form.sendSMS&&'SMS',form.sendUSPS&&'USPS'].filter(Boolean).join(', ')||'portal')+'.','success')
                 setForm({ unit:'',resident:'',type:'Parking',description:'',fine:75,sendUSPS:false,sendEmail:true,sendSMS:false })
               }}>
                 <Plus size={15}/> Record Violation & Send Notice
@@ -451,7 +451,7 @@ export function Announcements() {
   }
 
   const handleSend = () => {
-    addToast(`Announcement sent via ${compose.channels.join(', ')}!`, 'success')
+    addToast('Announcement sent via '+(compose.channels.join(', '))+'!', 'success')
     setShowCompose(false)
   }
 
@@ -510,7 +510,7 @@ export function Announcements() {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                   <h3 style={{ fontSize: 16, margin: 0 }}>{ann.title}</h3>
-                  <span className={`badge ${ann.type === 'Emergency' ? 'badge-red' : ann.type === 'Meeting' ? 'badge-blue' : 'badge-green'}`}>{ann.type}</span>
+                  <span className={'badge ' + (ann.type === 'Emergency' ? 'badge-red' : ann.type === 'Meeting' ? 'badge-blue' : 'badge-green')}>{ann.type}</span>
                 </div>
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Sent {ann.sent} by {ann.author}</div>
               </div>
@@ -562,7 +562,7 @@ export function Announcements() {
                 <label className="form-label">Delivery Channels</label>
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                   {['Email', 'SMS', 'Phone Call', 'USPS Mail', 'Portal'].map(ch => (
-                    <label key={ch} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', border: `1.5px solid ${compose.channels.includes(ch) ? 'var(--accent-primary)' : 'var(--border-color)'}`, borderRadius: 8, cursor: 'pointer', background: compose.channels.includes(ch) ? 'var(--accent-light)' : 'transparent', transition: 'all 0.15s' }}>
+                    <label key={ch} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', border: '1.5px solid '+(compose.channels.includes(ch) ? 'var(--accent-primary)' : 'var(--border-color)')+'', borderRadius: 8, cursor: 'pointer', background: compose.channels.includes(ch) ? 'var(--accent-light)' : 'transparent', transition: 'all 0.15s' }}>
                       <input type="checkbox" checked={compose.channels.includes(ch)} onChange={() => toggleChannel(ch)} style={{ accentColor: 'var(--accent-primary)' }} />
                       <span style={{ fontSize: 14, fontWeight: 500, color: compose.channels.includes(ch) ? 'var(--accent-primary)' : 'var(--text-primary)' }}>{ch}</span>
                     </label>
@@ -628,7 +628,7 @@ export function Voting() {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, flexWrap: 'wrap' }}>
                     <h3 style={{ fontSize: 17, margin: 0 }}>{vote.title}</h3>
-                    <span className={`badge ${vote.status === 'Active' ? 'badge-green' : 'badge-gray'}`}>{vote.status}</span>
+                    <span className={'badge ' + (vote.status === 'Active' ? 'badge-green' : 'badge-gray')}>{vote.status}</span>
                     <span className="badge badge-blue">{vote.type}</span>
                     {vote.anonymous && <span className="badge badge-purple">Anonymous</span>}
                   </div>
@@ -645,7 +645,7 @@ export function Voting() {
                   <div style={{ fontSize: 28, fontFamily: 'var(--font-display)', fontWeight: 900, color: 'var(--accent-primary)' }}>{pct}%</div>
                   <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Participation Rate</div>
                   <div style={{ fontSize: 11, color: quorumMet ? 'var(--success)' : 'var(--warning)', fontWeight: 600, marginTop: 4 }}>
-                    {quorumMet ? '✓ Quorum Met' : `Need ${vote.quorum}% quorum`}
+                    {quorumMet ? '✓ Quorum Met' : 'Need '+(vote.quorum)+'% quorum'}
                   </div>
                 </div>
                 <div style={{ textAlign: 'center', padding: '16px', background: '#dfe8fa', borderRadius: 12 }}>
@@ -667,15 +667,15 @@ export function Voting() {
                     <span style={{ color: 'var(--danger)', fontWeight: 600 }}>No: {vote.noVotes}</span>
                   </div>
                   <div style={{ height: 10, background: 'var(--bg-tertiary)', borderRadius: 100, overflow: 'hidden', display: 'flex' }}>
-                    <div style={{ height: '100%', background: 'var(--success)', width: `${yesPct}%`, transition: 'width 0.6s ease' }} />
-                    <div style={{ height: '100%', background: 'var(--danger)', width: `${total > 0 ? Math.round((vote.noVotes / total) * 100) : 0}%` }} />
+                    <div style={{ height: '100%', background: 'var(--success)', width: String(yesPct)+"%", transition: 'width 0.6s ease' }} />
+                    <div style={{ height: '100%', background: 'var(--danger)', width: String(total > 0 ? Math.round((vote.noVotes / total) * 100) : 0)+"%" }} />
                   </div>
                 </div>
               )}
 
               <div style={{ display: 'flex', gap: 10 }}>
                 {vote.passed !== undefined && (
-                  <span className={`badge ${vote.passed ? 'badge-green' : 'badge-red'}`} style={{ padding: '6px 14px' }}>
+                  <span className={'badge ' + (vote.passed ? 'badge-green' : 'badge-red')} style={{ padding: '6px 14px' }}>
                     {vote.passed ? '✓ PASSED' : '✕ FAILED'}
                   </span>
                 )}
@@ -747,7 +747,7 @@ export function Amenities() {
                   <span className="badge badge-gray">{am.type}</span>
                 </div>
               </div>
-              <span className={`badge ${am.available ? 'badge-green' : 'badge-red'}`}>
+              <span className={'badge ' + (am.available ? 'badge-green' : 'badge-red')}>
                 {am.available ? 'Available' : 'Unavailable'}
               </span>
             </div>
@@ -760,9 +760,9 @@ export function Amenities() {
 
             <div className="grid-2" style={{ gap: 12, marginBottom: 16 }}>
               {[
-                ['Max Capacity', `${am.capacity} guests`],
-                ['Max Hours', `${am.maxBookingHours} hrs/booking`],
-                ['Advance Booking', `${am.advanceBookingDays} days`],
+                ['Max Capacity', ''+(am.capacity)+' guests'],
+                ['Max Hours', ''+(am.maxBookingHours)+' hrs/booking'],
+                ['Advance Booking', ''+(am.advanceBookingDays)+' days'],
                 ['Hours', am.hours],
               ].map(([label, val]) => (
                 <div key={label} style={{ padding: '10px 14px', background: 'var(--bg-secondary)', borderRadius: 8 }}>
@@ -781,7 +781,7 @@ export function Amenities() {
             <div style={{ display: 'flex', gap: 10 }}>
               <button className="btn btn-secondary btn-sm" onClick={() => addToast('Calendar opened', 'info')}>View Calendar</button>
               <button className="btn btn-secondary btn-sm" onClick={() => addToast('Settings opened', 'info')}>Edit Rules</button>
-              <button className="btn btn-secondary btn-sm" onClick={() => addToast(`${am.name} ${am.available ? 'blocked' : 'enabled'}`, am.available ? 'warning' : 'success')}>
+              <button className="btn btn-secondary btn-sm" onClick={() => addToast((am.name)+' '+(am.available ? 'blocked' : 'enabled'), am.available ? 'warning' : 'success')}>
                 {am.available ? 'Block Dates' : 'Enable'}
               </button>
             </div>
@@ -836,7 +836,7 @@ export function Vendors() {
                   {v.contractEnd && new Date(v.contractEnd) < new Date(Date.now() + 60*24*3600*1000) && <div style={{ fontSize:11, color:'var(--warning)', fontWeight:600 }}>Expiring soon</div>}
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm btn-icon" onClick={() => addToast(`Email sent to ${v.name}`, 'success')}><Mail size={14} /></button>
+                  <button className="btn btn-ghost btn-sm btn-icon" onClick={() => addToast('Email sent to '+(v.name), 'success')}><Mail size={14} /></button>
                 </td>
               </tr>
             ))}
@@ -871,7 +871,7 @@ export function Settings() {
         <p>Configure your community's CanHoa settings</p>
       </div>
       <div className="tabs">
-        {TABS.map(t => <div key={t.id} className={`tab ${tab===t.id?'active':''}`} onClick={() => setTab(t.id)}>{t.label}</div>)}
+        {TABS.map(t => <div key={t.id} className={'tab ' + (tab===t.id?'active':'')} onClick={() => setTab(t.id)}>{t.label}</div>)}
       </div>
 
       {tab === 'community' && (
@@ -901,7 +901,7 @@ export function Settings() {
             {[['processingFeePassthrough','Pass processing fees to residents (ACH: $2.45, Card: 3.5%+$0.50)'],['autopayEnabled','Allow residents to set up autopay']].map(([key,label]) => (
               <div key={key} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 16px', background:'var(--bg-secondary)', borderRadius:10 }}>
                 <span style={{ fontSize:14, fontWeight:500 }}>{label}</span>
-                <button className={`toggle ${settings[key]?'on':''}`} onClick={() => update(key, !settings[key])} />
+                <button className={'toggle ' + (settings[key]?'on':'')} onClick={() => update(key, !settings[key])} />
               </div>
             ))}
           </div>
@@ -926,7 +926,7 @@ export function Settings() {
                   <div style={{ fontWeight:700, fontSize:14, marginBottom:2 }}>{label}</div>
                   <div style={{ fontSize:12, color:'var(--text-muted)' }}>{sub}</div>
                 </div>
-                <button className={`toggle ${settings[key]?'on':''}`} onClick={() => update(key, !settings[key])} />
+                <button className={'toggle ' + (settings[key]?'on':'')} onClick={() => update(key, !settings[key])} />
               </div>
             ))}
           </div>
@@ -943,7 +943,7 @@ export function Settings() {
                 <div style={{ fontWeight:700, fontSize:14, marginBottom:2 }}>Require 2FA for all admin accounts</div>
                 <div style={{ fontSize:12, color:'var(--text-muted)' }}>TOTP or SMS — strongly recommended</div>
               </div>
-              <button className={`toggle ${settings.twoFaRequired?'on':''}`} onClick={() => update('twoFaRequired', !settings.twoFaRequired)} />
+              <button className={'toggle ' + (settings.twoFaRequired?'on':'')} onClick={() => update('twoFaRequired', !settings.twoFaRequired)} />
             </div>
           </div>
           <div className="form-group">
