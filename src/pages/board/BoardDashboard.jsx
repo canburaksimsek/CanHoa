@@ -194,7 +194,7 @@ export default function BoardDashboard() {
                         <div className="progress-fill" style={{width:(pctNum)+"%", background: pctNum>=v.quorum?'var(--success)':'var(--warning)'}}/>
                       </div>
                       <div style={{ fontSize:11, marginTop:4, color: pctNum>=v.quorum?'var(--success)':'var(--warning)', fontWeight:600 }}>
-                        {pctNum>=v.quorum?'✓ Quorum Met':`Need ${v.quorum}% quorum`}
+                        {pctNum>=v.quorum?'✓ Quorum Met':'Need '+(v.quorum+'% quorum'}
                       </div>
                     </div>
                   )
@@ -304,7 +304,7 @@ export default function BoardDashboard() {
                 </div>
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                {[['Monthly Contribution','$1,100/mo'],['Shortfall',`$${(COMMUNITY.reserveTarget-FINANCIAL_SUMMARY.reserveBalance).toLocaleString()}`],['At Current Rate','Fully funded by 2034']].map(([k,v])=>(
+                {[['Monthly Contribution','$1,100/mo'],['Shortfall','$'+((COMMUNITY.reserveTarget-FINANCIAL_SUMMARY.reserveBalance).toLocaleString())],['At Current Rate','Fully funded by 2034']].map(([k,v])=>(
                   <div key={k} style={{ display:'flex', justifyContent:'space-between', padding:'8px 12px', background:'var(--bg-secondary)', borderRadius:8 }}>
                     <span style={{ fontSize:13, color:'var(--text-muted)' }}>{k}</span>
                     <span style={{ fontSize:13, fontWeight:700 }}>{v}</span>

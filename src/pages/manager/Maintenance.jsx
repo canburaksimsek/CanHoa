@@ -226,7 +226,7 @@ export default function Maintenance() {
                   </div>
                   <div style={{ display:'flex', flexDirection:'column', gap:10, minHeight:100 }}>
                     {requests.filter(r=>r.status===status).map(req=>(
-                      <div key={req.id} style={{ padding:'12px 14px', background:'var(--bg-card)', border:`1px solid var(--border-color)`, borderTop:'3px solid '+(req.priority==='Emergency'?'#ef4444':req.priority==='High'?'#f59e0b':'var(--accent-primary)'), borderRadius:10, cursor:'pointer', transition:'var(--transition)', boxShadow:'var(--shadow-sm)' }}
+                      <div key={req.id} style={{ padding:'12px 14px', background:'var(--bg-card)', border:'1px solid var(--border-color)', borderTop:'3px solid '+(req.priority==='Emergency'?'#ef4444':req.priority==='High'?'#f59e0b':'var(--accent-primary)'), borderRadius:10, cursor:'pointer', transition:'var(--transition)', boxShadow:'var(--shadow-sm)' }}
                         onMouseEnter={e=>e.currentTarget.style.boxShadow='var(--shadow-md)'}
                         onMouseLeave={e=>e.currentTarget.style.boxShadow='var(--shadow-sm)'}>
                         <div style={{ fontSize:11, color:'var(--text-muted)', fontFamily:'monospace', marginBottom:4 }}>{req.id}</div>

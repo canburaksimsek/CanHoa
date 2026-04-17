@@ -57,7 +57,7 @@ export default function BoardLayout() {
         <div style={{ flex:1, padding:'8px 0' }}>
           <div className="nav-section-label">Board Portal</div>
           {NAV_ITEMS.map(item=>(
-            <NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>`nav-item ${isActive?'active':''}`} onClick={()=>setSidebarOpen(false)}>
+            <NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>'nav-item '+(isActive?'active':'')+''} onClick={()=>setSidebarOpen(false)}>
               <item.icon size={16}/>{item.label}
             </NavLink>
           ))}

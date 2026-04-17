@@ -144,7 +144,7 @@ export function Residents() {
                     </td>
                     <td><span className={'badge ' + (r.isOwner?'badge-green':'badge-blue')}>{r.isOwner?'Owner':'Tenant'}</span></td>
                     <td style={{ fontFamily:'var(--font-display)', fontWeight:900, fontSize:15, color:r.balance>0?'var(--danger)':'var(--success)' }}>
-                      {r.balance>0?`$${r.balance.toFixed(2)}`:'Current'}
+                      {r.balance>0?'$'+(r.balance.toFixed(2)):'Current'}
                       {r.daysOverdue && <div style={{ fontSize:11, color:'var(--danger)', fontWeight:600 }}>{r.daysOverdue} days overdue</div>}
                     </td>
                     <td>

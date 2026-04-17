@@ -172,7 +172,7 @@ export function LegalPage() {
         </Link>
         <div style={{ display: 'flex', gap: 8 }}>
           {[['terms', 'Terms'], ['privacy', 'Privacy'], ['cookies', 'Cookies']].map(([t, l]) => (
-            <Link key={t} to={`/legal/${t}`} className="btn btn-ghost btn-sm" style={{ fontWeight: type === t ? 700 : 400, color: type === t ? 'var(--accent-primary)' : 'var(--text-muted)' }}>{l}</Link>
+            <Link key={t} to={'/legal/'+(t)+''} className="btn btn-ghost btn-sm" style={{ fontWeight: type === t ? 700 : 400, color: type === t ? 'var(--accent-primary)' : 'var(--text-muted)' }}>{l}</Link>
           ))}
         </div>
       </nav>

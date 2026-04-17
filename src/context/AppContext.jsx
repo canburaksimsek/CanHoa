@@ -136,7 +136,7 @@ function ToastContainer({ toasts, onRemove }) {
   return (
     <div className="toast-container">
       {toasts.map(toast => (
-        <div key={toast.id} className={`toast toast-${toast.type}`} onClick={() => onRemove(toast.id)}>
+        <div key={toast.id} className={'toast toast-' + (toast.type)} onClick={() => onRemove(toast.id)}>
           <span style={{ fontSize: 18 }}>
             {toast.type === 'success' ? '✓' : toast.type === 'error' ? '✕' : toast.type === 'warning' ? '!' : 'i'}
           </span>
@@ -193,7 +193,7 @@ export function CookieConsent() {
           </p>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:10 }}>
             <span style={{ fontSize:12, color:'var(--text-muted)' }}>Analytics cookies:</span>
-            <button className={`toggle ${analyticsConsent?'on':''}`} onClick={()=>setAnalyticsConsent(!analyticsConsent)} style={{ transform:'scale(0.85)' }}/>
+            <button className={'toggle ' + (analyticsConsent?'on':'')} onClick={()=>setAnalyticsConsent(!analyticsConsent)} style={{ transform:'scale(0.85)' }}/>
           </div>
         </div>
         <div style={{ display:'flex', gap:10, alignItems:'center', flexShrink:0 }}>
