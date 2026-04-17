@@ -84,7 +84,7 @@ export default function Maintenance() {
           { label:'Total Open', value:requests.filter(r=>r.status!=='Resolved').length, color:'var(--text-primary)', sub:'Active work orders' },
           { label:'Emergency', value:requests.filter(r=>r.priority==='Emergency'&&r.status!=='Resolved').length, color:'#ef4444', sub:'4-hr SLA target' },
           { label:'Resolved 30d', value:requests.filter(r=>r.status==='Resolved').length, color:'#2b52a0', sub:'Avg '+Math.round(requests.filter(r=>r.status==='Resolved').length)+'d resolution' },
-          { label:'Total Cost', value:`$${requests.reduce((s,r)=>s+r.cost,0).toLocaleString()}`, color:'#7c3aed', sub:'Open + resolved' },
+          { label:'Total Cost', value:'$' + (requests.reduce((s,r)=>s+r.cost,0).toLocaleString()), color:'#7c3aed', sub:'Open + resolved' },
         ].map(s=>(
           <div key={s.label} className="stat-card">
             <div style={{ fontSize:24, fontFamily:'var(--font-display)', fontWeight:900, color:s.color, marginBottom:3 }}>{s.value}</div>
@@ -277,10 +277,10 @@ export default function Maintenance() {
                 { label:'Total Work Orders', value:requests.length },
                 { label:'Emergency Response Rate', value:'100% ≤4hr' },
                 { label:'Avg Resolution Time', value:'2.3 days' },
-                { label:'Total Maintenance Cost', value:`$${requests.reduce((s,r)=>s+r.cost,0).toLocaleString()}` },
-                { label:'Resident Satisfaction', value:`${requests.filter(r=>r.satisfactionRating>=4).length}/${requests.filter(r=>r.satisfactionRating).length} rated ≥4★` },
+                { label:'Total Maintenance Cost', value:'$' + (requests.reduce((s,r)=>s+r.cost,0).toLocaleString()) },
+                { label:'Resident Satisfaction', value:(requests.filter(r=>r.satisfactionRating>=4).length) + '/' + (requests.filter(r=>r.satisfactionRating).length) + ' rated ≥4★' },
                 { label:'SLA Compliance Rate', value:'92%' },
-                { label:'Cost per Work Order', value:`$${Math.round(requests.reduce((s,r)=>s+r.cost,0)/(requests.filter(r=>r.cost>0).length||1))}` },
+                { label:'Cost per Work Order', value:'$' + (Math.round(requests.reduce((s,r)=>s+r.cost,0)/(requests.filter(r=>r.cost>0).length||1))) },
               ].map(m=>(
                 <div key={m.label} style={{ display:'flex', justifyContent:'space-between', padding:'8px 12px', background:'var(--bg-secondary)', borderRadius:8 }}>
                   <span style={{ fontSize:13, color:'var(--text-muted)' }}>{m.label}</span>

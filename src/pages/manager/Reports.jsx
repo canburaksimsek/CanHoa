@@ -134,10 +134,10 @@ export default function Reports() {
       {/* KPI Row */}
       <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label:'YTD Collections', value:`$${FINANCIAL_SUMMARY.ytdCollected.toLocaleString()}`, sub:`${FINANCIAL_SUMMARY.collectionRate}% rate`, color:'#1A365D' },
-          { label:'YTD Expenses', value:`$${FINANCIAL_SUMMARY.ytdExpenses.toLocaleString()}`, sub:'vs $146,160 budget', color:'#dc2626' },
-          { label:'Reserve Balance', value:`$${(FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)}K`, sub:'62% of target funded', color:'#0284c7' },
-          { label:'Net Income YTD', value:`$${(FINANCIAL_SUMMARY.ytdCollected-FINANCIAL_SUMMARY.ytdExpenses).toLocaleString()}`, sub:'Operating surplus', color:'#7c3aed' },
+          { label:'YTD Collections', value:'$' + (FINANCIAL_SUMMARY.ytdCollected.toLocaleString()), sub:(FINANCIAL_SUMMARY.collectionRate) + '% rate', color:'#1A365D' },
+          { label:'YTD Expenses', value:'$' + (FINANCIAL_SUMMARY.ytdExpenses.toLocaleString()), sub:'vs $146,160 budget', color:'#dc2626' },
+          { label:'Reserve Balance', value:'$' + ((FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)) + 'K', sub:'62% of target funded', color:'#0284c7' },
+          { label:'Net Income YTD', value:'$' + ((FINANCIAL_SUMMARY.ytdCollected-FINANCIAL_SUMMARY.ytdExpenses).toLocaleString()), sub:'Operating surplus', color:'#7c3aed' },
         ].map(s=>(
           <div key={s.label} className="stat-card">
             <div style={{ fontSize:24, fontFamily:'var(--font-display)', fontWeight:900, color:s.color, marginBottom:3 }}>{s.value}</div>

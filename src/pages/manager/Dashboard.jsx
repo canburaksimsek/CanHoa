@@ -12,9 +12,21 @@ import {
 } from 'recharts'
 import {
   COMMUNITY, FINANCIAL_SUMMARY, MONTHLY_COLLECTIONS, EXPENSE_CATEGORIES,
-  DELINQUENCY_AGING, RESIDENTS, ACTIVITY_FEED, PENDING_APPROVALS, COMMUNITY_EVENTS,
+  DELINQUENCY_AGING, RESIDENTS, ACTIVITY_FEED,
   MAINTENANCE_REQUESTS, VIOLATIONS
 } from '../../data/mockData.js'
+
+const PENDING_APPROVALS = [
+  { id:'pa-001', type:'ARC Request', title:'Solar panel installation — Unit 4B', submittedBy:'James Chen', unit:'4B', date:'2026-04-10', status:'Pending Committee', priority:'Normal' },
+  { id:'pa-002', type:'Vendor Payment', title:'GreenScape April Invoice — $4,200', submittedBy:'Sarah Mitchell', vendor:'GreenScape Austin', date:'2026-04-12', status:'Pending Board', priority:'High' },
+  { id:'pa-003', type:'Maintenance Approval', title:'Dryer vent cleaning — $95', submittedBy:'System', unit:'2A', date:'2026-04-08', status:'Pending Manager', priority:'Normal' },
+]
+
+const COMMUNITY_EVENTS = [
+  { id:'ev-001', title:'Board Meeting — April 2026', date:'2026-04-23', time:'7:00 PM', location:'Clubhouse', type:'Meeting', rsvpCount:28, capacity:80 },
+  { id:'ev-002', title:'Pool Opening Party', date:'2026-05-23', time:'10:00 AM', location:'Community Pool', type:'Social', rsvpCount:45, capacity:80 },
+  { id:'ev-003', title:'Annual HOA Meeting', date:'2026-06-15', time:'6:00 PM', location:'Clubhouse', type:'Meeting', rsvpCount:62, capacity:120 },
+]
 
 const CT = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
@@ -80,10 +92,10 @@ export default function Dashboard() {
       {/* KPI Cards */}
       <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label:'MTD Collections', value:`$${FINANCIAL_SUMMARY.mtdCollected.toLocaleString()}`, sub:`${FINANCIAL_SUMMARY.collectionRate}% rate`, color:'#1A365D', icon:DollarSign, trend:'+2.3% vs last month', up:true },
-          { label:'Operating Balance', value:`$${FINANCIAL_SUMMARY.operatingBalance.toLocaleString()}`, sub:`Book: $${FINANCIAL_SUMMARY.bookBalance.toLocaleString()}`, color:'#0284c7', icon:TrendingUp, trend:'Reconciliation needed', up:null },
-          { label:'Delinquent Units', value:FINANCIAL_SUMMARY.delinquentUnits, sub:`$${FINANCIAL_SUMMARY.totalUnpaid.toLocaleString()} outstanding`, color:'#ef4444', icon:AlertTriangle, trend:'+1 from last month', up:false },
-          { label:'Reserve Fund', value:`$${(FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)}K`, sub:'62% of target funded', color:FINANCIAL_SUMMARY.reserveBalance/COMMUNITY.reserveTarget<0.6?'#d97706':'#1A365D', icon:Shield, trend:'On track for 2034', up:true },
+          { label:'MTD Collections', value:'$' + (FINANCIAL_SUMMARY.mtdCollected.toLocaleString()), sub:(FINANCIAL_SUMMARY.collectionRate) + '% rate', color:'#1A365D', icon:DollarSign, trend:'+2.3% vs last month', up:true },
+          { label:'Operating Balance', value:'$' + (FINANCIAL_SUMMARY.operatingBalance.toLocaleString()), sub:'Book: $' + (FINANCIAL_SUMMARY.bookBalance.toLocaleString()), color:'#0284c7', icon:TrendingUp, trend:'Reconciliation needed', up:null },
+          { label:'Delinquent Units', value:FINANCIAL_SUMMARY.delinquentUnits, sub:'$' + (FINANCIAL_SUMMARY.totalUnpaid.toLocaleString()) + ' outstanding', color:'#ef4444', icon:AlertTriangle, trend:'+1 from last month', up:false },
+          { label:'Reserve Fund', value:'$' + ((FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)) + 'K', sub:'62% of target funded', color:FINANCIAL_SUMMARY.reserveBalance/COMMUNITY.reserveTarget<0.6?'#d97706':'#1A365D', icon:Shield, trend:'On track for 2034', up:true },
         ].map(s=>(
           <div key={s.label} className="stat-card">
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>

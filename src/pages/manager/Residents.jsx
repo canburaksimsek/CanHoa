@@ -7,7 +7,29 @@ import {
   Home, ArrowRight, Plus, Edit, DollarSign, Calendar,
   RefreshCw, Shield, Clock, X
 } from 'lucide-react'
-import { RESIDENTS, COMMUNITY, PAYMENT_HISTORY, JOURNAL_ENTRIES, CHART_OF_ACCOUNTS, FINANCIAL_SUMMARY } from '../../data/mockData.js'
+import { RESIDENTS, COMMUNITY, PAYMENT_HISTORY, FINANCIAL_SUMMARY } from '../../data/mockData.js'
+
+const JOURNAL_ENTRIES = [
+  { id:'je-001', date:'2026-04-01', memo:'Reserve fund monthly contribution', debit:'Reserve Fund', credit:'Operating Checking', amount:1100, createdBy:'Sandra Torres', status:'Posted' },
+  { id:'je-002', date:'2026-03-31', memo:'Q1 insurance premium prepayment', debit:'Prepaid Insurance', credit:'Operating Checking', amount:2400, createdBy:'Sarah Mitchell', status:'Posted' },
+  { id:'je-003', date:'2026-04-10', memo:'Lobby renovation deposit', debit:'Escrow Account', credit:'Reserve Fund', amount:15000, createdBy:'Sandra Torres', status:'Posted' },
+]
+const CHART_OF_ACCOUNTS = [
+  { id:'acc-001', code:'1000', name:'Operating Checking', type:'Asset', balance:43200 },
+  { id:'acc-002', code:'1100', name:'Reserve Fund', type:'Asset', balance:187500 },
+  { id:'acc-003', code:'1200', name:'Accounts Receivable', type:'Asset', balance:4845 },
+  { id:'acc-004', code:'2000', name:'Accounts Payable', type:'Liability', balance:2400 },
+  { id:'acc-005', code:'3000', name:'Fund Balance', type:'Equity', balance:236345 },
+  { id:'acc-006', code:'4000', name:'Assessment Income', type:'Income', balance:198450 },
+  { id:'acc-007', code:'4100', name:'Late Fee Income', type:'Income', balance:3150 },
+  { id:'acc-008', code:'5000', name:'Landscaping', type:'Expense', balance:16800 },
+  { id:'acc-009', code:'5100', name:'Utilities', type:'Expense', balance:12720 },
+  { id:'acc-010', code:'5200', name:'Insurance', type:'Expense', balance:9600 },
+  { id:'acc-011', code:'5300', name:'Maintenance', type:'Expense', balance:7400 },
+  { id:'acc-012', code:'5400', name:'Management Fee', type:'Expense', balance:6000 },
+  { id:'acc-013', code:'5500', name:'Reserve Contribution', type:'Expense', balance:4400 },
+  { id:'acc-014', code:'5600', name:'Professional Fees', type:'Expense', balance:2400 },
+]
 
 // ─────────────────────────────────────────────────────
 // RESIDENTS
@@ -57,10 +79,10 @@ export function Residents() {
       {/* Summary */}
       <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label:'Total Residents', value:residents.length, color:'#2b52a0', sub:`${residents.filter(r=>r.isOwner).length} owners, ${residents.filter(r=>!r.isOwner).length} tenants` },
+          { label:'Total Residents', value:residents.length, color:'#2b52a0', sub:(residents.filter(r=>r.isOwner).length) + ' owners, ' + (residents.filter(r=>!r.isOwner).length) + ' tenants' },
           { label:'Current', value:residents.filter(r=>r.status==='current').length, color:'#2b52a0', sub:'In good standing' },
-          { label:'Delinquent', value:residents.filter(r=>r.status==='delinquent').length, color:'#ef4444', sub:`$${residents.filter(r=>r.status==='delinquent').reduce((s,r)=>s+r.balance,0).toLocaleString()} outstanding` },
-          { label:'On Autopay', value:residents.filter(r=>r.autopay).length, color:'#3b82f6', sub:`${Math.round((residents.filter(r=>r.autopay).length/residents.length)*100)}% enrollment rate` },
+          { label:'Delinquent', value:residents.filter(r=>r.status==='delinquent').length, color:'#ef4444', sub:'$' + (residents.filter(r=>r.status==='delinquent').reduce((s,r)=>s+r.balance,0).toLocaleString()) + ' outstanding' },
+          { label:'On Autopay', value:residents.filter(r=>r.autopay).length, color:'#3b82f6', sub:(Math.round((residents.filter(r=>r.autopay).length/residents.length)*100)) + '% enrollment rate' },
         ].map(s=>(
           <div key={s.label} className="stat-card">
             <div style={{ fontSize:24, fontFamily:'var(--font-display)', fontWeight:900, color:s.color, marginBottom:3 }}>{s.value}</div>
@@ -426,10 +448,10 @@ export function Payments() {
       {/* KPIs */}
       <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label:'MTD Collected', value:`$${FINANCIAL_SUMMARY.mtdCollected.toLocaleString()}`, color:'#2b52a0', sub:`${FINANCIAL_SUMMARY.collectionRate}% rate` },
-          { label:'Outstanding', value:`$${FINANCIAL_SUMMARY.totalUnpaid.toLocaleString()}`, color:'#ef4444', sub:`${FINANCIAL_SUMMARY.delinquentUnits} units delinquent` },
-          { label:'Book Balance', value:`$${FINANCIAL_SUMMARY.bookBalance.toLocaleString()}`, color:'#0284c7', sub:FINANCIAL_SUMMARY.reconciliationDiff>0?`$${FINANCIAL_SUMMARY.reconciliationDiff} diff from bank`:'Reconciled ✓' },
-          { label:'Reserve Fund', value:`$${(FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)}K`, color:'#7c3aed', sub:'62% of target funded' },
+          { label:'MTD Collected', value:'$' + (FINANCIAL_SUMMARY.mtdCollected.toLocaleString()), color:'#2b52a0', sub:(FINANCIAL_SUMMARY.collectionRate) + '% rate' },
+          { label:'Outstanding', value:'$' + (FINANCIAL_SUMMARY.totalUnpaid.toLocaleString()), color:'#ef4444', sub:(FINANCIAL_SUMMARY.delinquentUnits) + ' units delinquent' },
+          { label:'Book Balance', value:'$' + (FINANCIAL_SUMMARY.bookBalance.toLocaleString()), color:'#0284c7', sub:FINANCIAL_SUMMARY.reconciliationDiff>0?`$${FINANCIAL_SUMMARY.reconciliationDiff} diff from bank`:'Reconciled ✓' },
+          { label:'Reserve Fund', value:'$' + ((FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)) + 'K', color:'#7c3aed', sub:'62% of target funded' },
         ].map(s=>(
           <div key={s.label} className="stat-card">
             <div style={{ fontSize:24, fontFamily:'var(--font-display)', fontWeight:900, color:s.color, marginBottom:3 }}>{s.value}</div>

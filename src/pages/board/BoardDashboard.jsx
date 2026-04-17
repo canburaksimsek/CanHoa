@@ -9,9 +9,25 @@ import {
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts'
 import {
   COMMUNITY, FINANCIAL_SUMMARY, MONTHLY_COLLECTIONS, EXPENSE_CATEGORIES,
-  DELINQUENCY_AGING, BOARD_MEMBERS, VOTES, PENDING_APPROVALS,
-  VIOLATIONS, MAINTENANCE_REQUESTS, COMMUNITY_EVENTS
+  DELINQUENCY_AGING, VOTES, VIOLATIONS, MAINTENANCE_REQUESTS
 } from '../../data/mockData.js'
+
+const BOARD_MEMBERS = [
+  { id:'bm-001', name:'Patricia Williams', role:'President', email:'p.williams@oakwoodhoa.com', termStart:'2024-01-01', termEnd:'2027-12-31', phone:'(512) 555-0201', avatar:'PW', committee:'Finance' },
+  { id:'bm-002', name:'Marcus Reynolds', role:'Vice President', email:'m.reynolds@oakwoodhoa.com', termStart:'2024-01-01', termEnd:'2027-12-31', phone:'(512) 555-0202', avatar:'MR', committee:'Maintenance' },
+  { id:'bm-003', name:'Sandra Torres', role:'Treasurer', email:'s.torres@oakwoodhoa.com', termStart:'2023-01-01', termEnd:'2026-12-31', phone:'(512) 555-0203', avatar:'ST', committee:'Finance' },
+  { id:'bm-004', name:'Kevin Park', role:'Secretary', email:'k.park@oakwoodhoa.com', termStart:'2023-01-01', termEnd:'2026-12-31', phone:'(512) 555-0204', avatar:'KP', committee:'Communications' },
+  { id:'bm-005', name:'Rachel Adams', role:'Member at Large', email:'r.adams@oakwoodhoa.com', termStart:'2024-01-01', termEnd:'2027-12-31', phone:'(512) 555-0205', avatar:'RA', committee:'ARC' },
+]
+const PENDING_APPROVALS = [
+  { id:'pa-001', type:'ARC Request', title:'Solar panel installation — Unit 4B', submittedBy:'James Chen', unit:'4B', date:'2026-04-10', status:'Pending Committee', priority:'Normal' },
+  { id:'pa-002', type:'Vendor Payment', title:'GreenScape April Invoice', submittedBy:'Sarah Mitchell', vendor:'GreenScape Austin', date:'2026-04-12', status:'Pending Board', priority:'High' },
+  { id:'pa-003', type:'Maintenance Approval', title:'Dryer vent cleaning', submittedBy:'System', unit:'2A', date:'2026-04-08', status:'Pending Manager', priority:'Normal' },
+]
+const COMMUNITY_EVENTS = [
+  { id:'ev-001', title:'Board Meeting April 2026', date:'2026-04-23', time:'7:00 PM', location:'Clubhouse', type:'Meeting', rsvpCount:28, capacity:80, description:'Monthly board meeting.' },
+  { id:'ev-002', title:'Pool Opening Party', date:'2026-05-23', time:'10:00 AM', location:'Community Pool', type:'Social', rsvpCount:45, capacity:80, description:'Celebrate pool season.' },
+]
 
 const Spinner = () => (
   <span style={{ width:13, height:13, border:'2px solid rgba(255,255,255,0.3)', borderTopColor:'white', borderRadius:'50%', display:'inline-block', animation:'spin 0.8s linear infinite' }} />
@@ -100,10 +116,10 @@ export default function BoardDashboard() {
       {/* KPI Row */}
       <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label:'Operating Fund', value:`$${FINANCIAL_SUMMARY.operatingBalance.toLocaleString()}`, sub:'Book balance', color:'#1A365D', icon:DollarSign },
-          { label:'Reserve Fund', value:`$${(FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)}K`, sub:`62% funded of $${(COMMUNITY.reserveTarget/1000).toFixed(0)}K`, color:'#0284c7', icon:Shield },
-          { label:'Collection Rate', value:`${FINANCIAL_SUMMARY.collectionRate}%`, sub:`${FINANCIAL_SUMMARY.delinquentUnits} units delinquent`, color:FINANCIAL_SUMMARY.collectionRate>=90?'#1A365D':'#d97706', icon:TrendingUp },
-          { label:'Open Violations', value:openViolations, sub:`${VIOLATIONS.filter(v=>v.status==='Hearing Scheduled').length} hearings scheduled`, color:'#ef4444', icon:AlertTriangle },
+          { label:'Operating Fund', value:'$' + (FINANCIAL_SUMMARY.operatingBalance.toLocaleString()), sub:'Book balance', color:'#1A365D', icon:DollarSign },
+          { label:'Reserve Fund', value:'$' + ((FINANCIAL_SUMMARY.reserveBalance/1000).toFixed(0)) + 'K', sub:'62% funded of $' + ((COMMUNITY.reserveTarget/1000).toFixed(0)) + 'K', color:'#0284c7', icon:Shield },
+          { label:'Collection Rate', value:(FINANCIAL_SUMMARY.collectionRate) + '%', sub:(FINANCIAL_SUMMARY.delinquentUnits) + ' units delinquent', color:FINANCIAL_SUMMARY.collectionRate>=90?'#1A365D':'#d97706', icon:TrendingUp },
+          { label:'Open Violations', value:openViolations, sub:(VIOLATIONS.filter(v=>v.status==='Hearing Scheduled').length) + ' hearings scheduled', color:'#ef4444', icon:AlertTriangle },
         ].map(s => (
           <div key={s.label} className="stat-card">
             <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>

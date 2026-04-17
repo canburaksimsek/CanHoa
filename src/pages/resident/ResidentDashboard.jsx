@@ -76,7 +76,7 @@ export function ResidentDashboard() {
       {/* Quick stats */}
       <div className="grid-4" style={{ marginBottom:28 }}>
         {[
-          { label:'Monthly Dues', value:`$${COMMUNITY.monthlyDues}`, sub:'Per month', icon:DollarSign, color:'#2b52a0' },
+          { label:'Monthly Dues', value:'$' + COMMUNITY.monthlyDues + '', sub:'Per month', icon:DollarSign, color:'#2b52a0' },
           { label:'Open Requests', value:myRequests.filter(r=>r.status!=='Resolved').length, sub:'Maintenance tickets', icon:Wrench, color:'#f59e0b' },
           { label:'Active Votes', value:activeVotes.length, sub:'Awaiting your vote', icon:Vote, color:'#8b5cf6' },
           { label:'My Violations', value:myViolations.filter(v=>v.status==='Open').length, sub:myViolations.length===0?'None — great!':'Open cases', icon:AlertTriangle, color:myViolations.length>0?'#ef4444':'#2b52a0' },
@@ -315,9 +315,9 @@ export function ResidentPayments() {
       {/* Account Summary */}
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:16, marginBottom:24 }}>
         {[
-          { label:'Current Balance', value:`$${(user?.balance||285).toFixed(2)}`, sub:'Due May 1, 2026', color:'var(--danger)' },
-          { label:'Total Paid YTD', value:`$${PAYMENT_HISTORY.filter(p=>p.status==='Completed').reduce((s,p)=>s+p.amount,0).toFixed(2)}`, sub:`${PAYMENT_HISTORY.filter(p=>p.status==='Completed').length} transactions`, color:'var(--success)' },
-          { label:'Monthly Dues', value:`$${COMMUNITY.monthlyDues}/mo`, sub:'Annual: $'+COMMUNITY.monthlyDues*12, color:'var(--text-primary)' },
+          { label:'Current Balance', value:'$' + (user?.balance||285).toFixed(2), sub:'Due May 1, 2026', color:'var(--danger)' },
+          { label:'Total Paid YTD', value:'$' + PAYMENT_HISTORY.filter(p=>p.status==="Completed").reduce((s,p)=>s+p.amount,0).toFixed(2), sub:PAYMENT_HISTORY.filter(p=>p.status==="Completed").length + ' transactions', color:'var(--success)' },
+          { label:'Monthly Dues', value:'$' + COMMUNITY.monthlyDues + '/mo', sub:'Annual: $'+COMMUNITY.monthlyDues*12, color:'var(--text-primary)' },
         ].map(s=>(
           <div key={s.label} className="stat-card">
             <div style={{ fontSize:22, fontFamily:'var(--font-display)', fontWeight:900, color:s.color, marginBottom:3 }}>{s.value}</div>

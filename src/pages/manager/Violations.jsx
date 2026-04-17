@@ -88,7 +88,7 @@ export function Violations() {
           { label:'Open', value:violations.filter(v=>v.status==='Open').length, color:'#ef4444' },
           { label:'Hearing Scheduled', value:violations.filter(v=>v.status==='Hearing Scheduled').length, color:'#f59e0b' },
           { label:'Resolved (30d)', value:violations.filter(v=>v.status==='Resolved').length, color:'#2b52a0' },
-          { label:'Fines Assessed', value:`$${violations.reduce((s,v)=>s+v.fine,0)}`, color:'#3b82f6' },
+          { label:'Fines Assessed', value:'$' + (violations.reduce((s,v)=>s+v.fine,0)), color:'#3b82f6' },
         ].map(s=>(
           <div key={s.label} className="card" style={{ padding:'16px 20px' }}>
             <div style={{ fontSize:26, fontFamily:'var(--font-display)', fontWeight:900, color:s.color }}>{s.value}</div>
