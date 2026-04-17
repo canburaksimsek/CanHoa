@@ -162,8 +162,6 @@ export function SidebarProvider({ children }) {
 export const useSidebar = () => useContext(SidebarContext)
 
 // ── COOKIE CONSENT ────────────────────────────────────
-import { useEffect } from 'react'
-
 export function CookieConsent() {
   const [visible, setVisible] = React.useState(false)
   const [analyticsConsent, setAnalyticsConsent] = React.useState(true)
