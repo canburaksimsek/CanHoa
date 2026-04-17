@@ -23,115 +23,304 @@ import {
 export function Violations() {
   const { addToast } = useToast()
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [typeFilter, setTypeFilter] = useState('All')
   const [showModal, setShowModal] = useState(false)
-  const [form, setForm] = useState({ unit: '', resident: '', type: 'Parking', description: '', fine: '' })
+  const [showEscalateModal, setShowEscalateModal] = useState(null)
+  const [showHearingModal, setShowHearingModal] = useState(null)
+  const [violations, setViolations] = useState(VIOLATIONS)
+  const [form, setForm] = useState({ unit:'', resident:'', type:'Parking', description:'', fine:75, sendUSPS:false, sendEmail:true, sendSMS:false })
 
-  const filtered = VIOLATIONS.filter(v =>
-    v.unit.toLowerCase().includes(search.toLowerCase()) ||
-    v.type.toLowerCase().includes(search.toLowerCase()) ||
-    v.resident.toLowerCase().includes(search.toLowerCase())
-  )
+  const ESCALATION_STEPS = [
+    { level:1, label:'1st Notice', action:'Email + Portal notification', days:14 },
+    { level:2, label:'2nd Certified Notice', action:'USPS Certified Mail + Email', days:14 },
+    { level:3, label:'Board Hearing', action:'10-day hearing notice required (TX § 209.007)', days:10 },
+    { level:4, label:'Fine Applied', action:'Fine charged to account, appears on statement', days:0 },
+    { level:5, label:'Lien Filed', action:'Attorney referral + lien on property (90+ days)', days:0 },
+  ]
 
-  const STATUS_COLORS = { Open: '#ef4444', 'Hearing Scheduled': '#f59e0b', Resolved: '#22c55e', Appealed: '#8b5cf6' }
+  const filtered = violations.filter(v => {
+    const matchSearch = v.unit.toLowerCase().includes(search.toLowerCase()) || v.type.toLowerCase().includes(search.toLowerCase()) || v.resident.toLowerCase().includes(search.toLowerCase())
+    const matchStatus = statusFilter === 'All' || v.status === statusFilter
+    const matchType = typeFilter === 'All' || v.type === typeFilter
+    return matchSearch && matchStatus && matchType
+  })
+
+  const STATUS_COLORS = { Open:'#ef4444', 'Hearing Scheduled':'#f59e0b', Resolved:'#2b52a0', Appealed:'#8b5cf6' }
+  const types = ['All', 'Parking', 'Noise', 'Landscaping', 'Modification', 'Pet', 'Trash', 'Other']
+  const statuses = ['All', 'Open', 'Hearing Scheduled', 'Resolved', 'Appealed']
+
+  const resolveViolation = (id) => {
+    setViolations(vs => vs.map(v => v.id===id ? {...v, status:'Resolved', resolvedDate: new Date().toISOString().slice(0,10)} : v))
+    addToast('Violation resolved and homeowner notified', 'success')
+  }
+
+  const escalate = (viol) => {
+    const nextLevel = (viol.escalationLevel || 1) + 1
+    const nextStep = ESCALATION_STEPS[nextLevel - 1]
+    setViolations(vs => vs.map(v => v.id===viol.id ? {...v, escalationLevel:nextLevel, noticesSent:(v.noticesSent||0)+1, status:nextLevel>=3?'Hearing Scheduled':'Open'} : v))
+    setShowEscalateModal(null)
+    addToast(`Escalated to Level ${nextLevel}: ${nextStep?.label} — ${viol.resident} notified`, 'success')
+  }
+
+  const getDaysRemaining = (dueDate) => {
+    if (!dueDate) return null
+    const days = Math.ceil((new Date(dueDate) - new Date()) / 86400000)
+    return days
+  }
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:28, flexWrap:'wrap', gap:16 }}>
         <div>
-          <h2 style={{ marginBottom: 4 }}>Violation Management</h2>
-          <p>CC&R enforcement with due process compliance</p>
+          <h2 style={{ marginBottom:4 }}>Violation Management</h2>
+          <p>CC&R enforcement with due process compliance — Fair Housing Act monitored</p>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button className="btn btn-secondary btn-sm" onClick={() => addToast('Compliance report exported', 'success')}><Download size={14} /> Export Report</button>
-          <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}><Plus size={14} /> New Violation</button>
+        <div style={{ display:'flex', gap:10 }}>
+          <button className="btn btn-secondary btn-sm" onClick={()=>addToast('Violations report exporting...','info')}><Download size={14}/> Export PDF</button>
+          <button className="btn btn-primary btn-sm" onClick={()=>setShowModal(true)}><Plus size={14}/> New Violation</button>
         </div>
       </div>
 
-      <div className="grid-4" style={{ marginBottom: 24 }}>
+      {/* KPIs */}
+      <div className="grid-4" style={{ marginBottom:24 }}>
         {[
-          { label: 'Open', value: VIOLATIONS.filter(v => v.status === 'Open').length, color: '#ef4444' },
-          { label: 'Hearing Scheduled', value: VIOLATIONS.filter(v => v.status === 'Hearing Scheduled').length, color: '#f59e0b' },
-          { label: 'Resolved (30d)', value: VIOLATIONS.filter(v => v.status === 'Resolved').length, color: '#22c55e' },
-          { label: 'Fines Assessed', value: `$${VIOLATIONS.reduce((s, v) => s + v.fine, 0)}`, color: '#3b82f6' },
-        ].map(s => (
-          <div key={s.label} className="card" style={{ padding: '16px 20px' }}>
-            <div style={{ fontSize: 26, fontFamily: 'var(--font-display)', fontWeight: 900, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}>{s.label}</div>
+          { label:'Open', value:violations.filter(v=>v.status==='Open').length, color:'#ef4444' },
+          { label:'Hearing Scheduled', value:violations.filter(v=>v.status==='Hearing Scheduled').length, color:'#f59e0b' },
+          { label:'Resolved (30d)', value:violations.filter(v=>v.status==='Resolved').length, color:'#2b52a0' },
+          { label:'Fines Assessed', value:`$${violations.reduce((s,v)=>s+v.fine,0)}`, color:'#3b82f6' },
+        ].map(s=>(
+          <div key={s.label} className="card" style={{ padding:'16px 20px' }}>
+            <div style={{ fontSize:26, fontFamily:'var(--font-display)', fontWeight:900, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:13, color:'var(--text-muted)', fontWeight:500 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <div className="search-box">
-          <Search size={16} className="search-icon" />
-          <input className="form-input" placeholder="Search violations..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: 40 }} />
+      {/* Escalation Pipeline Visual */}
+      <div className="card" style={{ marginBottom:20, padding:20 }}>
+        <div className="card-title" style={{ marginBottom:14 }}>Escalation Pipeline — Texas Property Code § 209.006/209.007</div>
+        <div style={{ display:'flex', alignItems:'center', gap:0, overflowX:'auto' }}>
+          {ESCALATION_STEPS.map((step, i) => (
+            <React.Fragment key={step.level}>
+              <div style={{ minWidth:140, padding:'12px 14px', background:i===0?'var(--accent-subtle)':i>=3?'#fef2f2':'var(--bg-secondary)', border:`1px solid ${i===0?'var(--accent-primary)':i>=3?'#fecaca':'var(--border-color)'}`, borderRadius:10, textAlign:'center' }}>
+                <div style={{ fontSize:10, fontWeight:700, textTransform:'uppercase', color:i>=3?'var(--danger)':'var(--accent-primary)', marginBottom:4 }}>Level {step.level}</div>
+                <div style={{ fontWeight:700, fontSize:12, marginBottom:4, color:'var(--text-primary)' }}>{step.label}</div>
+                <div style={{ fontSize:10, color:'var(--text-muted)', lineHeight:1.4 }}>{step.action}</div>
+                {step.days>0 && <div style={{ fontSize:10, fontWeight:700, color:'var(--accent-primary)', marginTop:4 }}>{step.days}-day window</div>}
+              </div>
+              {i<ESCALATION_STEPS.length-1 && <div style={{ width:20, height:2, background:'var(--border-strong)', flexShrink:0 }}><span style={{ display:'block', textAlign:'center', marginTop:-8, fontSize:14 }}>→</span></div>}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
+      {/* Filters */}
+      <div style={{ display:'flex', gap:12, marginBottom:16, flexWrap:'wrap' }}>
+        <div className="search-box" style={{ flex:1, minWidth:200 }}>
+          <Search size={16} className="search-icon"/>
+          <input className="form-input" placeholder="Search violations..." value={search} onChange={e=>setSearch(e.target.value)} style={{ paddingLeft:40 }}/>
+        </div>
+        <select className="form-select" style={{ width:140 }} value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+          {statuses.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <select className="form-select" style={{ width:130 }} value={typeFilter} onChange={e=>setTypeFilter(e.target.value)}>
+          {types.map(t=><option key={t}>{t}</option>)}
+        </select>
+      </div>
+
+      {/* Table */}
       <div className="table-wrapper">
         <table>
-          <thead>
-            <tr><th>Unit</th><th>Resident</th><th>Type</th><th>Description</th><th>Status</th><th>Fine</th><th>Notices</th><th>Actions</th></tr>
-          </thead>
+          <thead><tr><th>Unit</th><th>Resident</th><th>Type</th><th>Status</th><th>Escalation Level</th><th>Fine</th><th>Cure Deadline</th><th>Actions</th></tr></thead>
           <tbody>
-            {filtered.map(v => (
-              <tr key={v.id}>
-                <td><strong style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-display)' }}>{v.unit}</strong></td>
-                <td style={{ fontWeight: 600, fontSize: 14 }}>{v.resident}</td>
-                <td><span className="badge badge-yellow">{v.type}</span></td>
-                <td style={{ maxWidth: 220, fontSize: 13 }}><div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.description}</div></td>
-                <td><span className="badge" style={{ background: (STATUS_COLORS[v.status] || '#6b7280') + '20', color: STATUS_COLORS[v.status] || '#6b7280' }}>{v.status}</span></td>
-                <td style={{ fontWeight: 700, fontFamily: 'var(--font-display)', color: v.fine > 0 ? 'var(--danger)' : 'var(--text-muted)' }}>${v.fine}</td>
-                <td style={{ fontSize: 13, color: 'var(--text-muted)' }}>{v.noticesSent} sent</td>
-                <td>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <button className="btn btn-secondary btn-sm" onClick={() => addToast('Notice sent via email + USPS mail!', 'success')}>Send Notice</button>
-                    {v.status === 'Open' && <button className="btn btn-ghost btn-sm" onClick={() => addToast('Violation resolved!', 'success')}>Resolve</button>}
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {filtered.map(v=>{
+              const daysLeft = getDaysRemaining(v.dueDate)
+              return (
+                <tr key={v.id}>
+                  <td><strong style={{ color:'var(--accent-primary)', fontFamily:'var(--font-display)' }}>{v.unit}</strong></td>
+                  <td style={{ fontWeight:600, fontSize:14 }}>{v.resident}</td>
+                  <td><span className="badge badge-yellow">{v.type}</span></td>
+                  <td><span className="badge" style={{ background:(STATUS_COLORS[v.status]||'#6b7280')+'20', color:STATUS_COLORS[v.status]||'#6b7280' }}>{v.status}</span></td>
+                  <td>
+                    <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                      <span style={{ fontSize:12, fontWeight:700, color:'var(--text-muted)' }}>Level {v.escalationLevel||1}</span>
+                      <span style={{ fontSize:11, color:'var(--accent-primary)' }}>— {ESCALATION_STEPS[(v.escalationLevel||1)-1]?.label}</span>
+                    </div>
+                    <div style={{ fontSize:10, color:'var(--text-muted)', marginTop:2 }}>Notices sent: {v.noticesSent}</div>
+                  </td>
+                  <td style={{ fontWeight:700, fontFamily:'var(--font-display)', color:v.fine>0?'var(--danger)':'var(--text-muted)' }}>${v.fine}</td>
+                  <td>
+                    {v.status!=='Resolved' && daysLeft!==null && (
+                      <div style={{ display:'flex', flex:'column', gap:2 }}>
+                        <span style={{ fontSize:12, fontWeight:700, color:daysLeft<=3?'var(--danger)':daysLeft<=7?'var(--warning)':'var(--text-muted)' }}>
+                          {daysLeft>0?`${daysLeft} days left`:'OVERDUE'}
+                        </span>
+                        <div style={{ fontSize:11, color:'var(--text-muted)' }}>{v.dueDate}</div>
+                      </div>
+                    )}
+                    {v.status==='Resolved' && <span className="badge badge-green">Resolved {v.resolvedDate||''}</span>}
+                  </td>
+                  <td>
+                    <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
+                      {v.status!=='Resolved' && (
+                        <>
+                          <button className="btn btn-secondary btn-sm" onClick={()=>setShowEscalateModal(v)}>Escalate</button>
+                          {v.status==='Hearing Scheduled' && <button className="btn btn-primary btn-sm" onClick={()=>setShowHearingModal(v)}>Record Outcome</button>}
+                          <button className="btn btn-ghost btn-sm" style={{ color:'var(--success)' }} onClick={()=>resolveViolation(v.id)}>Resolve</button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
 
       {/* Fair Housing Notice */}
-      <div style={{ marginTop: 20, padding: '14px 20px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderLeft: '4px solid var(--accent-primary)', borderRadius: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-          <Shield size={18} color="var(--accent-primary)" style={{ flexShrink: 0, marginTop: 1 }} />
+      <div style={{ marginTop:20, padding:'14px 20px', background:'var(--bg-secondary)', border:'1px solid var(--border-color)', borderLeft:'4px solid var(--accent-primary)', borderRadius:10 }}>
+        <div style={{ display:'flex', alignItems:'flex-start', gap:10 }}>
+          <Shield size={18} color="var(--accent-primary)" style={{ flexShrink:0, marginTop:2 }}/>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Fair Housing Act Compliance</div>
-            <p style={{ fontSize: 13, margin: 0 }}>CanHoa automatically monitors enforcement patterns. If the same unit receives 3+ violations without resolution, you will receive an alert to review for potential fair housing concerns. All violation actions are logged with timestamps for legal compliance.</p>
+            <div style={{ fontWeight:700, fontSize:14, marginBottom:4 }}>Fair Housing Act Compliance (42 U.S.C. § 3604)</div>
+            <p style={{ fontSize:13, margin:0 }}>CanHoa automatically monitors violation patterns across protected classes. All enforcement actions are applied consistently. Texas Property Code § 209.006 requires written notice before hearings. § 209.007 requires board hearings within a reasonable time at resident request. Retain all violation records for 7 years.</p>
           </div>
         </div>
       </div>
 
+      {/* New Violation Modal */}
       {showModal && (
-        <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header"><h3>New Violation</h3><button className="btn btn-ghost btn-icon" onClick={() => setShowModal(false)}>✕</button></div>
+        <div className="modal-backdrop" onClick={()=>setShowModal(false)}>
+          <div className="modal modal-lg" onClick={e=>e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Record New Violation</h3>
+              <button className="btn btn-ghost btn-icon" onClick={()=>setShowModal(false)}>✕</button>
+            </div>
             <div className="modal-body">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div className="form-group"><label className="form-label">Unit *</label><input className="form-input" placeholder="e.g. 4B" value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} /></div>
-                <div className="form-group"><label className="form-label">Resident Name</label><input className="form-input" placeholder="Full name" value={form.resident} onChange={e => setForm(f => ({ ...f, resident: e.target.value }))} /></div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+                <div className="form-group"><label className="form-label">Unit *</label><input className="form-input" placeholder="e.g. 4B" value={form.unit} onChange={e=>setForm(f=>({...f,unit:e.target.value}))}/></div>
+                <div className="form-group"><label className="form-label">Resident Name</label><input className="form-input" placeholder="Auto-filled from unit" value={form.resident} onChange={e=>setForm(f=>({...f,resident:e.target.value}))}/></div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
                 <div className="form-group">
                   <label className="form-label">Violation Type *</label>
-                  <select className="form-select" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}>
-                    {['Parking', 'Noise', 'Landscaping', 'Modification', 'Pets', 'Trash', 'Rental', 'Safety', 'Other'].map(t => <option key={t}>{t}</option>)}
+                  <select className="form-select" value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}>
+                    {['Parking','Noise','Landscaping','Modification','Pet','Trash','Commercial Activity','Short-Term Rental','Other'].map(t=><option key={t}>{t}</option>)}
                   </select>
                 </div>
-                <div className="form-group"><label className="form-label">Fine Amount ($)</label><input className="form-input" type="number" placeholder="0" value={form.fine} onChange={e => setForm(f => ({ ...f, fine: e.target.value }))} /></div>
+                <div className="form-group"><label className="form-label">Fine Amount ($)</label><input type="number" className="form-input" value={form.fine} onChange={e=>setForm(f=>({...f,fine:+e.target.value}))}/></div>
               </div>
-              <div className="form-group"><label className="form-label">Description *</label><textarea className="form-textarea" placeholder="Detailed description of the violation..." value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
-              <div style={{ padding: '12px 16px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, fontSize: 13 }}>
-                ⚠️ Violation notice will be sent via email. You can also mail a certified USPS notice from the Mailroom.
+              <div className="form-group">
+                <label className="form-label">Description (CC&R Reference) *</label>
+                <textarea className="form-textarea" placeholder="Describe the violation and reference the specific CC&R section. Example: 'Vehicle parked in fire lane for 24+ hours in violation of CC&Rs Section 7.2.1'" value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Photo Evidence (optional)</label>
+                <div style={{ padding:'16px', border:'2px dashed var(--border-color)', borderRadius:10, textAlign:'center', background:'var(--bg-secondary)', cursor:'pointer' }}
+                  onClick={()=>addToast('Photo upload: attach up to 5 photos as evidence','info')}>
+                  <div style={{ fontSize:24, marginBottom:6 }}>📷</div>
+                  <div style={{ fontSize:13, color:'var(--text-muted)' }}>Click to attach photos (JPG, PNG · max 5MB each)</div>
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Notification Channels</label>
+                <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
+                  {[['sendEmail','Email (free)'],['sendSMS','SMS ($0.02/msg)'],['sendUSPS','USPS Certified Mail ($7.50)']].map(([key,label])=>(
+                    <label key={key} style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer', fontSize:13 }}>
+                      <input type="checkbox" checked={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.checked}))} style={{ accentColor:'var(--accent-primary)' }}/>{label}
+                    </label>
+                  ))}
+                </div>
+                {form.sendUSPS && <div style={{ fontSize:12, color:'var(--warning)', marginTop:6, fontWeight:600 }}>⚠️ USPS Certified Mail satisfies Texas § 209.006 formal notice requirement for hearings</div>}
+              </div>
+              <div style={{ padding:'10px 14px', background:'#fef2f2', border:'1px solid #fecaca', borderRadius:8, fontSize:13 }}>
+                <strong>Due Process Reminder:</strong> Resident has the right to request a board hearing within the cure period per Texas Property Code § 209.007. The board must schedule the hearing within 30 days of request.
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={() => { addToast('Violation created and notice sent!', 'success'); setShowModal(false) }}>Create & Send Notice</button>
+              <button className="btn btn-secondary" onClick={()=>setShowModal(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={()=>{
+                const newViolation = { id:'vio-'+Date.now(), unit:form.unit||'N/A', resident:form.resident||'Unknown', type:form.type, description:form.description, status:'Open', fine:form.fine, created:new Date().toISOString().slice(0,10), dueDate:new Date(Date.now()+14*86400000).toISOString().slice(0,10), noticesSent:1, escalationLevel:1, photos:0, hearingRequested:false }
+                setViolations(vs=>[newViolation,...vs])
+                setShowModal(false)
+                addToast(`Violation recorded for Unit ${form.unit}. 1st notice sent via ${[form.sendEmail&&'email',form.sendSMS&&'SMS',form.sendUSPS&&'USPS'].filter(Boolean).join(', ')||'portal'}.`,'success')
+                setForm({ unit:'',resident:'',type:'Parking',description:'',fine:75,sendUSPS:false,sendEmail:true,sendSMS:false })
+              }}>
+                <Plus size={15}/> Record Violation & Send Notice
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Escalate Modal */}
+      {showEscalateModal && (
+        <div className="modal-backdrop" onClick={()=>setShowEscalateModal(null)}>
+          <div className="modal" onClick={e=>e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Escalate Violation</h3>
+              <button className="btn btn-ghost btn-icon" onClick={()=>setShowEscalateModal(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ marginBottom:16 }}>Current level: <strong>Level {showEscalateModal.escalationLevel||1} — {ESCALATION_STEPS[(showEscalateModal.escalationLevel||1)-1]?.label}</strong></p>
+              <p style={{ marginBottom:16, fontSize:14 }}>Unit <strong>{showEscalateModal.unit}</strong> — {showEscalateModal.resident}</p>
+              {(showEscalateModal.escalationLevel||1) < ESCALATION_STEPS.length ? (
+                <>
+                  <div style={{ padding:'14px 18px', background:'#fffbeb', border:'1px solid #fde68a', borderRadius:10, marginBottom:16 }}>
+                    <strong>Next Step — Level {(showEscalateModal.escalationLevel||1)+1}:</strong> {ESCALATION_STEPS[(showEscalateModal.escalationLevel||1)]?.label}
+                    <div style={{ fontSize:13, color:'var(--text-muted)', marginTop:4 }}>{ESCALATION_STEPS[(showEscalateModal.escalationLevel||1)]?.action}</div>
+                  </div>
+                  {(showEscalateModal.escalationLevel||1) >= 2 && (
+                    <div style={{ padding:'12px 16px', background:'#fef2f2', border:'1px solid #fecaca', borderRadius:10, marginBottom:16, fontSize:13 }}>
+                      <strong>Legal Notice:</strong> Texas Property Code § 209.007 requires providing at least 10 days notice before a board hearing. Ensure USPS certified mail is sent.
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{ padding:'14px 18px', background:'#fef2f2', borderRadius:10, marginBottom:16 }}>
+                  Maximum escalation reached. Consider attorney referral for lien filing.
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={()=>setShowEscalateModal(null)}>Cancel</button>
+              <button className="btn btn-primary" onClick={()=>escalate(showEscalateModal)} disabled={(showEscalateModal.escalationLevel||1)>=ESCALATION_STEPS.length}>
+                Escalate to Level {(showEscalateModal.escalationLevel||1)+1}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hearing Outcome Modal */}
+      {showHearingModal && (
+        <div className="modal-backdrop" onClick={()=>setShowHearingModal(null)}>
+          <div className="modal" onClick={e=>e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Record Hearing Outcome</h3>
+              <button className="btn btn-ghost btn-icon" onClick={()=>setShowHearingModal(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ marginBottom:16 }}>Unit {showHearingModal.unit} — {showHearingModal.resident} · {showHearingModal.type} violation</p>
+              <div className="form-group"><label className="form-label">Hearing Date</label><input type="date" className="form-input" defaultValue={showHearingModal.hearingDate}/></div>
+              <div className="form-group"><label className="form-label">Board Members Present</label><input className="form-input" placeholder="e.g. Patricia Williams, Sandra Torres, Kevin Park"/></div>
+              <div className="form-group"><label className="form-label">Outcome</label>
+                <select className="form-select">
+                  <option>Fine upheld — violation confirmed</option>
+                  <option>Fine reduced — partial violation</option>
+                  <option>Fine waived — violation dismissed</option>
+                  <option>Continued — more evidence needed</option>
+                </select>
+              </div>
+              <div className="form-group"><label className="form-label">Board Decision Notes</label><textarea className="form-textarea" placeholder="Record the board's written decision. Texas § 209.007 requires written decision within 10 business days."/></div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={()=>setShowHearingModal(null)}>Cancel</button>
+              <button className="btn btn-primary" onClick={()=>{ resolveViolation(showHearingModal.id); setShowHearingModal(null); addToast('Hearing outcome recorded. Written decision will be mailed to resident within 10 business days.','success') }}>
+                Record Outcome & Close Case
+              </button>
             </div>
           </div>
         </div>
@@ -154,7 +343,7 @@ export function Documents() {
     d.name.toLowerCase().includes(search.toLowerCase())
   )
 
-  const getTypeColor = t => ({ PDF: '#ef4444', Excel: '#22c55e', Word: '#3b82f6' }[t] || '#6b7280')
+  const getTypeColor = t => ({ PDF: '#ef4444', Excel: '#2b52a0', Word: '#3b82f6' }[t] || '#6b7280')
 
   return (
     <div>
@@ -287,7 +476,7 @@ export function Announcements() {
       <div className="grid-4" style={{ marginBottom: 24 }}>
         {[
           { label: 'Email', icon: Mail, count: '118 residents', color: '#3b82f6', rate: '78% open rate' },
-          { label: 'SMS', icon: MessageSquare, count: '94 opted in', color: '#22c55e', rate: 'Unlimited included' },
+          { label: 'SMS', icon: MessageSquare, count: '94 opted in', color: '#2b52a0', rate: 'Unlimited included' },
           { label: 'Phone Call', icon: Phone, count: 'Emergency use', color: '#f59e0b', rate: 'Twilio powered' },
           { label: 'USPS Mail', icon: FileText, count: 'Via Lob.com', color: '#8b5cf6', rate: '$1.05/piece' },
         ].map(ch => (
@@ -459,7 +648,7 @@ export function Voting() {
                     {quorumMet ? '✓ Quorum Met' : `Need ${vote.quorum}% quorum`}
                   </div>
                 </div>
-                <div style={{ textAlign: 'center', padding: '16px', background: '#dcfce7', borderRadius: 12 }}>
+                <div style={{ textAlign: 'center', padding: '16px', background: '#dfe8fa', borderRadius: 12 }}>
                   <div style={{ fontSize: 28, fontFamily: 'var(--font-display)', fontWeight: 900, color: 'var(--success)' }}>{vote.yesVotes}</div>
                   <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Yes / For</div>
                   {total > 0 && <div style={{ fontSize: 11, color: 'var(--success)', fontWeight: 600, marginTop: 4 }}>{yesPct}%</div>}
@@ -761,7 +950,7 @@ export function Settings() {
             <label className="form-label">Auto-logout after (minutes)</label>
             <input type="number" className="form-input" style={{ maxWidth:160 }} value={settings.sessionTimeout} onChange={e => update('sessionTimeout', e.target.value)} min="5" max="120" />
           </div>
-          <div style={{ padding:'14px 18px', background:'#f0fdf4', border:'1px solid #bbf7d0', borderRadius:10, marginBottom:20 }}>
+          <div style={{ padding:'14px 18px', background:'#f0f5ff', border:'1px solid #c5d4f2', borderRadius:10, marginBottom:20 }}>
             <div style={{ fontWeight:700, fontSize:14, marginBottom:8 }}>Security Status</div>
             {['256-bit AES encryption at rest','TLS 1.3 in transit','AWS multi-zone backup every 4 hours','PCI DSS Level 1 via Stripe','Cloudflare DDoS protection'].map(item => (
               <div key={item} style={{ display:'flex', alignItems:'center', gap:8, fontSize:13, marginBottom:5 }}>
