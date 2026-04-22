@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CanHOA — HOA Management Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Professional Navy/Slate palette — no green */
+  --ink:        #0F172A;
+  --ink2:       #1E293B;
+  --ink3:       #334155;
+  --slate:      #475569;
+  --slate2:     #64748B;
+  --muted:      #94A3B8;
+  --border:     #E2E8F0;
+  --border2:    #CBD5E1;
+  --bg:         #F8FAFC;
+  --bg2:        #F1F5F9;
+  --white:      #FFFFFF;
+  /* Accent — deep indigo/violet */
+  --accent:     #4F46E5;
+  --accent2:    #4338CA;
+  --accent-bg:  rgba(79,70,229,0.08);
+  --accent-border: rgba(79,70,229,0.25);
+  /* Status */
+  --blue:       #2563EB;  --blue-bg:rgba(37,99,235,0.08);
+  --amber:      #D97706;  --amber-bg:rgba(217,119,6,0.08);
+  --red:        #DC2626;  --red-bg:rgba(220,38,38,0.08);
+  --emerald:    #059669;  --emerald-bg:rgba(5,150,105,0.08);
+  /* Type */
+  --sans:'Sora',system-ui,sans-serif;
+  --serif:'Lora',Georgia,serif;
+  /* Layout */
+  --sb:220px; --top:56px;
+  --r:8px; --r2:12px; --r3:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow2:0 4px 16px rgba(0,0,0,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;font-size:14px}
+
+/* ─── SCREENS ─── */
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex}
+
+/* ══ LOGIN ══════════════════════════════════════════ */
+#s-login{
+  background:var(--ink);
+  align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.login-noise{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle at 20% 50%,rgba(79,70,229,.15) 0%,transparent 50%),
+    radial-gradient(circle at 80% 20%,rgba(79,70,229,.10) 0%,transparent 40%);
+}
+.login-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.login-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:36px;width:440px;max-width:95vw;
+  position:relative;backdrop-filter:blur(16px);
+  animation:slideUp .4s ease both;
+}
+.l-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px}
+.l-logo-mark{
+  width:36px;height:36px;background:var(--accent);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:14px;color:#fff;letter-spacing:-.5px;
+}
+.l-logo-name{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.5px}
+.l-headline{font-family:var(--serif);font-size:24px;color:#fff;text-align:center;margin-bottom:4px}
+.l-sub{font-size:13px;color:rgba(255,255,255,.45);text-align:center;margin-bottom:24px}
+.demo-picks{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.demo-pick{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--r2);padding:11px 14px;cursor:pointer;
+  transition:all .15s;
+}
+.demo-pick:hover{background:rgba(79,70,229,.15);border-color:rgba(79,70,229,.4)}
+.demo-pick.sel{background:rgba(79,70,229,.18);border-color:rgba(79,70,229,.5)}
+.dp-icon{font-size:20px;width:28px;text-align:center}
+.dp-info{flex:1}
+.dp-name{font-size:13px;font-weight:600;color:#fff}
+.dp-email{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px}
+.dp-chip{font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px}
+.chip-indigo{background:rgba(79,70,229,.2);color:#A5B4FC;border:1px solid rgba(79,70,229,.3)}
+.chip-amber{background:rgba(217,119,6,.2);color:#FCD34D;border:1px solid rgba(217,119,6,.3)}
+.chip-blue{background:rgba(37,99,235,.2);color:#93C5FD;border:1px solid rgba(37,99,235,.3)}
+.l-or{text-align:center;color:rgba(255,255,255,.25);font-size:11px;margin:14px 0;position:relative}
+.l-or::before,.l-or::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:rgba(255,255,255,.1)}
+.l-or::before{left:0}.l-or::after{right:0}
+.lf{margin-bottom:12px}
+.lf label{display:block;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:5px;font-weight:500}
+.lf input{
+  width:100%;padding:10px 13px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r);color:#fff;font-size:13px;
+  font-family:var(--sans);outline:none;transition:border-color .2s;
+}
+.lf input:focus{border-color:var(--accent)}
+.lf input::placeholder{color:rgba(255,255,255,.2)}
+.l-btn{
+  width:100%;padding:12px;background:var(--accent);color:#fff;
+  border:none;border-radius:var(--r);font-size:14px;font-weight:600;
+  font-family:var(--sans);cursor:pointer;transition:all .15s;margin-top:4px;
+  letter-spacing:-.2px;
+}
+.l-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.l-err{color:#F87171;font-size:12px;text-align:center;margin-top:8px;display:none}
+
+/* ══ APP SHELL ══════════════════════════════════════ */
+#s-app{flex-direction:row}
+
+/* SIDEBAR */
+.sb{
+  width:var(--sb);min-height:100vh;
+  background:var(--ink);
+  display:flex;flex-direction:column;flex-shrink:0;
+  position:fixed;top:0;left:0;bottom:0;
+  overflow-y:auto;z-index:50;
+  transition:transform .25s ease;
+}
+.sb-logo{
+  display:flex;align-items:center;gap:9px;
+  padding:16px 16px 0;cursor:pointer;flex-shrink:0;
+}
+.sb-logo-mark{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+.sb-logo-name{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.4px}
+.sb-user{
+  margin:12px 10px;padding:10px 12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r2);
+  display:flex;align-items:center;gap:9px;flex-shrink:0;
+}
+.sb-ava{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(79,70,229,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#A5B4FC;flex-shrink:0;
+  border:1px solid rgba(79,70,229,.4);
+}
+.sb-uname{font-size:12px;font-weight:600;color:#fff;line-height:1.3}
+.sb-urole{font-size:10px;color:rgba(255,255,255,.35)}
+.sb-section{
+  padding:14px 16px 4px;
+  font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.2);
+  flex-shrink:0;
+}
+.ni{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;margin:1px 6px;border-radius:var(--r);
+  cursor:pointer;color:rgba(255,255,255,.5);
+  font-size:12px;font-weight:500;
+  transition:all .12s;user-select:none;flex-shrink:0;
+}
+.ni:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.ni.active{background:rgba(79,70,229,.18);color:#A5B4FC}
+.ni-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.ni-badge{
+  margin-left:auto;background:var(--red);color:#fff;
+  font-size:9px;font-weight:700;padding:2px 5px;border-radius:100px;
+  flex-shrink:0;
+}
+.sb-foot{margin-top:auto;padding:10px 6px;flex-shrink:0}
+.sb-logout{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;
+  border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.35);
+  font-size:12px;font-weight:500;transition:color .15s;
+  width:100%;background:none;border:none;font-family:var(--sans);
+}
+.sb-logout:hover{color:rgba(255,255,255,.7)}
+
+/* TOPBAR */
+.topbar{
+  position:fixed;top:0;left:var(--sb);right:0;
+  height:var(--top);background:var(--white);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;z-index:40;
+}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
+.tb-crumb{font-size:13px;color:var(--muted)}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-notif{
+  position:relative;width:34px;height:34px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;transition:background .15s;
+}
+.tb-notif:hover{background:var(--border)}
+.notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--red);border-radius:50%;border:2px solid var(--white)}
+.tb-avatar{
+  width:34px;height:34px;border-radius:50%;background:var(--accent-bg);
+  border:2px solid var(--accent-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--accent);cursor:pointer;
+}
+
+/* MAIN */
+.main{margin-left:var(--sb);margin-top:var(--top);min-height:calc(100vh - var(--top))}
+
+/* ─── PAGE SYSTEM ─── */
+.page{display:none;padding:24px;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── LAYOUT HELPERS ─── */
+.g1{display:grid;grid-template-columns:1fr;gap:16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.g-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.flex{display:flex}.flex-col{flex-direction:column}
+.items-center{align-items:center}.justify-between{justify-content:space-between}
+.gap-8{gap:8px}.gap-12{gap:12px}.gap-16{gap:16px}
+.mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}
+
+/* ─── CARDS ─── */
+.card{
+  background:var(--white);border-radius:var(--r3);
+  border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;
+}
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+.card-body{padding:18px}
+.card-footer{padding:12px 18px;border-top:1px solid var(--border);background:var(--bg)}
+
+/* ─── STAT CARDS ─── */
+.stat-card{
+  background:var(--white);border-radius:var(--r3);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  padding:18px;
+}
+.sc-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.sc-val{font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-.5px;line-height:1}
+.sc-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.sc-up{color:var(--emerald);font-weight:600}
+.sc-down{color:var(--red);font-weight:600}
+.sc-icon{
+  width:36px;height:36px;border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  margin-bottom:10px;
+}
+
+/* ─── TABLE ─── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th{
+  text-align:left;font-size:10px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.07em;
+  padding:9px 14px;background:var(--bg);
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{padding:11px 14px;font-size:13px;color:var(--ink);border-bottom:1px solid var(--border)}
+td:last-child{white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+
+/* ─── BADGES ─── */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:100px;white-space:nowrap}
+.b-green{background:var(--emerald-bg);color:var(--emerald)}
+.b-red{background:var(--red-bg);color:var(--red)}
+.b-amber{background:var(--amber-bg);color:var(--amber)}
+.b-blue{background:var(--blue-bg);color:var(--blue)}
+.b-indigo{background:var(--accent-bg);color:var(--accent)}
+.b-gray{background:var(--bg2);color:var(--slate)}
+
+/* ─── BUTTONS ─── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:var(--r);font-size:12px;font-weight:600;
+  font-family:var(--sans);cursor:pointer;border:1px solid transparent;
+  transition:all .12s;white-space:nowrap;letter-spacing:-.1px;
+}
+.btn:disabled{opacity:.5;pointer-events:none}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:var(--white);color:var(--ink);border-color:var(--border2)}
+.btn-outline:hover{background:var(--bg2);border-color:var(--slate2)}
+.btn-ghost{background:transparent;color:var(--slate);border-color:transparent}
+.btn-ghost:hover{background:var(--bg2)}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-danger:hover{background:#B91C1C}
+.btn-success{background:var(--emerald);color:#fff;border-color:var(--emerald)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-lg{padding:11px 20px;font-size:13px}
+.btn-icon{padding:7px;border-radius:var(--r)}
+
+/* ─── FORMS ─── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border2);border-radius:var(--r);
+  font-size:13px;font-family:var(--sans);color:var(--ink);
+  background:var(--white);outline:none;transition:border-color .15s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.6}
+.fg input[type=file]{padding:7px;background:var(--bg)}
+
+/* ─── ALERTS ─── */
+.alert{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 14px;border-radius:var(--r2);font-size:12px;
+  line-height:1.6;margin-bottom:12px;
+}
+.alert-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.al-green{background:var(--emerald-bg);color:#065F46;border:1px solid rgba(5,150,105,.15)}
+.al-red{background:var(--red-bg);color:#991B1B;border:1px solid rgba(220,38,38,.15)}
+.al-amber{background:var(--amber-bg);color:#92400E;border:1px solid rgba(217,119,6,.15)}
+.al-blue{background:var(--blue-bg);color:#1E40AF;border:1px solid rgba(37,99,235,.15)}
+.al-indigo{background:var(--accent-bg);color:var(--accent2);border:1px solid var(--accent-border)}
+
+/* ─── TABS ─── */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;gap:0;overflow-x:auto}
+.tab{
+  padding:9px 16px;font-size:12px;font-weight:500;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+  white-space:nowrap;transition:color .15s;
+}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* ─── MODAL ─── */
+.overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.55);
+  z-index:200;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(3px);padding:16px;
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--white);border-radius:var(--r3);
+  width:520px;max-width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);animation:slideUp .2s ease;
+}
+.modal-lg{width:680px}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.mh-title{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.mh-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);line-height:1;padding:4px;border-radius:var(--r);transition:background .1s}
+.mh-close:hover{background:var(--bg2)}
+.mb{padding:20px}
+.mf{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--bg)}
+
+/* ─── PROGRESS ─── */
+.prog-wrap{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .5s ease}
+.prog-green{background:var(--emerald)}
+.prog-amber{background:var(--amber)}
+.prog-red{background:var(--red)}
+
+/* ─── STEP TRACKER ─── */
+.step-track{display:flex;align-items:center;gap:0;margin-top:10px}
+.step-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.step-item::before{
+  content:'';position:absolute;top:10px;right:-50%;
+  width:100%;height:2px;background:var(--border);z-index:0;
+}
+.step-item:last-child::before{display:none}
+.step-dot{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--border);
+  background:var(--white);z-index:1;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:var(--muted);flex-shrink:0;
+}
+.step-item.done .step-dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-item.done::before{background:var(--accent)}
+.step-item.current .step-dot{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.step-label{font-size:9px;color:var(--muted);margin-top:4px;text-align:center;font-weight:500}
+.step-item.done .step-label{color:var(--accent)}
+.step-item.current .step-label{color:var(--accent);font-weight:600}
+
+/* ─── VOTE BAR ─── */
+.vb{margin-bottom:12px}
+.vb-row{display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:5px}
+.vb-wrap{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.vb-fill{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* ─── ACTIVITY ─── */
+.act-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.act-text{font-size:12px;color:var(--ink);line-height:1.5}
+.act-time{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ─── DONUT ─── */
+.donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-val{font-size:20px;font-weight:700;color:var(--ink);line-height:1;letter-spacing:-.5px}
+.donut-sub{font-size:9px;color:var(--muted);font-weight:500}
+.legend{display:flex;flex-direction:column;gap:7px;justify-content:center}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ─── CHARTS ─── */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:100px}
+.bc-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:0}
+.bc-bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;background:var(--accent);transition:height .5s ease}
+.bc-lbl{font-size:9px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
+.bc-val{font-size:9px;color:var(--slate);font-weight:600}
+
+/* ─── VIOLATION / REQUEST CARDS ─── */
+.v-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;
+}
+.v-card-top{display:flex;gap:12px;align-items:flex-start}
+.v-thumb{
+  width:52px;height:52px;border-radius:var(--r);
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.v-info{flex:1;min-width:0}
+.v-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.v-meta{font-size:11px;color:var(--muted);line-height:1.5}
+.v-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+/* ─── PAYMENT METHOD ─── */
+.pm-item{
+  display:flex;align-items:center;gap:12px;
+  border:1.5px solid var(--border2);border-radius:var(--r2);
+  padding:12px 14px;cursor:pointer;transition:all .15s;margin-bottom:8px;
+}
+.pm-item:hover,.pm-item.sel{border-color:var(--accent);background:var(--accent-bg)}
+.pm-item input[type=radio]{accent-color:var(--accent);flex-shrink:0}
+.pm-icon{font-size:22px;flex-shrink:0}
+.pm-name{font-size:13px;font-weight:600;color:var(--ink)}
+.pm-detail{font-size:11px;color:var(--muted)}
+
+/* ─── CALENDAR ─── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px}
+.cal-hdr{font-size:10px;font-weight:700;color:var(--muted);text-align:center;padding:6px 0;text-transform:uppercase}
+.cal-day{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:12px;border-radius:var(--r);cursor:pointer;transition:all .12s;
+  position:relative;
+}
+.cal-day:hover{background:var(--bg2)}
+.cal-day.today{background:var(--accent);color:#fff;font-weight:700}
+.cal-day.has-event::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--accent);border-radius:50%}
+.cal-day.today::after{background:#fff}
+.cal-day.other-month{color:var(--border2)}
+.cal-day.booked{background:var(--amber-bg);color:var(--amber)}
+
+/* ─── TOAST ─── */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{
+  background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r2);
+  font-size:12px;font-weight:500;box-shadow:var(--shadow2);
+  transform:translateX(110%);transition:transform .3s ease;
+  display:flex;align-items:center;gap:8px;
+  pointer-events:all;max-width:300px;
+  border-left:3px solid var(--accent);
+}
+.toast.show{transform:translateX(0)}
+.t-success{border-left-color:var(--emerald)}
+.t-error{border-left-color:var(--red)}
+.t-warning{border-left-color:var(--amber)}
+
+/* ─── EMPTY STATE ─── */
+.empty{text-align:center;padding:40px 20px}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.4}
+.empty-title{font-size:14px;font-weight:600;color:var(--slate);margin-bottom:4px}
+.empty-sub{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ─── PAGE HEADER ─── */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.ph-left h2{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.4px}
+.ph-left p{font-size:12px;color:var(--muted);margin-top:2px}
+.ph-right{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ─── NOTIFICATION PANEL ─── */
+.notif-panel{
+  position:absolute;top:calc(100% + 8px);right:0;
+  width:320px;background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r3);box-shadow:var(--shadow2);z-index:100;
+  display:none;overflow:hidden;
+}
+.notif-panel.open{display:block}
+.notif-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--ink);display:flex;justify-content:space-between;align-items:center}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;display:flex;gap:10px;align-items:flex-start}
+.notif-item:hover{background:var(--bg)}
+.notif-item:last-child{border-bottom:none}
+.notif-dot2{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px}
+.notif-text{font-size:12px;color:var(--ink);line-height:1.5}
+.notif-time{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ─── PROFILE DROPDOWN ─── */
+.profile-panel{
+  position:absolute;top:calc(100% + 8px);right:0;
+  width:220px;background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r3);box-shadow:var(--shadow2);z-index:100;
+  display:none;overflow:hidden;
+}
+.profile-panel.open{display:block}
+.pp-header{padding:14px 16px;border-bottom:1px solid var(--border)}
+.pp-name{font-size:13px;font-weight:600;color:var(--ink)}
+.pp-email{font-size:11px;color:var(--muted);margin-top:1px}
+.pp-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:12px;color:var(--slate);transition:background .1s}
+.pp-item:hover{background:var(--bg)}
+
+/* ─── SETTINGS FORM ─── */
+.settings-section{margin-bottom:24px}
+.settings-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info{font-size:12px;color:var(--slate)}
+.toggle-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:10px;cursor:pointer;transition:.2s}
+.toggle-slider::before{content:'';position:absolute;height:14px;width:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked + .toggle-slider{background:var(--accent)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(16px)}
+
+/* ─── ARC STATUS ─── */
+.arc-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:10px}
+.arc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.arc-title{font-size:13px;font-weight:600;color:var(--ink)}
+.arc-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.arc-deadline{
+  display:flex;align-items:center;gap:6px;
+  background:var(--amber-bg);color:var(--amber);
+  font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px;
+}
+
+/* ─── COMPLIANCE ─── */
+.comp-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.comp-item:last-child{border-bottom:none}
+.comp-info-title{font-size:13px;font-weight:600;color:var(--ink)}
+.comp-info-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ─── VENDOR CARD ─── */
+.vendor-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.vendor-avatar{width:40px;height:40px;border-radius:var(--r);background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.vendor-info{flex:1}
+.vendor-name{font-size:13px;font-weight:600;color:var(--ink)}
+.vendor-detail{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+.vendor-rating{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--amber);margin-top:4px}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  :root{--sb:0px}
+  .sb{transform:translateX(-220px)}
+  .sb.open{transform:translateX(0)}
+  .topbar{left:0}
+  .main{margin-left:0}
+  .g4{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .mobile-menu-btn{display:flex!important}
+}
+.mobile-menu-btn{display:none;width:34px;height:34px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:49}
+.sb-overlay.open{display:block}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="s-login" class="screen active">
+  <div class="login-noise"></div>
+  <div class="login-grid"></div>
+  <div class="login-card">
+    <div class="l-logo">
+      <div class="l-logo-mark">CH</div>
+      <span class="l-logo-name">CanHOA</span>
+    </div>
+    <div class="l-headline">Welcome back</div>
+    <div class="l-sub">Sign in to your community portal</div>
+    <div class="demo-picks">
+      <div class="demo-pick" onclick="pickDemo('resident',this)">
+        <div class="dp-icon">🏠</div>
+        <div class="dp-info">
+          <div class="dp-name">Sarah Mitchell</div>
+          <div class="dp-email">resident@demo.com · Unit 204</div>
+        </div>
+        <span class="dp-chip chip-indigo">Resident</span>
+      </div>
+      <div class="demo-pick" onclick="pickDemo('board',this)">
+        <div class="dp-icon">📋</div>
+        <div class="dp-info">
+          <div class="dp-name">James Hartwell</div>
+          <div class="dp-email">board@demo.com · Board President</div>
+        </div>
+        <span class="dp-chip chip-amber">Board</span>
+      </div>
+      <div class="demo-pick" onclick="pickDemo('manager',this)">
+        <div class="dp-icon">🏢</div>
+        <div class="dp-info">
+          <div class="dp-name">Linda Chen</div>
+          <div class="dp-email">manager@demo.com · 4 Communities</div>
+        </div>
+        <span class="dp-chip chip-blue">Manager</span>
+      </div>
+    </div>
+    <div class="l-or">or sign in manually</div>
+    <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="you@example.com"/></div>
+    <div class="lf"><label>Password</label><input type="password" id="l-pw" placeholder="demo123" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="l-btn" onclick="doLogin()">Sign In →</button>
+    <div class="l-err" id="l-err">Invalid email or password. Try a demo account above.</div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="s-app" class="screen">
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sb-overlay" id="sb-overlay" onclick="closeMobileMenu()"></div>
+
+  <!-- SIDEBAR -->
+  <nav class="sb" id="sidebar">
+    <div class="sb-logo" onclick="goHome()">
+      <div class="sb-logo-mark">CH</div>
+      <span class="sb-logo-name">CanHOA</span>
+    </div>
+    <div class="sb-user">
+      <div class="sb-ava" id="sb-ava">SM</div>
+      <div>
+        <div class="sb-uname" id="sb-uname">Sarah Mitchell</div>
+        <div class="sb-urole" id="sb-urole">Resident · Unit 204</div>
+      </div>
+    </div>
+    <div id="sb-nav"></div>
+    <div class="sb-foot">
+      <button class="sb-logout" onclick="doLogout()">🚪 Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="tb-left">
+      <div class="mobile-menu-btn" onclick="openMobileMenu()">☰</div>
+      <div>
+        <div class="tb-title" id="tb-title">Dashboard</div>
+      </div>
+    </div>
+    <div class="tb-right" style="position:relative">
+      <div class="tb-notif" id="notif-btn" onclick="togglePanel('notif-panel')">
+        🔔<div class="notif-dot" id="notif-dot"></div>
+      </div>
+      <!-- Notifications panel -->
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-header">
+          Notifications
+          <span onclick="clearNotifications()" style="font-size:10px;color:var(--accent);cursor:pointer;font-weight:500">Mark all read</span>
+        </div>
+        <div id="notif-list"></div>
+      </div>
+      <div class="tb-avatar" id="tb-ava" onclick="togglePanel('profile-panel')">SM</div>
+      <!-- Profile panel -->
+      <div class="profile-panel" id="profile-panel">
+        <div class="pp-header">
+          <div class="pp-name" id="pp-name">Sarah Mitchell</div>
+          <div class="pp-email" id="pp-email">resident@demo.com</div>
+        </div>
+        <div class="pp-item" onclick="navigate('settings');closePanel('profile-panel')">⚙️ Account Settings</div>
+        <div class="pp-item" onclick="navigate('profile');closePanel('profile-panel')">👤 My Profile</div>
+        <div class="pp-item" onclick="doLogout()">🚪 Sign Out</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main-content">
+
+    <!-- ══ RESIDENT PAGES ══ -->
+
+    <!-- R: Dashboard -->
+    <div class="page" id="page-r-dash">
+      <div class="ph">
+        <div class="ph-left"><h2>My Dashboard</h2><p>Sunridge Villas HOA · Unit 204</p></div>
+        <div class="ph-right">
+          <button class="btn btn-outline" onclick="navigate('r-docs')">📄 View Documents</button>
+          <button class="btn btn-primary" onclick="openModal('m-new-req')">+ New Request</button>
+        </div>
+      </div>
+      <div class="alert al-green mb-16"><span class="alert-icon">✅</span><div>Your account is current. Next payment of <strong>$285.00</strong> is due <strong>May 1, 2025</strong>. Auto-pay is active.</div></div>
+      <div class="g4 mb-20">
+        <div class="stat-card" style="cursor:pointer" onclick="navigate('r-payments')">
+          <div class="sc-icon" style="background:var(--accent-bg)">💳</div>
+          <div class="sc-label">Next Payment</div>
+          <div class="sc-val">$285</div>
+          <div class="sc-sub">Due May 1, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-icon" style="background:var(--emerald-bg)">✅</div>
+          <div class="sc-label">Account Balance</div>
+          <div class="sc-val" style="color:var(--emerald)">$0.00</div>
+          <div class="sc-sub sc-up">All paid up</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="navigate('r-maint')">
+          <div class="sc-icon" style="background:var(--amber-bg)">🔧</div>
+          <div class="sc-label">Open Requests</div>
+          <div class="sc-val">2</div>
+          <div class="sc-sub">1 in progress</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="navigate('r-vote')">
+          <div class="sc-icon" style="background:var(--red-bg)">🗳️</div>
+          <div class="sc-label">Pending Vote</div>
+          <div class="sc-val" style="color:var(--red)">1</div>
+          <div class="sc-sub sc-down">Closes in 8 days</div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Payment History</span><button class="btn btn-ghost btn-sm" onclick="navigate('r-payments')">View All →</button></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Apr 1</td><td>Monthly HOA Dues</td><td><strong>$285.00</strong></td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Mar 1</td><td>Monthly HOA Dues</td><td><strong>$285.00</strong></td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Feb 1</td><td>Monthly HOA Dues</td><td><strong>$285.00</strong></td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Jan 1</td><td>Monthly HOA Dues</td><td><strong>$285.00</strong></td><td><span class="badge b-green">Paid</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Recent Activity</span></div>
+          <div class="card-body">
+            <div class="act-item"><div class="act-dot" style="background:var(--emerald-bg)">✅</div><div><div class="act-text">Payment of $285.00 confirmed via ACH</div><div class="act-time">Apr 1, 2025 · 9:02 AM</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--amber-bg)">🔧</div><div><div class="act-text">Maintenance request #MR-047 assigned to Ace Plumbing</div><div class="act-time">Mar 28 · 2:15 PM</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--blue-bg)">📄</div><div><div class="act-text">2024 Annual Financial Report published</div><div class="act-time">Mar 15 · 10:00 AM</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--accent-bg)">🗳️</div><div><div class="act-text">New vote opened: Pool Hours Extension</div><div class="act-time">Mar 10 · 11:30 AM</div></div></div>
+            <div class="act-item"><div class="act-dot" style="background:var(--red-bg)">🚨</div><div><div class="act-text">Violation notice issued for landscaping modification</div><div class="act-time">Mar 15 · 9:00 AM</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Payments -->
+    <div class="page" id="page-r-payments">
+      <div class="ph">
+        <div class="ph-left"><h2>Payments & Dues</h2><p>Manage your HOA payments and payment methods</p></div>
+      </div>
+      <div class="g2 mb-16">
+        <div class="stat-card"><div class="sc-label">Balance Due</div><div class="sc-val" style="color:var(--emerald)">$0.00</div><div class="sc-sub">Account is current</div></div>
+        <div class="stat-card"><div class="sc-label">Next Payment</div><div class="sc-val">$285.00</div><div class="sc-sub">May 1, 2025 · Auto-pay ON</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Make a Payment</span></div>
+          <div class="card-body">
+            <div class="fg">
+              <label>Payment Amount</label>
+              <select id="pay-amt-sel" onchange="updatePayAmt(this)">
+                <option value="285">Monthly Dues — $285.00</option>
+                <option value="570">2 Months — $570.00</option>
+                <option value="855">3 Months — $855.00</option>
+                <option value="custom">Custom Amount...</option>
+              </select>
+            </div>
+            <div class="fg" id="custom-amt-row" style="display:none">
+              <label>Custom Amount ($)</label>
+              <input type="number" id="custom-amt" placeholder="0.00" min="1"/>
+            </div>
+            <div class="fg">
+              <label>Payment Method</label>
+              <div class="pm-item sel" onclick="selectPM(this)"><input type="radio" name="pm" checked/><div class="pm-icon">🏦</div><div><div class="pm-name">Chase Checking ••••4821</div><div class="pm-detail">ACH Bank Transfer · No processing fee</div></div></div>
+              <div class="pm-item" onclick="selectPM(this)"><input type="radio" name="pm"/><div class="pm-icon">💳</div><div><div class="pm-name">Visa ••••7743</div><div class="pm-detail">Credit Card · 2.9% + $0.30 fee</div></div></div>
+              <div class="pm-item" onclick="openModal('m-add-payment')"><input type="radio" name="pm"/><div class="pm-icon">➕</div><div><div class="pm-name">Add Payment Method</div><div class="pm-detail">Bank account or debit/credit card</div></div></div>
+            </div>
+            <div class="alert al-blue mb-16"><span class="alert-icon">ℹ️</span>
+              <div style="flex:1">
+                Auto-pay is <strong id="autopay-status">active</strong>. Your account will be charged $285.00 on the 1st of each month.
+              </div>
+              <label class="toggle" style="flex-shrink:0;margin-left:8px" title="Toggle auto-pay">
+                <input type="checkbox" id="autopay-toggle" checked onchange="toggleAutopay(this)"/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:12px;margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--muted)">Monthly dues</span><span>$285.00</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--muted)">Processing fee (ACH)</span><span>$0.00</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:6px"><span>Total</span><span id="pay-total">$285.00</span></div>
+            </div>
+            <button class="btn btn-primary btn-lg" style="width:100%" id="pay-btn" onclick="processPayment()">Pay $285.00 Now</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Full Payment History</span><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading statement PDF...','success')">Export PDF</button></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Ref</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Apr 1, 2025</td><td>$285.00</td><td>ACH</td><td>#PMT-0411</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Mar 1, 2025</td><td>$285.00</td><td>ACH</td><td>#PMT-0388</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Feb 1, 2025</td><td>$285.00</td><td>ACH</td><td>#PMT-0362</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Jan 1, 2025</td><td>$285.00</td><td>ACH</td><td>#PMT-0341</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Dec 1, 2024</td><td>$285.00</td><td>Visa</td><td>#PMT-0320</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Nov 1, 2024</td><td>$285.00</td><td>Visa</td><td>#PMT-0299</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Oct 1, 2024</td><td>$285.00</td><td>ACH</td><td>#PMT-0278</td><td><span class="badge b-green">Paid</span></td></tr>
+              <tr><td>Sep 1, 2024</td><td>$285.00</td><td>ACH</td><td>#PMT-0255</td><td><span class="badge b-green">Paid</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Maintenance -->
+    <div class="page" id="page-r-maint">
+      <div class="ph">
+        <div class="ph-left"><h2>Maintenance Requests</h2><p>Submit and track your maintenance requests</p></div>
+        <div class="ph-right"><button class="btn btn-primary" onclick="openModal('m-new-req')">+ Submit Request</button></div>
+      </div>
+      <div id="r-req-list">
+        <div class="v-card">
+          <div class="v-card-top">
+            <div class="v-thumb">🚿</div>
+            <div class="v-info">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <div>
+                  <div class="v-title">Leaking faucet in kitchen</div>
+                  <div class="v-meta">#MR-047 · Submitted Mar 25, 2025 · Category: Plumbing</div>
+                </div>
+                <span class="badge b-amber">In Progress</span>
+              </div>
+              <div style="font-size:12px;color:var(--slate);margin-top:8px;line-height:1.6">The kitchen sink faucet has been dripping continuously. Estimated water waste is 30–50 gallons/day.</div>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="step-track">
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Submitted</div></div>
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Reviewed</div></div>
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Assigned</div></div>
+              <div class="step-item current"><div class="step-dot"></div><div class="step-label">Scheduled</div></div>
+              <div class="step-item"><div class="step-dot"></div><div class="step-label">Completed</div></div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--muted)">🔧 Ace Plumbing Co. · Scheduled Apr 18, 2025 · <a href="#" style="color:var(--accent)">View details</a></div>
+        </div>
+        <div class="v-card">
+          <div class="v-card-top">
+            <div class="v-thumb">💡</div>
+            <div class="v-info">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <div>
+                  <div class="v-title">Broken parking lot light — Row C</div>
+                  <div class="v-meta">#MR-041 · Submitted Mar 10, 2025 · Category: Electrical</div>
+                </div>
+                <span class="badge b-green">Completed</span>
+              </div>
+              <div style="font-size:12px;color:var(--slate);margin-top:8px">Parking lot light fixture in Row C has been out creating a safety hazard. Completed Mar 18.</div>
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="step-track">
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Submitted</div></div>
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Reviewed</div></div>
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Assigned</div></div>
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Scheduled</div></div>
+              <div class="step-item done"><div class="step-dot">✓</div><div class="step-label">Completed</div></div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--muted)">✅ Completed Mar 18, 2025 · Bright Electric LLC · Cost: $420</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Documents -->
+    <div class="page" id="page-r-docs">
+      <div class="ph">
+        <div class="ph-left"><h2>Document Library</h2><p>All community governing documents, financials, and meeting records</p></div>
+        <div class="ph-right">
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="text" id="doc-search" placeholder="Search documents..." oninput="filterDocs(this.value)"
+              style="padding:7px 12px;border:1.5px solid var(--border2);border-radius:var(--r);font-size:12px;font-family:var(--sans);width:200px;outline:none;transition:border-color .2s"
+              onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'"/>
+            <button class="btn btn-outline" onclick="filterDocs(document.getElementById('doc-search').value)">🔍 Search</button>
+          </div>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this)">All Documents</div>
+        <div class="tab" onclick="switchTab(this)">Governing</div>
+        <div class="tab" onclick="switchTab(this)">Financial</div>
+        <div class="tab" onclick="switchTab(this)">Minutes</div>
+        <div class="tab" onclick="switchTab(this)">Reserve Study</div>
+      </div>
+      <div class="tab-pane active">
+        <div class="card"><div class="tbl-wrap"><table>
+          <thead><tr><th>Document</th><th>Category</th><th>Version</th><th>Updated</th><th>Size</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>📄 CC&Rs — Sunridge Villas HOA</td><td><span class="badge b-indigo">Governing</span></td><td>v4.2</td><td>Jan 2023</td><td>2.4 MB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening CC&Rs...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📄 Downloading CC&Rs PDF...','success')">Download</button></div></td></tr>
+            <tr><td>📄 HOA Bylaws</td><td><span class="badge b-indigo">Governing</span></td><td>v3.2</td><td>Mar 2024</td><td>1.1 MB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening Bylaws...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📄 Downloading...','success')">Download</button></div></td></tr>
+            <tr><td>📄 Rules & Regulations 2025</td><td><span class="badge b-indigo">Governing</span></td><td>v2.0</td><td>Jan 2025</td><td>856 KB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening Rules...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📄 Downloading...','success')">Download</button></div></td></tr>
+            <tr><td>📊 2024 Annual Financial Report</td><td><span class="badge b-green">Financial</span></td><td>Final</td><td>Feb 2025</td><td>3.2 MB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening report...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></div></td></tr>
+            <tr><td>📊 Q1 2025 Budget vs Actual</td><td><span class="badge b-green">Financial</span></td><td>Final</td><td>Apr 2025</td><td>1.8 MB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></div></td></tr>
+            <tr><td>📝 Board Meeting Minutes — Mar 2025</td><td><span class="badge b-amber">Minutes</span></td><td>—</td><td>Mar 28</td><td>412 KB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening minutes...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📝 Downloading...','success')">Download</button></div></td></tr>
+            <tr><td>📝 Annual Meeting Minutes — 2024</td><td><span class="badge b-amber">Minutes</span></td><td>—</td><td>Nov 2024</td><td>654 KB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📝 Downloading...','success')">Download</button></div></td></tr>
+            <tr><td>🏗️ Reserve Fund Study 2024</td><td><span class="badge b-gray">Reserve</span></td><td>v1.0</td><td>Dec 2024</td><td>5.1 MB</td><td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="toast('👁️ Opening study...','info')">View</button><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></div></td></tr>
+          </tbody>
+        </table></div></div>
+      </div>
+      <div class="tab-pane"><div class="card"><div class="tbl-wrap"><table><thead><tr><th>Document</th><th>Version</th><th>Updated</th><th></th></tr></thead><tbody><tr><td>📄 CC&Rs</td><td>v4.2</td><td>Jan 2023</td><td><button class="btn btn-outline btn-sm" onclick="toast('📄 Downloading...','success')">Download</button></td></tr><tr><td>📄 Bylaws</td><td>v3.2</td><td>Mar 2024</td><td><button class="btn btn-outline btn-sm" onclick="toast('📄 Downloading...','success')">Download</button></td></tr><tr><td>📄 Rules & Regulations</td><td>v2.0</td><td>Jan 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📄 Downloading...','success')">Download</button></td></tr></tbody></table></div></div></div>
+      <div class="tab-pane"><div class="card"><div class="tbl-wrap"><table><thead><tr><th>Report</th><th>Period</th><th>Updated</th><th></th></tr></thead><tbody><tr><td>📊 Annual Report</td><td>2024</td><td>Feb 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></td></tr><tr><td>📊 Budget vs Actual</td><td>Q1 2025</td><td>Apr 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></td></tr></tbody></table></div></div></div>
+      <div class="tab-pane"><div class="card"><div class="tbl-wrap"><table><thead><tr><th>Meeting</th><th>Date</th><th>Type</th><th></th></tr></thead><tbody><tr><td>📝 Board Meeting</td><td>Mar 28, 2025</td><td>Regular</td><td><button class="btn btn-outline btn-sm" onclick="toast('📝 Downloading...','success')">Download</button></td></tr><tr><td>📝 Annual Meeting</td><td>Nov 12, 2024</td><td>Annual</td><td><button class="btn btn-outline btn-sm" onclick="toast('📝 Downloading...','success')">Download</button></td></tr></tbody></table></div></div></div>
+      <div class="tab-pane"><div class="card"><div class="card-body"><div class="alert al-blue"><span class="alert-icon">📋</span><div>The 2024 Reserve Fund Study is available. This 30-year capital plan projects a need for $85,000 roof replacement in 2027.</div></div><button class="btn btn-primary" onclick="toast('📊 Downloading Reserve Study...','success')">Download Reserve Study (5.1 MB)</button></div></div></div>
+    </div>
+
+    <!-- R: Voting -->
+    <div class="page" id="page-r-vote">
+      <div class="ph"><div class="ph-left"><h2>Voting & Elections</h2><p>Participate in community decisions</p></div></div>
+      <div class="alert al-amber mb-16"><span class="alert-icon">🗳️</span><div>You have <strong>1 active vote</strong> that closes in 8 days. Quorum requires 67% participation — currently at 69%.</div></div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Active: Pool Hours Extension</span><span class="badge b-amber">Closes May 10</span></div>
+          <div class="card-body">
+            <p style="font-size:12px;color:var(--slate);line-height:1.7;margin-bottom:16px">Proposal to extend pool operating hours from 8PM to 10PM on Friday and Saturday nights (June–August). Additional cost: ~$200/month split across all units (~$4.76/unit/month).</p>
+            <div style="margin-bottom:16px">
+              <div class="vb"><div class="vb-row"><span>✅ Yes — Extend Hours</span><span id="v-yes-pct" style="color:var(--emerald)">58%</span></div><div class="vb-wrap"><div class="vb-fill" id="v-yes-bar" style="width:58%;background:var(--emerald)"></div></div></div>
+              <div class="vb"><div class="vb-row"><span>❌ No — Keep Current</span><span id="v-no-pct" style="color:var(--red)">28%</span></div><div class="vb-wrap"><div class="vb-fill" id="v-no-bar" style="width:28%;background:var(--red)"></div></div></div>
+              <div class="vb"><div class="vb-row"><span>— Abstain</span><span id="v-abs-pct" style="color:var(--muted)">14%</span></div><div class="vb-wrap"><div class="vb-fill" id="v-abs-bar" style="width:14%;background:var(--muted)"></div></div></div>
+              <div style="font-size:11px;color:var(--muted);margin-top:8px">29 of 42 units voted · 69% participation ✅ Quorum met</div>
+            </div>
+            <div id="vote-area">
+              <div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:8px">Cast Your Vote (secret ballot):</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-success" onclick="castVote('yes')">✅ Vote Yes</button>
+                <button class="btn btn-danger" onclick="castVote('no')">❌ Vote No</button>
+                <button class="btn btn-outline" style="color:var(--slate);border-color:var(--border2)" onclick="castVote('abs')">— Abstain</button>
+              </div>
+            </div>
+            <div id="vote-done" style="display:none" class="alert al-green"><span class="alert-icon">✅</span><div>Your vote has been recorded securely. Thank you for participating!</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Voting History</span></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Vote</th><th>Closed</th><th>Result</th><th>My Vote</th></tr></thead>
+            <tbody>
+              <tr><td>2025 Budget Approval</td><td>Jan 15</td><td><span class="badge b-green">Passed 88%</span></td><td>✅ Yes</td></tr>
+              <tr><td>Landscaping Contract</td><td>Feb 28</td><td><span class="badge b-green">Passed 76%</span></td><td>✅ Yes</td></tr>
+              <tr><td>Board Election — President</td><td>Nov 2024</td><td><span class="badge b-green">Elected</span></td><td>J. Hartwell</td></tr>
+              <tr><td>Special Assessment — Roof</td><td>Sep 2024</td><td><span class="badge b-red">Failed 42%</span></td><td>❌ No</td></tr>
+              <tr><td>Parking Rule Amendment</td><td>Jun 2024</td><td><span class="badge b-green">Passed 71%</span></td><td>✅ Yes</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Amenities -->
+    <div class="page" id="page-r-amenities">
+      <div class="ph"><div class="ph-left"><h2>Amenity Reservations</h2><p>Book community amenities</p></div><div class="ph-right"><button class="btn btn-primary" onclick="openModal('m-book')">+ New Reservation</button></div></div>
+      <div class="g3 mb-20">
+        <div class="card" style="cursor:pointer" onclick="openModal('m-book')">
+          <div class="card-body" style="text-align:center;padding:24px">
+            <div style="font-size:32px;margin-bottom:8px">🏊</div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px">Community Pool</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Capacity: 30 · 7AM–8PM Daily</div>
+            <span class="badge b-green">Available Today</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="openModal('m-book')">
+          <div class="card-body" style="text-align:center;padding:24px">
+            <div style="font-size:32px;margin-bottom:8px">🏛️</div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px">Clubhouse</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Capacity: 75 · $50 deposit</div>
+            <span class="badge b-amber">1 Booking Today</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="openModal('m-book')">
+          <div class="card-body" style="text-align:center;padding:24px">
+            <div style="font-size:32px;margin-bottom:8px">🎾</div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px">Tennis Courts (2)</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px">1-hour slots · No deposit</div>
+            <span class="badge b-green">Both Available</span>
+          </div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">April 2025 — Pool Calendar</span></div>
+          <div class="card-body">
+            <div class="cal-grid">
+              <div class="cal-hdr">Sun</div><div class="cal-hdr">Mon</div><div class="cal-hdr">Tue</div><div class="cal-hdr">Wed</div><div class="cal-hdr">Thu</div><div class="cal-hdr">Fri</div><div class="cal-hdr">Sat</div>
+              <div class="cal-day other-month">30</div><div class="cal-day other-month">31</div>
+              <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day has-event">4</div><div class="cal-day">5</div>
+              <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day has-event">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day booked">11</div><div class="cal-day booked">12</div>
+              <div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day has-event">18</div><div class="cal-day">19</div>
+              <div class="cal-day booked">20</div><div class="cal-day">21</div><div class="cal-day today">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div>
+              <div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:10px;font-size:10px;color:var(--muted)">
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span>Has bookings</span>
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span>Busy</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">My Reservations</span></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Amenity</th><th>Date & Time</th><th>Status</th><th></th></tr></thead>
+            <tbody id="my-bookings">
+              <tr><td>🏛️ Clubhouse</td><td>Apr 20 · 3:00 PM</td><td><span class="badge b-green">Confirmed</span></td><td><button class="btn btn-outline btn-sm" onclick="cancelBooking(this)">Cancel</button></td></tr>
+              <tr><td>🎾 Tennis Court 1</td><td>Apr 22 · 9:00 AM</td><td><span class="badge b-green">Confirmed</span></td><td><button class="btn btn-outline btn-sm" onclick="cancelBooking(this)">Cancel</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Violations (resident view) -->
+    <div class="page" id="page-r-violations">
+      <div class="ph"><div class="ph-left"><h2>My Violations</h2><p>Notices and fines for Unit 204</p></div></div>
+      <div class="alert al-amber mb-16"><span class="alert-icon">⚠️</span><div>You have 1 open violation. Please review and respond within the cure period to avoid a fine.</div></div>
+      <div class="v-card">
+        <div class="v-card-top">
+          <div class="v-thumb">🌿</div>
+          <div class="v-info">
+            <div style="display:flex;justify-content:space-between">
+              <div>
+                <div class="v-title">Unapproved Landscaping Modification</div>
+                <div class="v-meta">Notice #VIO-0312 · Issued Mar 15, 2025 · ARC application required</div>
+              </div>
+              <span class="badge b-red">Fine: $150</span>
+            </div>
+            <div style="font-size:12px;color:var(--slate);margin-top:8px;line-height:1.6">Plants added along front walkway without ARC approval. Per CC&Rs Section 4.2, all exterior modifications require written board approval prior to installation.</div>
+            <div class="v-actions">
+              <button class="btn btn-primary btn-sm" onclick="openModal('m-arc-submit')">Submit ARC Application</button>
+              <button class="btn btn-outline btn-sm" onclick="openModal('m-appeal')">File Appeal</button>
+              <button class="btn btn-outline btn-sm" onclick="openModal('m-hearing');setHearingUnit('Unit 204','#VIO-0312')">Request Hearing</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="card-header"><span class="card-title">Violation History</span></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Date</th><th>Type</th><th>Fine</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Mar 15, 2025</td><td>Unapproved Landscaping</td><td>$150.00</td><td><span class="badge b-red">Open</span></td></tr>
+            <tr><td>Aug 3, 2024</td><td>Parking Violation</td><td>$50.00</td><td><span class="badge b-green">Paid</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- R: Parking -->
+    <div class="page" id="page-r-parking">
+      <div class="ph"><div class="ph-left"><h2>Parking Permits</h2><p>Manage vehicle registrations and guest passes</p></div><div class="ph-right"><button class="btn btn-primary" onclick="openModal('m-add-vehicle')">+ Add Vehicle</button></div></div>
+      <div class="g2 mb-16">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Registered Vehicles — Unit 204</span></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Vehicle</th><th>Plate</th><th>Permit</th><th>Expires</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>🚗 2021 Honda CRV — White</td><td>AZ-JKL-8821</td><td>#P-204A</td><td>Dec 31, 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('🖨️ Printing permit...','success')">Print</button></td></tr>
+              <tr><td>🚙 2019 Toyota Camry — Gray</td><td>AZ-MNP-3344</td><td>#P-204B</td><td>Dec 31, 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('🖨️ Printing permit...','success')">Print</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Guest Passes</span><button class="btn btn-primary btn-sm" onclick="openModal('m-guest-pass')">+ Request Pass</button></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Guest</th><th>Plate</th><th>Valid</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Mom's Buick</td><td>AZ-XYZ-1122</td><td>Apr 20–22</td><td><span class="badge b-green">Active</span></td></tr>
+              <tr><td>Friend's Tesla</td><td>CA-ABC-9988</td><td>Mar 15</td><td><span class="badge b-gray">Expired</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <div class="alert al-blue"><span class="alert-icon">ℹ️</span><div>Unit 204 is permitted <strong>2 resident vehicles</strong> (Spaces 204A & 204B) and up to <strong>3 consecutive guest pass days</strong> per month. Additional requests require board approval.</div></div>
+    </div>
+
+    <!-- R: Directory -->
+    <div class="page" id="page-r-directory">
+      <div class="ph"><div class="ph-left"><h2>Community Directory</h2><p>Sunridge Villas HOA — opt-in resident directory</p></div></div>
+      <div class="alert al-indigo mb-16"><span class="alert-icon">🔒</span><div>Directory is opt-in only. Your contact info is visible to neighbors because you enabled sharing in Settings.</div></div>
+        <div class="g3">
+        <div class="card"><div class="card-body" style="text-align:center;padding:20px">
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:14px;margin:0 auto 10px">SM</div>
+          <div style="font-weight:600;font-size:13px">Sarah Mitchell</div><div style="font-size:11px;color:var(--muted)">Unit 204 · Owner</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">📧 sarah@email.com</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="openModal('m-send-msg');setMsgTo('Sarah Mitchell','Unit 204')">Send Message</button>
+        </div></div>
+        <div class="card"><div class="card-body" style="text-align:center;padding:20px">
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);font-size:14px;margin:0 auto 10px">JH</div>
+          <div style="font-weight:600;font-size:13px">James Hartwell</div><div style="font-size:11px;color:var(--muted)">Unit 101 · Board President</div>
+          <span class="badge b-indigo" style="margin-top:4px">Board</span>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px;display:block;margin-left:auto;margin-right:auto" onclick="openModal('m-send-msg');setMsgTo('James Hartwell','Board President')">Send Message</button>
+        </div></div>
+        <div class="card"><div class="card-body" style="text-align:center;padding:20px">
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--emerald-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--emerald);font-size:14px;margin:0 auto 10px">PK</div>
+          <div style="font-weight:600;font-size:13px">Patricia K.</div><div style="font-size:11px;color:var(--muted)">Unit 317 · Owner</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">📧 patricia@email.com</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="openModal('m-send-msg');setMsgTo('Patricia K.','Unit 317')">Send Message</button>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- ══ BOARD PAGES ══ -->
+
+    <!-- B: Dashboard -->
+    <div class="page" id="page-b-dash">
+      <div class="ph">
+        <div class="ph-left"><h2>Board Dashboard</h2><p>Sunridge Villas HOA · April 2025</p></div>
+        <div class="ph-right">
+          <button class="btn btn-outline" onclick="openModal('m-announcement')">📢 Send Announcement</button>
+          <button class="btn btn-primary" onclick="openModal('m-new-vio')">+ New Violation</button>
+        </div>
+      </div>
+      <div class="g4 mb-20">
+        <div class="stat-card" onclick="navigate('b-financials')" style="cursor:pointer"><div class="sc-icon" style="background:var(--accent-bg)">💰</div><div class="sc-label">Monthly Collections</div><div class="sc-val">$11,685</div><div class="sc-sub sc-up">94% of 42 units</div></div>
+        <div class="stat-card"><div class="sc-icon" style="background:var(--blue-bg)">🏦</div><div class="sc-label">Operating Balance</div><div class="sc-val">$48,200</div><div class="sc-sub">Reserve: $127,400</div></div>
+        <div class="stat-card" onclick="navigate('b-violations')" style="cursor:pointer"><div class="sc-icon" style="background:var(--red-bg)">🚨</div><div class="sc-label">Open Violations</div><div class="sc-val" style="color:var(--red)">7</div><div class="sc-sub sc-down">3 with unpaid fines</div></div>
+        <div class="stat-card" onclick="navigate('b-requests')" style="cursor:pointer"><div class="sc-icon" style="background:var(--amber-bg)">🔧</div><div class="sc-label">Open Requests</div><div class="sc-val">12</div><div class="sc-sub sc-down">4 unassigned</div></div>
+      </div>
+      <div class="g2 mb-16">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Collection Rate — 2025</span><button class="btn btn-ghost btn-sm" onclick="navigate('b-financials')">Full Report →</button></div>
+          <div class="card-body">
+            <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px">
+              <div class="donut-wrap">
+                <svg width="110" height="110" viewBox="0 0 110 110">
+                  <circle cx="55" cy="55" r="44" fill="none" stroke="var(--bg2)" stroke-width="12"/>
+                  <circle cx="55" cy="55" r="44" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="276.5" stroke-dashoffset="16.6" stroke-linecap="round"/>
+                </svg>
+                <div class="donut-center"><div class="donut-val">94%</div><div class="donut-sub">collected</div></div>
+              </div>
+              <div class="legend">
+                <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Paid: 39 units — $11,115</div>
+                <div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Late: 2 units — $570</div>
+                <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>Unpaid: 1 unit — $285</div>
+              </div>
+            </div>
+            <div id="b-chart" class="bar-chart"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Action Required</span></div>
+          <div class="card-body">
+            <div class="alert al-red" style="cursor:pointer" onclick="navigate('b-financials')"><span class="alert-icon">⚠️</span><div><strong>Unit 118</strong> — 90 days overdue. $855 total. Eligible for lien process. <u>View →</u></div></div>
+            <div class="alert al-amber" style="cursor:pointer" onclick="navigate('b-requests')"><span class="alert-icon">🔧</span><div><strong>4 maintenance requests</strong> awaiting vendor assignment. <u>Assign →</u></div></div>
+            <div class="alert al-amber" style="cursor:pointer" onclick="navigate('b-arc')"><span class="alert-icon">🏗️</span><div><strong>2 ARC applications</strong> approaching 30-day response deadline. <u>Review →</u></div></div>
+            <div class="alert al-blue" style="cursor:pointer" onclick="openModal('m-announcement')"><span class="alert-icon">📅</span><div>Next board meeting: <strong>Apr 22, 2025 at 7PM</strong>. Agenda not yet published. <u>Send announcement →</u></div></div>
+            <div class="alert al-indigo" style="cursor:pointer" onclick="navigate('b-violations')"><span class="alert-icon">🚨</span><div><strong>3 violation fines</strong> unpaid after 30 days. Escalation available. <u>View →</u></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Financials -->
+    <div class="page" id="page-b-financials">
+      <div class="ph">
+        <div class="ph-left"><h2>Financial Reports</h2><p>Sunridge Villas HOA · YTD 2025</p></div>
+        <div class="ph-right">
+          <button class="btn btn-outline" onclick="toast('📊 Generating PDF...','success')">Export PDF</button>
+          <button class="btn btn-outline" onclick="toast('📊 Exporting to Excel...','success')">Export Excel</button>
+          <button class="btn btn-outline" onclick="toast('🔄 Syncing QuickBooks...','success')">QuickBooks Sync</button>
+        </div>
+      </div>
+      <div class="g4 mb-20">
+        <div class="stat-card"><div class="sc-label">YTD Revenue</div><div class="sc-val">$46,740</div><div class="sc-sub sc-up">+2.1% vs budget</div></div>
+        <div class="stat-card"><div class="sc-label">YTD Expenses</div><div class="sc-val">$38,920</div><div class="sc-sub sc-up">−3.2% under budget</div></div>
+        <div class="stat-card"><div class="sc-label">Net Income YTD</div><div class="sc-val" style="color:var(--emerald)">$7,820</div><div class="sc-sub sc-up">+$2,020 vs budget</div></div>
+        <div class="stat-card"><div class="sc-label">Reserve Balance</div><div class="sc-val">$127,400</div><div class="sc-sub">79.6% funded</div></div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this)">Income Statement</div>
+        <div class="tab" onclick="switchTab(this)">Budget vs Actual</div>
+        <div class="tab" onclick="switchTab(this)">A/R Aging</div>
+        <div class="tab" onclick="switchTab(this)">Reserve Fund</div>
+        <div class="tab" onclick="switchTab(this)">Check Register</div>
+      </div>
+      <div class="tab-pane active">
+        <div class="card"><div class="tbl-wrap"><table>
+          <thead><tr><th>Category</th><th>Annual Budget</th><th>YTD Budget</th><th>YTD Actual</th><th>Variance</th><th>% Used</th></tr></thead>
+          <tbody>
+            <tr style="background:var(--bg)"><td colspan="6" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Revenue</td></tr>
+            <tr><td>Monthly Dues</td><td>$136,800</td><td>$45,600</td><td>$46,740</td><td style="color:var(--emerald)">+$1,140</td><td><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px">102%</span><div class="prog-wrap" style="flex:1;min-width:50px"><div class="prog-fill prog-green" style="width:100%"></div></div></div></td></tr>
+            <tr><td>Late Fees</td><td>$1,800</td><td>$600</td><td>$425</td><td style="color:var(--red)">−$175</td><td><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px">71%</span><div class="prog-wrap" style="flex:1;min-width:50px"><div class="prog-fill" style="width:71%"></div></div></div></td></tr>
+            <tr><td>Amenity Fees</td><td>$1,200</td><td>$400</td><td>$380</td><td style="color:var(--red)">−$20</td><td>95%</td></tr>
+            <tr><td colspan="2" style="font-size:11px;font-weight:700;color:var(--muted)">TOTAL REVENUE</td><td>$46,600</td><td style="font-weight:700">$47,545</td><td style="color:var(--emerald);font-weight:700">+$945</td><td></td></tr>
+            <tr style="background:var(--bg)"><td colspan="6" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Expenses</td></tr>
+            <tr><td>Landscaping</td><td>$36,000</td><td>$12,000</td><td>$11,400</td><td style="color:var(--emerald)">−$600</td><td><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px">95%</span><div class="prog-wrap" style="flex:1;min-width:50px"><div class="prog-fill" style="width:95%"></div></div></div></td></tr>
+            <tr><td>Utilities (Common Areas)</td><td>$24,000</td><td>$8,000</td><td>$8,240</td><td style="color:var(--red)">+$240</td><td><div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px">103%</span><div class="prog-wrap" style="flex:1;min-width:50px"><div class="prog-fill prog-amber" style="width:100%"></div></div></div></td></tr>
+            <tr><td>Property Insurance</td><td>$28,800</td><td>$9,600</td><td>$9,600</td><td>$0</td><td>100%</td></tr>
+            <tr><td>Management Fee</td><td>$14,400</td><td>$4,800</td><td>$4,800</td><td>$0</td><td>100%</td></tr>
+            <tr><td>Maintenance & Repairs</td><td>$18,000</td><td>$6,000</td><td>$4,880</td><td style="color:var(--emerald)">−$1,120</td><td>81%</td></tr>
+            <tr><td>Reserve Contribution</td><td>$22,680</td><td>$7,560</td><td>$7,560</td><td>$0</td><td>100%</td></tr>
+            <tr><td colspan="2" style="font-size:11px;font-weight:700;color:var(--muted)">TOTAL EXPENSES</td><td>$37,960</td><td style="font-weight:700">$46,480</td><td style="color:var(--emerald);font-weight:700">−$1,480</td><td></td></tr>
+            <tr style="background:var(--accent-bg)"><td colspan="2" style="font-size:12px;font-weight:700">NET INCOME</td><td style="font-weight:700">$8,640</td><td style="font-weight:700;color:var(--emerald)">$9,725</td><td style="color:var(--emerald);font-weight:700">+$1,085</td><td></td></tr>
+          </tbody>
+        </table></div></div>
+      </div>
+      <div class="tab-pane">
+        <div class="g2">
+          <div class="card"><div class="card-header"><span class="card-title">Budget vs Actual — By Category</span></div><div class="card-body">
+            <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Landscaping</span><span>$11,400 / $12,000</span></div><div class="prog-wrap"><div class="prog-fill" style="width:95%"></div></div></div>
+            <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Utilities</span><span style="color:var(--red)">$8,240 / $8,000 ⚠️</span></div><div class="prog-wrap"><div class="prog-fill prog-amber" style="width:100%"></div></div></div>
+            <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Insurance</span><span>$9,600 / $9,600</span></div><div class="prog-wrap"><div class="prog-fill" style="width:100%"></div></div></div>
+            <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Maintenance</span><span style="color:var(--emerald)">$4,880 / $6,000 ✓ Under</span></div><div class="prog-wrap"><div class="prog-fill prog-green" style="width:81%"></div></div></div>
+          </div></div>
+          <div class="card"><div class="card-header"><span class="card-title">Monthly Revenue Trend</span></div><div class="card-body"><div id="fin-chart" class="bar-chart"></div></div></div>
+        </div>
+      </div>
+      <div class="tab-pane">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Accounts Receivable Aging</span><button class="btn btn-outline btn-sm" onclick="toast('📧 Reminders sent to 3 units','success')">Send All Reminders</button></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Unit</th><th>Owner</th><th>Current</th><th>31–60 Days</th><th>61–90 Days</th><th>90+ Days</th><th>Total Owed</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Unit 118</strong></td><td>Robert T.</td><td>$285</td><td>$285</td><td>$285</td><td><strong style="color:var(--red)">$285</strong></td><td><strong style="color:var(--red)">$1,140</strong></td><td><button class="btn btn-danger btn-sm" onclick="openModal('m-lien')">Initiate Lien</button></td></tr>
+              <tr><td>Unit 203</td><td>Mark L.</td><td>$285</td><td>$285</td><td>$0</td><td>$0</td><td style="color:var(--amber)"><strong>$570</strong></td><td><button class="btn btn-outline btn-sm" onclick="toast('📧 Payment demand sent to Unit 203','success')">Send Notice</button></td></tr>
+              <tr><td>Unit 317</td><td>Patricia K.</td><td>$0</td><td>$285</td><td>$0</td><td>$0</td><td>$285</td><td><button class="btn btn-outline btn-sm" onclick="toast('📧 Reminder sent to Unit 317','success')">Send Reminder</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <div class="tab-pane">
+        <div class="g4 mb-16">
+          <div class="stat-card"><div class="sc-label">Reserve Balance</div><div class="sc-val">$127,400</div><div class="sc-sub">Target: $160,000</div></div>
+          <div class="stat-card"><div class="sc-label">Funded Percentage</div><div class="sc-val" style="color:var(--amber)">79.6%</div><div class="sc-sub sc-down">Below 100% goal</div></div>
+          <div class="stat-card"><div class="sc-label">Monthly Contribution</div><div class="sc-val">$1,890</div><div class="sc-sub">$45/unit/month</div></div>
+          <div class="stat-card"><div class="sc-label">Next Major Project</div><div class="sc-val">2027</div><div class="sc-sub">Roof: Est. $85,000</div></div>
+        </div>
+        <div class="card"><div class="card-header"><span class="card-title">30-Year Capital Reserve Projection</span></div><div class="tbl-wrap"><table>
+          <thead><tr><th>Year</th><th>Opening Balance</th><th>Contributions</th><th>Expenditures</th><th>Closing Balance</th><th>% Funded</th></tr></thead>
+          <tbody>
+            <tr><td>2025</td><td>$127,400</td><td>$22,680</td><td>$0</td><td>$150,080</td><td><span class="badge b-amber">80%</span></td></tr>
+            <tr><td>2026</td><td>$150,080</td><td>$22,680</td><td>$12,000</td><td>$160,760</td><td><span class="badge b-green">91%</span></td></tr>
+            <tr><td>2027</td><td>$160,760</td><td>$22,680</td><td>$85,000</td><td>$98,440</td><td><span class="badge b-red">56% — Roof</span></td></tr>
+            <tr><td>2028</td><td>$98,440</td><td>$22,680</td><td>$0</td><td>$121,120</td><td><span class="badge b-amber">72%</span></td></tr>
+            <tr><td>2029</td><td>$121,120</td><td>$22,680</td><td>$8,000</td><td>$135,800</td><td><span class="badge b-amber">78%</span></td></tr>
+          </tbody>
+        </table></div></div>
+      </div>
+      <div class="tab-pane">
+        <div class="card"><div class="card-header"><span class="card-title">Check Register — April 2025</span><button class="btn btn-outline btn-sm" onclick="toast('📊 Exporting register...','success')">Export CSV</button></div><div class="tbl-wrap"><table>
+          <thead><tr><th>Date</th><th>Check #</th><th>Payee</th><th>Category</th><th>Amount</th><th>Balance</th></tr></thead>
+          <tbody>
+            <tr><td>Apr 2</td><td>4421</td><td>Green Valley Landscaping</td><td>Landscaping</td><td>$3,800</td><td>$44,400</td></tr>
+            <tr><td>Apr 5</td><td>4422</td><td>APS Electric</td><td>Utilities</td><td>$2,140</td><td>$42,260</td></tr>
+            <tr><td>Apr 8</td><td>4423</td><td>Ace Plumbing Co.</td><td>Maintenance</td><td>$820</td><td>$41,440</td></tr>
+            <tr><td>Apr 10</td><td>ACH</td><td>Linda Chen Property Mgmt</td><td>Management</td><td>$1,600</td><td>$39,840</td></tr>
+            <tr><td>Apr 12</td><td>4424</td><td>Bright Electric LLC</td><td>Maintenance</td><td>$420</td><td>$39,420</td></tr>
+          </tbody>
+        </table></div></div>
+      </div>
+    </div>
+
+    <!-- B: Violations -->
+    <div class="page" id="page-b-violations">
+      <div class="ph">
+        <div class="ph-left"><h2>Violation Tracking</h2><p>CC&R enforcement with built-in due process</p></div>
+        <div class="ph-right"><button class="btn btn-primary" onclick="openModal('m-new-vio')">+ New Violation</button></div>
+      </div>
+      <div class="g4 mb-20">
+        <div class="stat-card"><div class="sc-label">Open Violations</div><div class="sc-val">7</div></div>
+        <div class="stat-card"><div class="sc-label">Unpaid Fines</div><div class="sc-val" style="color:var(--red)">$425</div></div>
+        <div class="stat-card"><div class="sc-label">Issued This Month</div><div class="sc-val">3</div></div>
+        <div class="stat-card"><div class="sc-label">Resolved YTD</div><div class="sc-val" style="color:var(--emerald)">24</div></div>
+      </div>
+      <div id="vio-list">
+        <div class="v-card" id="vio-1">
+          <div class="v-card-top">
+            <div class="v-thumb">🚗</div>
+            <div class="v-info">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <div><div class="v-title">Unauthorized Vehicle in Guest Parking</div><div class="v-meta">Unit 118 · #VIO-0318 · Apr 2, 2025 · 3rd offense</div></div>
+                <span class="badge b-amber">Warning</span>
+              </div>
+              <div class="v-actions">
+                <button class="btn btn-danger btn-sm" onclick="escalateVio('vio-1','$100 fine')">Escalate → $100 Fine</button>
+                <button class="btn btn-outline btn-sm" onclick="openModal('m-send-notice');setNoticeUnit('Unit 118','#VIO-0318')">Send Notice</button>
+                <button class="btn btn-outline btn-sm" onclick="openModal('m-hearing');setHearingUnit('Unit 118','#VIO-0318')">Schedule Hearing</button>
+                <button class="btn btn-success btn-sm" onclick="resolveVio('vio-1')">✓ Resolve</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-card" id="vio-2">
+          <div class="v-card-top">
+            <div class="v-thumb">🌿</div>
+            <div class="v-info">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <div><div class="v-title">Unapproved Landscaping Modification</div><div class="v-meta">Unit 204 · #VIO-0312 · Mar 15, 2025</div></div>
+                <span class="badge b-red">Fine: $150</span>
+              </div>
+              <div class="v-actions">
+                <button class="btn btn-outline btn-sm" onclick="openModal('m-hearing');setHearingUnit('Unit 204','#VIO-0312')">Schedule Hearing</button>
+                <button class="btn btn-outline btn-sm" onclick="openModal('m-collect-fine');setFineUnit('Unit 204','$150.00','#VIO-0312')">Collect Fine</button>
+                <button class="btn btn-success btn-sm" onclick="resolveVio('vio-2')">✓ Resolve</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-card" id="vio-3">
+          <div class="v-card-top">
+            <div class="v-thumb">🎵</div>
+            <div class="v-info">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <div><div class="v-title">Noise — After Hours (10PM+)</div><div class="v-meta">Unit 312 · #VIO-0315 · Apr 5, 2025 · 1st offense</div></div>
+                <span class="badge b-blue">Under Review</span>
+              </div>
+              <div class="v-actions">
+                <button class="btn btn-outline btn-sm" onclick="openModal('m-send-notice');setNoticeUnit('Unit 312','#VIO-0315')">Send Courtesy Notice</button>
+                <button class="btn btn-danger btn-sm" onclick="escalateVio('vio-3','$50 fine')">Escalate → $50 Fine</button>
+                <button class="btn btn-success btn-sm" onclick="resolveVio('vio-3')">✓ Resolve</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Maintenance (board view) -->
+    <div class="page" id="page-b-requests">
+      <div class="ph"><div class="ph-left"><h2>Maintenance Requests</h2><p>All community requests</p></div></div>
+      <div class="g3 mb-20">
+        <div class="stat-card"><div class="sc-label">Total Open</div><div class="sc-val">12</div></div>
+        <div class="stat-card"><div class="sc-label">Unassigned</div><div class="sc-val" style="color:var(--red)">4</div></div>
+        <div class="stat-card"><div class="sc-label">Completed This Month</div><div class="sc-val" style="color:var(--emerald)">8</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">All Requests</span><button class="btn btn-outline btn-sm" onclick="toast('📊 Exporting requests...','success')">Export</button></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>ID</th><th>Unit</th><th>Issue</th><th>Category</th><th>Priority</th><th>Submitted</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>#MR-051</td><td>301</td><td>HVAC not cooling</td><td>HVAC</td><td><span class="badge b-red">High</span></td><td>Apr 8</td><td><span class="badge b-red">Unassigned</span></td><td><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Vendor</button></td></tr>
+            <tr><td>#MR-050</td><td>118</td><td>Water heater leak</td><td>Plumbing</td><td><span class="badge b-red">High</span></td><td>Apr 6</td><td><span class="badge b-red">Unassigned</span></td><td><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Vendor</button></td></tr>
+            <tr><td>#MR-049</td><td>Common</td><td>Pool pump failure</td><td>Pool</td><td><span class="badge b-red">High</span></td><td>Apr 5</td><td><span class="badge b-red">Unassigned</span></td><td><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Vendor</button></td></tr>
+            <tr><td>#MR-048</td><td>210</td><td>Gate intercom broken</td><td>Security</td><td><span class="badge b-amber">Medium</span></td><td>Apr 3</td><td><span class="badge b-red">Unassigned</span></td><td><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Vendor</button></td></tr>
+            <tr><td>#MR-047</td><td>204</td><td>Leaking kitchen faucet</td><td>Plumbing</td><td><span class="badge b-blue">Normal</span></td><td>Mar 25</td><td><span class="badge b-amber">Scheduled Apr 18</span></td><td><button class="btn btn-outline btn-sm" onclick="openModal('m-req-detail')">View Details</button></td></tr>
+            <tr><td>#MR-046</td><td>110</td><td>Dryer vent cleaning</td><td>General</td><td><span class="badge b-blue">Normal</span></td><td>Mar 22</td><td><span class="badge b-amber">In Progress</span></td><td><button class="btn btn-outline btn-sm" onclick="openModal('m-req-detail')">View Details</button></td></tr>
+            <tr><td>#MR-041</td><td>Common</td><td>Parking lot light out</td><td>Electrical</td><td><span class="badge b-blue">Normal</span></td><td>Mar 10</td><td><span class="badge b-green">Completed</span></td><td><button class="btn btn-outline btn-sm" onclick="toast('✅ Completed Mar 18 by Bright Electric. Cost: $420','success')">View</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- B: ARC -->
+    <div class="page" id="page-b-arc">
+      <div class="ph"><div class="ph-left"><h2>Architectural Review (ARC)</h2><p>Review and approve exterior modification requests</p></div></div>
+      <div class="alert al-amber mb-16"><span class="alert-icon">⏰</span><div>Arizona HOA law requires response within <strong>30 days</strong>. Two applications are approaching this deadline.</div></div>
+      <div class="arc-card">
+        <div class="arc-top">
+          <div><div class="arc-title">Solar Panel Installation — Unit 118</div><div class="arc-meta">Submitted Mar 25, 2025 · Applicant: Robert Thompson</div></div>
+          <span class="arc-deadline">⏰ 3 days left</span>
+        </div>
+        <div style="font-size:12px;color:var(--slate);line-height:1.6;margin-bottom:12px">Requesting approval for 8 rooftop solar panels on south-facing slope. Installer: SunPower AZ. All panels within roofline, no HOA boundary impact.</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-success btn-sm" onclick="approveARC(this,'Solar Panel — Unit 118')">✓ Approve</button>
+          <button class="btn btn-outline btn-sm" onclick="toast('📋 Approved with conditions — no panels visible from street','success')">Approve with Conditions</button>
+          <button class="btn btn-danger btn-sm" onclick="toast('❌ Denial notice sent to Unit 118','info')">Deny</button>
+          <button class="btn btn-outline btn-sm" onclick="toast('📋 Request for additional info sent','info')">Request Info</button>
+        </div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-top">
+          <div><div class="arc-title">Patio Extension — Unit 312</div><div class="arc-meta">Submitted Apr 1, 2025 · Applicant: Marcus Williams</div></div>
+          <span class="arc-deadline">⏰ 10 days left</span>
+        </div>
+        <div style="font-size:12px;color:var(--slate);line-height:1.6;margin-bottom:12px">Requesting approval to extend rear patio by 8ft using matching pavers. Licensed contractor engaged. Permit obtained from City of Scottsdale.</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-success btn-sm" onclick="approveARC(this,'Patio Extension — Unit 312')">✓ Approve</button>
+          <button class="btn btn-outline btn-sm" onclick="toast('📋 Approved with conditions — inspections required','success')">Approve with Conditions</button>
+          <button class="btn btn-danger btn-sm" onclick="toast('❌ Denial notice sent to Unit 312','info')">Deny</button>
+          <button class="btn btn-outline btn-sm" onclick="toast('📋 Request for additional info sent','info')">Request Info</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Announcements -->
+    <div class="page" id="page-b-announce">
+      <div class="ph"><div class="ph-left"><h2>Announcements</h2><p>Send community-wide communications</p></div><div class="ph-right"><button class="btn btn-primary" onclick="openModal('m-announcement')">+ New Announcement</button></div></div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Announcement History</span></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Subject</th><th>Sent To</th><th>Opens</th></tr></thead>
+            <tbody>
+              <tr><td>Apr 10</td><td>Pool Maintenance Apr 14–15</td><td>All Units (42)</td><td>38 / 42</td></tr>
+              <tr><td>Apr 1</td><td>April Newsletter</td><td>All Units (42)</td><td>35 / 42</td></tr>
+              <tr><td>Mar 28</td><td>Board Meeting Minutes Published</td><td>All Units (42)</td><td>29 / 42</td></tr>
+              <tr><td>Mar 15</td><td>Annual Financial Report Available</td><td>All Units (42)</td><td>41 / 42</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Quick Stats</span></div>
+          <div class="card-body">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Email subscribers</span><strong>42 / 42</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">SMS subscribers</span><strong>31 / 42</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">Avg open rate</span><strong style="color:var(--emerald)">86%</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px"><span style="color:var(--muted)">Total sent this year</span><strong>14</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Vendors -->
+    <div class="page" id="page-b-vendors">
+      <div class="ph"><div class="ph-left"><h2>Vendor Management</h2><p>Approved contractors and service providers</p></div><div class="ph-right"><button class="btn btn-primary" onclick="openModal('m-add-vendor')">+ Add Vendor</button></div></div>
+      <div class="vendor-card"><div class="vendor-avatar">🔧</div><div class="vendor-info"><div class="vendor-name">Ace Plumbing Co.</div><div class="vendor-detail">Plumbing · License: AZ-PL-88421 · Insurance: ✅ Valid · W-9: ✅ On file</div><div class="vendor-rating">★★★★★ <span style="color:var(--muted);margin-left:4px">4.9 · 12 jobs</span></div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="toast('📞 Calling Ace Plumbing: (480) 555-0144','info')">📞 Call</button><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Job</button></div></div>
+      <div class="vendor-card"><div class="vendor-avatar">🌿</div><div class="vendor-info"><div class="vendor-name">Green Valley Landscaping</div><div class="vendor-detail">Landscaping · License: AZ-LS-21088 · Insurance: ✅ Valid · W-9: ✅ On file · Contract: Monthly $3,800</div><div class="vendor-rating">★★★★☆ <span style="color:var(--muted);margin-left:4px">4.3 · 24 months</span></div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="toast('📞 Calling Green Valley: (480) 555-0122','info')">📞 Call</button><button class="btn btn-outline btn-sm" onclick="openModal('m-vendor-contract')">View Contract</button></div></div>
+      <div class="vendor-card"><div class="vendor-avatar">⚡</div><div class="vendor-info"><div class="vendor-name">Bright Electric LLC</div><div class="vendor-detail">Electrical · License: AZ-EL-44210 · Insurance: ✅ Valid · W-9: ✅ On file</div><div class="vendor-rating">★★★★★ <span style="color:var(--muted);margin-left:4px">4.8 · 8 jobs</span></div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="toast('📞 Calling Bright Electric: (480) 555-0199','info')">📞 Call</button><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Job</button></div></div>
+      <div class="vendor-card"><div class="vendor-avatar">❄️</div><div class="vendor-info"><div class="vendor-name">Desert Cool HVAC</div><div class="vendor-detail">HVAC · License: AZ-HVAC-33011 · Insurance: ✅ Valid · W-9: ⚠️ Needs renewal</div><div class="vendor-rating">★★★★☆ <span style="color:var(--muted);margin-left:4px">4.5 · 6 jobs</span></div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="toast('📧 W-9 renewal request sent to Desert Cool','success')">Request W-9</button><button class="btn btn-primary btn-sm" onclick="openModal('m-assign')">Assign Job</button></div></div>
+    </div>
+
+    <!-- ══ MANAGER PAGES ══ -->
+
+    <!-- M: Portfolio Dashboard -->
+    <div class="page" id="page-m-dash">
+      <div class="ph"><div class="ph-left"><h2>Portfolio Dashboard</h2><p>Linda Chen Property Management · 4 Communities</p></div><div class="ph-right"><button class="btn btn-outline" onclick="navigate('m-reports')">📊 Generate Report</button></div></div>
+      <div class="g4 mb-20">
+        <div class="stat-card"><div class="sc-label">Communities</div><div class="sc-val">4</div><div class="sc-sub">486 total units</div></div>
+        <div class="stat-card"><div class="sc-label">Monthly Revenue</div><div class="sc-val">$97,200</div><div class="sc-sub sc-up">96.1% collected</div></div>
+        <div class="stat-card"><div class="sc-label">Open Violations</div><div class="sc-val">23</div><div class="sc-sub sc-down">Across all communities</div></div>
+        <div class="stat-card"><div class="sc-label">Open Requests</div><div class="sc-val">41</div><div class="sc-sub sc-down">9 unassigned</div></div>
+      </div>
+      <div class="card mb-16">
+        <div class="card-header"><span class="card-title">Community Portfolio</span></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Community</th><th>Units</th><th>Monthly Revenue</th><th>Collection Rate</th><th>Open Issues</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sunridge Villas</strong><br><span style="font-size:11px;color:var(--muted)">Scottsdale, AZ</span></td><td>42</td><td>$11,970</td><td><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--emerald);font-weight:600">94%</span><div class="prog-wrap" style="width:60px"><div class="prog-fill prog-green" style="width:94%"></div></div></div></td><td><span class="badge b-amber">12 open</span></td><td><span class="badge b-green">Healthy</span></td><td><button class="btn btn-outline btn-sm" onclick="navigate('b-dash');toast('🏘️ Switched to Sunridge Villas board view','info')">Manage</button></td></tr>
+            <tr><td><strong>Lakewood Estates</strong><br><span style="font-size:11px;color:var(--muted)">Phoenix, AZ</span></td><td>128</td><td>$36,480</td><td><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--emerald);font-weight:600">97%</span><div class="prog-wrap" style="width:60px"><div class="prog-fill prog-green" style="width:97%"></div></div></div></td><td><span class="badge b-green">3 open</span></td><td><span class="badge b-green">Excellent</span></td><td><button class="btn btn-outline btn-sm" onclick="navigate('b-financials');toast('🏘️ Switched to Lakewood Estates financials','info')">Manage</button></td></tr>
+            <tr><td><strong>Mesa Ridge</strong><br><span style="font-size:11px;color:var(--muted)">Mesa, AZ</span></td><td>196</td><td>$37,240</td><td><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--amber);font-weight:600">88%</span><div class="prog-wrap" style="width:60px"><div class="prog-fill prog-amber" style="width:88%"></div></div></div></td><td><span class="badge b-red">21 open</span></td><td><span class="badge b-amber">Needs Attention</span></td><td><button class="btn btn-danger btn-sm" onclick="navigate('m-compliance');toast('⚠️ Reviewing Mesa Ridge compliance issues','info')">⚠️ Review</button></td></tr>
+            <tr><td><strong>Copper Canyon</strong><br><span style="font-size:11px;color:var(--muted)">Tempe, AZ</span></td><td>120</td><td>$11,510</td><td><div style="display:flex;align-items:center;gap:6px"><span style="color:var(--emerald);font-weight:600">96%</span><div class="prog-wrap" style="width:60px"><div class="prog-fill prog-green" style="width:96%"></div></div></div></td><td><span class="badge b-green">5 open</span></td><td><span class="badge b-green">Healthy</span></td><td><button class="btn btn-outline btn-sm" onclick="navigate('b-requests');toast('🏘️ Switched to Copper Canyon requests','info')">Manage</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="card-header"><span class="card-title">Revenue by Community</span></div><div class="card-body"><div id="m-chart" class="bar-chart"></div></div></div>
+        <div class="card"><div class="card-header"><span class="card-title">Portfolio Alerts</span></div><div class="card-body">
+          <div class="alert al-red" style="cursor:pointer" onclick="navigate('m-compliance')"><span class="alert-icon">🚨</span><div><strong>Mesa Ridge</strong> — 23 units overdue. Collection rate dropped 5% MoM. <u>Review →</u></div></div>
+          <div class="alert al-amber" style="cursor:pointer" onclick="navigate('b-arc')"><span class="alert-icon">🏗️</span><div><strong>Sunridge Villas</strong> — 2 ARC applications within 3 days of 30-day deadline.</div></div>
+          <div class="alert al-blue"><span class="alert-icon">📊</span><div>Q1 2025 financial reports ready for all 4 communities. <a href="#" style="color:var(--blue);font-weight:600">Generate package →</a></div></div>
+          <div class="alert al-indigo"><span class="alert-icon">💼</span><div>Desert Cool HVAC W-9 expired. Payments over $600 require updated form before 1099 filing.</div></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- M: Reports -->
+    <div class="page" id="page-m-reports">
+      <div class="ph"><div class="ph-left"><h2>Reports & Analytics</h2><p>Generate and export portfolio-wide reports</p></div></div>
+      <div class="g2 mb-20">
+        <div class="stat-card"><div class="sc-label">Portfolio Revenue YTD</div><div class="sc-val">$388,800</div><div class="sc-sub sc-up">+4.2% vs prior year</div></div>
+        <div class="stat-card"><div class="sc-label">Avg Collection Rate</div><div class="sc-val">94.2%</div><div class="sc-sub">Industry avg: 89%</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Generate Report</span></div>
+          <div class="card-body">
+            <div class="fg"><label>Community</label><select><option>All Communities (Portfolio)</option><option>Sunridge Villas</option><option>Lakewood Estates</option><option>Mesa Ridge</option><option>Copper Canyon</option></select></div>
+            <div class="fg"><label>Report Type</label><select><option>Financial Summary</option><option>Income Statement</option><option>Budget vs Actual</option><option>A/R Aging Report</option><option>Collections Report</option><option>Violation Summary</option><option>Maintenance Report</option><option>Reserve Fund Status</option><option>1099 Preparation</option></select></div>
+            <div class="form-grid">
+              <div class="fg"><label>From Date</label><input type="date" value="2025-01-01"/></div>
+              <div class="fg"><label>To Date</label><input type="date" value="2025-04-13"/></div>
+            </div>
+            <div class="fg"><label>Format</label><select><option>PDF (Board Presentation)</option><option>Excel / CSV</option><option>QuickBooks IIF</option></select></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-primary btn-lg" onclick="generateReport()">Generate Report</button>
+              <button class="btn btn-outline btn-lg" onclick="toast('🔄 Syncing all communities to QuickBooks...','success')">QuickBooks Sync</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Recent Reports</span></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Report</th><th>Community</th><th>Generated</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Q1 Financial Summary</td><td>All</td><td>Apr 1, 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading Q1 report...','success')">Download</button></td></tr>
+              <tr><td>A/R Aging Report</td><td>Mesa Ridge</td><td>Apr 5, 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></td></tr>
+              <tr><td>Collections Summary</td><td>All</td><td>Mar 31, 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading...','success')">Download</button></td></tr>
+              <tr><td>2024 1099 Package</td><td>All</td><td>Jan 15, 2025</td><td><button class="btn btn-outline btn-sm" onclick="toast('📊 Downloading 1099s...','success')">Download</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M: Compliance -->
+    <div class="page" id="page-m-compliance">
+      <div class="ph"><div class="ph-left"><h2>Compliance Center</h2><p>US federal and state HOA law compliance tracking</p></div></div>
+      <div class="g2 mb-20">
+        <div class="stat-card"><div class="sc-label">Compliance Score</div><div class="sc-val" style="color:var(--emerald)">91%</div><div class="sc-sub">3 items need attention</div></div>
+        <div class="stat-card"><div class="sc-label">State</div><div class="sc-val">Arizona</div><div class="sc-sub">Arizona HOA Act · A.R.S. §33-1801</div></div>
+      </div>
+      <div class="card mb-16">
+        <div class="card-header"><span class="card-title">Federal Compliance</span></div>
+        <div class="card-body">
+          <div class="comp-item"><div><div class="comp-info-title">Fair Housing Act (FHA)</div><div class="comp-info-sub">Non-discrimination, reasonable accommodation process in place</div></div><span class="badge b-green">✓ Compliant</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">FDCPA — Fair Debt Collection</div><div class="comp-info-sub">Compliant notices and cure periods enforced automatically</div></div><span class="badge b-green">✓ Compliant</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">ESIGN Act — Electronic Signatures</div><div class="comp-info-sub">All electronic signatures legally binding</div></div><span class="badge b-green">✓ Compliant</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">CCPA Data Privacy</div><div class="comp-info-sub">Resident data deletion and opt-out workflows active</div></div><span class="badge b-green">✓ Compliant</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">ADA / WCAG 2.1 AA Accessibility</div><div class="comp-info-sub">Platform meets accessibility standards</div></div><span class="badge b-green">✓ Compliant</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Arizona State Requirements</span></div>
+        <div class="card-body">
+          <div class="comp-item"><div><div class="comp-info-title">Meeting Notice — 48 Hours Minimum</div><div class="comp-info-sub">Board meeting April 22 — notice must go out by April 20 at 7PM</div></div><span class="badge b-red">⚠️ Action Needed</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">Annual Meeting — Held Annually</div><div class="comp-info-sub">Last held: November 2024. Next due: November 2025</div></div><span class="badge b-green">✓ On Track</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">Violation Cure Period — 10 Days Min</div><div class="comp-info-sub">All violations issued with compliant cure periods</div></div><span class="badge b-green">✓ Compliant</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">Reserve Disclosure — Annual</div><div class="comp-info-sub">2024 Reserve Study completed and distributed to owners</div></div><span class="badge b-green">✓ Compliant</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">1099-NEC Filing — Vendors $600+</div><div class="comp-info-sub">Desert Cool HVAC W-9 expired — cannot file 1099 until renewed</div></div><span class="badge b-amber">⚠️ W-9 Needed</span></div>
+          <div class="comp-item"><div><div class="comp-info-title">Election Procedures</div><div class="comp-info-sub">Board elections conducted per A.R.S. §33-1813</div></div><span class="badge b-green">✓ Compliant</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARED: Settings -->
+    <div class="page" id="page-settings">
+      <div class="ph"><div class="ph-left"><h2>Account Settings</h2><p>Manage your profile, notifications, and preferences</p></div><div class="ph-right"><button class="btn btn-primary" onclick="toast('✅ Settings saved successfully','success')">Save Changes</button></div></div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Profile Information</span></div>
+          <div class="card-body">
+            <div class="settings-section">
+              <div class="fg"><label>Full Name</label><input type="text" id="set-name" value="Sarah Mitchell"/></div>
+              <div class="fg"><label>Email Address</label><input type="email" id="set-email" value="resident@demo.com"/></div>
+              <div class="fg"><label>Phone Number</label><input type="tel" placeholder="(555) 000-0000" value="(480) 555-0204"/></div>
+              <div class="fg"><label>Emergency Contact</label><input type="text" placeholder="Name and phone number"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Notification Preferences</span></div>
+          <div class="card-body">
+            <div class="settings-section">
+              <div class="toggle-row"><div><div class="toggle-info">Payment reminders</div><div class="toggle-lbl">Email 7 and 3 days before due date</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-info">Payment confirmations</div><div class="toggle-lbl">Email when payment is processed</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-info">Maintenance request updates</div><div class="toggle-lbl">Email and SMS status changes</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-info">Community announcements</div><div class="toggle-lbl">Email from board</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-info">Voting & elections</div><div class="toggle-lbl">Email when new vote opens</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-info">Violation notices</div><div class="toggle-lbl">Email and certified mail</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-info">Include in resident directory</div><div class="toggle-lbl">Let neighbors see my contact info</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="card-header"><span class="card-title">Security</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label>Current Password</label><input type="password" placeholder="Enter current password"/></div>
+            <div class="fg"><label>New Password</label><input type="password" placeholder="Min 8 characters"/></div>
+          </div>
+          <div class="form-grid">
+            <div><button class="btn btn-primary" onclick="toast('✅ Password updated successfully','success')">Update Password</button></div>
+            <div><button class="btn btn-outline" onclick="toast('📱 Two-factor authentication enabled','success')">Enable 2FA</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARED: Profile -->
+    <div class="page" id="page-profile">
+      <div class="ph"><div class="ph-left"><h2>My Profile</h2></div></div>
+      <div class="card" style="max-width:500px">
+        <div class="card-body" style="text-align:center;padding:32px">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--accent-bg);border:3px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--accent);margin:0 auto 16px" id="prof-ava">SM</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="prof-name">Sarah Mitchell</div>
+          <div style="font-size:13px;color:var(--muted)" id="prof-role">Resident · Unit 204 · Sunridge Villas HOA</div>
+          <div style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+            <button class="btn btn-outline" onclick="navigate('settings')">⚙️ Edit Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main><!-- /main -->
+</div><!-- /s-app -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- New Maintenance Request -->
+<div class="overlay" id="m-new-req">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Submit Maintenance Request</div><button class="mh-close" onclick="closeModal('m-new-req')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Issue Title</label><input type="text" placeholder="Brief description of the problem"/></div>
+      <div class="form-grid">
+        <div class="fg"><label>Category</label><select><option>Plumbing</option><option>Electrical</option><option>HVAC</option><option>Appliance</option><option>Structural</option><option>Common Area</option><option>Other</option></select></div>
+        <div class="fg"><label>Priority</label><select><option>Normal</option><option>High — Safety Issue</option><option>Emergency (24hr response)</option></select></div>
+      </div>
+      <div class="fg"><label>Detailed Description</label><textarea placeholder="When did it start? How severe? Previous occurrences?"></textarea></div>
+      <div class="fg"><label>Photos</label><input type="file" accept="image/*" multiple/></div>
+      <div class="fg"><label>Preferred Contact Method</label><select><option>Email only</option><option>Email + Phone call</option><option>Email + SMS text</option></select></div>
+      <div class="alert al-blue"><span class="alert-icon">ℹ️</span><div>Normal requests: 3–5 business day response. High priority: 24–48 hours. Emergency: same-day response.</div></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-new-req')">Cancel</button><button class="btn btn-primary" onclick="submitReq()">Submit Request</button></div>
+  </div>
+</div>
+
+<!-- New Violation (Board) -->
+<div class="overlay" id="m-new-vio">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Issue Violation Notice</div><button class="mh-close" onclick="closeModal('m-new-vio')">✕</button></div>
+    <div class="mb">
+      <div class="alert al-indigo"><span class="alert-icon">⚖️</span><div>Arizona requires a written notice with a minimum <strong>10-day cure period</strong> before a fine can be levied. This is enforced automatically.</div></div>
+      <div class="form-grid">
+        <div class="fg"><label>Unit</label><select><option>Unit 101</option><option>Unit 102</option><option>Unit 118</option><option>Unit 203</option><option>Unit 204</option><option>Unit 210</option><option>Unit 301</option><option>Unit 312</option></select></div>
+        <div class="fg"><label>Violation Type</label><select><option>Parking</option><option>Landscaping / Exterior</option><option>Noise</option><option>Architectural (No ARC)</option><option>Trash / Debris</option><option>Pet Violation</option><option>Other CC&R Violation</option></select></div>
+      </div>
+      <div class="fg"><label>Description</label><textarea placeholder="Be specific — this may be referenced in legal proceedings. Include dates, times, and observable facts."></textarea></div>
+      <div class="form-grid">
+        <div class="fg"><label>Notice Level</label><select><option>Courtesy Warning (no fine)</option><option>First Notice — 10-day cure</option><option>Second Notice — $50 fine</option><option>Third Notice — $100 fine</option><option>Escalated — $250 + hearing</option></select></div>
+        <div class="fg"><label>Evidence Photos</label><input type="file" accept="image/*" multiple/></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-new-vio')">Cancel</button><button class="btn btn-primary" onclick="issueVio()">Issue Notice</button></div>
+  </div>
+</div>
+
+<!-- Assign Vendor (Board) -->
+<div class="overlay" id="m-assign">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Assign to Vendor</div><button class="mh-close" onclick="closeModal('m-assign')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Select Vendor</label><select><option>Ace Plumbing Co. ★★★★★</option><option>Bright Electric LLC ★★★★★</option><option>Desert Cool HVAC ★★★★☆</option><option>Green Valley Landscaping ★★★★☆</option></select></div>
+      <div class="form-grid">
+        <div class="fg"><label>Scheduled Date</label><input type="date"/></div>
+        <div class="fg"><label>Scheduled Time</label><input type="time" value="09:00"/></div>
+      </div>
+      <div class="fg"><label>Budget Authorization</label><select><option>Up to $500 (standard)</option><option>Up to $1,000</option><option>Up to $2,500 (board approval required)</option><option>Custom amount</option></select></div>
+      <div class="fg"><label>Special Instructions</label><textarea placeholder="Access instructions, contact person, known hazards..."></textarea></div>
+      <div class="alert al-blue"><span class="alert-icon">ℹ️</span><div>Resident will receive automated SMS/email when vendor is assigned and again 24 hours before visit.</div></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-assign')">Cancel</button><button class="btn btn-primary" onclick="assignVendor()">Assign & Notify</button></div>
+  </div>
+</div>
+
+<!-- Amenity Booking -->
+<div class="overlay" id="m-book">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Reserve Amenity</div><button class="mh-close" onclick="closeModal('m-book')">✕</button></div>
+    <div class="mb">
+      <div class="form-grid">
+        <div class="fg"><label>Amenity</label><select><option>🏊 Community Pool</option><option>🏛️ Clubhouse ($50 deposit)</option><option>🎾 Tennis Court 1</option><option>🎾 Tennis Court 2</option></select></div>
+        <div class="fg"><label>Date</label><input type="date"/></div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>Start Time</label><select><option>7:00 AM</option><option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select></div>
+        <div class="fg"><label>Duration</label><select><option>1 hour</option><option>2 hours</option><option>3 hours</option><option>4 hours</option></select></div>
+      </div>
+      <div class="fg"><label>Guest Count</label><input type="number" min="0" max="30" value="0" placeholder="Number of guests"/></div>
+      <div class="fg"><label>Notes (optional)</label><input type="text" placeholder="e.g. Birthday party, need extra chairs set up"/></div>
+      <div class="alert al-amber"><span class="alert-icon">💳</span><div>Clubhouse reservations require a <strong>$50 refundable security deposit</strong> charged to your payment method on file, refunded within 3 days after the event if no damage occurs.</div></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-book')">Cancel</button><button class="btn btn-primary" onclick="bookAmenity()">Confirm Reservation</button></div>
+  </div>
+</div>
+
+<!-- Add Payment Method -->
+<div class="overlay" id="m-add-payment">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Add Payment Method</div><button class="mh-close" onclick="closeModal('m-add-payment')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Method Type</label><select id="pay-type" onchange="togglePayType(this)"><option value="ach">Bank Account (ACH — Recommended)</option><option value="card">Debit / Credit Card</option></select></div>
+      <div id="ach-fields">
+        <div class="alert al-blue mb-16"><span class="alert-icon">🔒</span><div>Bank account verified securely via Plaid. CanHOA never stores your login credentials.</div></div>
+        <div class="form-grid"><div class="fg"><label>Bank Routing Number</label><input type="text" placeholder="9-digit routing number" maxlength="9"/></div><div class="fg"><label>Account Number</label><input type="text" placeholder="Account number"/></div></div>
+        <div class="form-grid"><div class="fg"><label>Account Type</label><select><option>Checking</option><option>Savings</option></select></div><div class="fg"><label>Account Holder Name</label><input type="text" placeholder="Name as on account"/></div></div>
+      </div>
+      <div id="card-fields" style="display:none">
+        <div class="fg"><label>Card Number</label><input type="text" placeholder="•••• •••• •••• ••••" maxlength="19"/></div>
+        <div class="form-grid"><div class="fg"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"/></div><div class="fg"><label>CVV</label><input type="text" placeholder="3–4 digits" maxlength="4"/></div></div>
+        <div class="fg"><label>Name on Card</label><input type="text" placeholder="As it appears on your card"/></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-add-payment')">Cancel</button><button class="btn btn-primary" onclick="addPaymentMethod()">Add Method</button></div>
+  </div>
+</div>
+
+<!-- Announcement (Board) -->
+<div class="overlay" id="m-announcement">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Send Community Announcement</div><button class="mh-close" onclick="closeModal('m-announcement')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Subject</label><input type="text" placeholder="e.g. Pool Closed for Maintenance April 14–15"/></div>
+      <div class="fg"><label>Message</label><textarea style="min-height:120px" placeholder="Write your announcement here..."></textarea></div>
+      <div class="form-grid">
+        <div class="fg"><label>Send To</label><select><option>All Residents (42 units)</option><option>Owners Only</option><option>Renters Only</option><option>Specific Units</option></select></div>
+        <div class="fg"><label>Send Via</label><select><option>Email + In-App</option><option>Email Only</option><option>SMS + Email + In-App</option></select></div>
+      </div>
+      <div class="fg"><label>Schedule</label><select><option>Send Immediately</option><option>Schedule for Later</option></select></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-announcement')">Cancel</button><button class="btn btn-outline" onclick="toast('👁️ Preview opened','info');closeModal('m-announcement')">Preview</button><button class="btn btn-primary" onclick="sendAnnouncement()">Send Now</button></div>
+  </div>
+</div>
+
+<!-- Lien Process -->
+<div class="overlay" id="m-lien">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Initiate Lien Process — Unit 118</div><button class="mh-close" onclick="closeModal('m-lien')">✕</button></div>
+    <div class="mb">
+      <div class="alert al-red"><span class="alert-icon">⚖️</span><div>This will begin the formal lien process under Arizona A.R.S. §33-1807. This is a legal proceeding — consult your HOA attorney before proceeding.</div></div>
+      <div style="background:var(--bg);border-radius:var(--r2);padding:14px;margin-bottom:14px">
+        <div style="font-size:12px;font-weight:700;margin-bottom:8px">Unit 118 — Robert Thompson — Delinquency Summary</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--muted)">Past due dues</span><span>$855.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--muted)">Late fees (3 × $25)</span><span>$75.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--muted)">Attorney fee (estimated)</span><span>$250.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:6px"><span>Total Lien Amount</span><span style="color:var(--red)">$1,180.00</span></div>
+      </div>
+      <div class="fg"><label>Attorney (optional)</label><input type="text" placeholder="HOA attorney name or firm"/></div>
+      <div class="fg"><label>Additional Notes</label><textarea placeholder="Document any prior collection attempts, payment plans offered, etc."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-lien')">Cancel</button><button class="btn btn-danger" onclick="initiateLien()">Initiate Lien Process</button></div>
+  </div>
+</div>
+
+<!-- Hearing (Board) -->
+<div class="overlay" id="m-hearing">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Schedule Violation Hearing</div><button class="mh-close" onclick="closeModal('m-hearing')">✕</button></div>
+    <div class="mb">
+      <div class="alert al-indigo"><span class="alert-icon">⚖️</span><div>Arizona requires the resident receive at least <strong>10 days notice</strong> before a hearing. The notice must include the date, time, location, and nature of the violation.</div></div>
+      <div class="form-grid">
+        <div class="fg"><label>Hearing Date</label><input type="date"/></div>
+        <div class="fg"><label>Hearing Time</label><input type="time" value="19:00"/></div>
+      </div>
+      <div class="fg"><label>Location</label><input type="text" value="Clubhouse, Sunridge Villas" placeholder="Hearing location"/></div>
+      <div class="fg"><label>Board Members Attending</label><input type="text" placeholder="Names of board members present"/></div>
+      <div class="fg"><label>Additional Notes for Resident</label><textarea placeholder="What should the resident bring? What will be discussed?"></textarea></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-hearing')">Cancel</button><button class="btn btn-primary" onclick="scheduleHearing()">Schedule & Notify Resident</button></div>
+  </div>
+</div>
+
+<!-- ARC Application (Resident) -->
+<div class="overlay" id="m-arc-submit">
+  <div class="modal modal-lg">
+    <div class="mh"><div class="mh-title">Submit ARC Application</div><button class="mh-close" onclick="closeModal('m-arc-submit')">✕</button></div>
+    <div class="mb">
+      <div class="alert al-blue"><span class="alert-icon">ℹ️</span><div>The Architectural Review Committee has <strong>30 days</strong> to respond. Projects begun without approval may require removal at your expense.</div></div>
+      <div class="fg"><label>Project Type</label><select><option>Landscaping / Plants</option><option>Patio / Deck</option><option>Fence / Wall</option><option>Exterior Paint Color</option><option>Solar Panels</option><option>Shed / Structure</option><option>Other Exterior Modification</option></select></div>
+      <div class="fg"><label>Project Description</label><textarea style="min-height:100px" placeholder="Describe exactly what you plan to do. Include materials, dimensions, colors, and contractor info."></textarea></div>
+      <div class="form-grid">
+        <div class="fg"><label>Estimated Start Date</label><input type="date"/></div>
+        <div class="fg"><label>Estimated Completion</label><input type="date"/></div>
+      </div>
+      <div class="fg"><label>Contractor (if applicable)</label><input type="text" placeholder="Company name, license number"/></div>
+      <div class="fg"><label>Supporting Documents</label><input type="file" multiple accept=".pdf,.jpg,.png,.doc,.docx"/><div style="font-size:11px;color:var(--muted);margin-top:4px">Include: design drawings, material specs, contractor quotes, city permits if obtained</div></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-arc-submit')">Cancel</button><button class="btn btn-primary" onclick="submitARC()">Submit Application</button></div>
+  </div>
+</div>
+
+<!-- Appeal (Resident) -->
+<div class="overlay" id="m-appeal">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">File Violation Appeal</div><button class="mh-close" onclick="closeModal('m-appeal')">✕</button></div>
+    <div class="mb">
+      <div class="alert al-amber"><span class="alert-icon">⚠️</span><div>Appeals must be filed within <strong>30 days</strong> of the violation notice. The board will schedule a hearing within 14 days.</div></div>
+      <div class="fg"><label>Grounds for Appeal</label><select><option>Factual dispute (violation did not occur)</option><option>Procedural error (improper notice)</option><option>Rule was not clearly communicated</option><option>Hardship circumstance</option><option>Other</option></select></div>
+      <div class="fg"><label>Appeal Statement</label><textarea style="min-height:120px" placeholder="Explain your grounds for appeal in detail. Be specific and factual."></textarea></div>
+      <div class="fg"><label>Supporting Evidence</label><input type="file" multiple accept=".pdf,.jpg,.png"/></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-appeal')">Cancel</button><button class="btn btn-primary" onclick="toast('📋 Appeal #APP-0042 filed successfully. Hearing will be scheduled within 14 days.','success');closeModal('m-appeal')">File Appeal</button></div>
+  </div>
+</div>
+
+<!-- Add Vehicle (Resident Parking) -->
+<div class="overlay" id="m-add-vehicle">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Register Vehicle</div><button class="mh-close" onclick="closeModal('m-add-vehicle')">✕</button></div>
+    <div class="mb">
+      <div class="form-grid">
+        <div class="fg"><label>Make</label><input type="text" placeholder="e.g. Honda"/></div>
+        <div class="fg"><label>Model</label><input type="text" placeholder="e.g. CRV"/></div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>Year</label><input type="number" placeholder="2021" min="1990" max="2026"/></div>
+        <div class="fg"><label>Color</label><input type="text" placeholder="e.g. White"/></div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>License Plate</label><input type="text" placeholder="AZ-XXX-0000"/></div>
+        <div class="fg"><label>State</label><select><option>AZ</option><option>CA</option><option>TX</option><option>NV</option><option>Other</option></select></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-add-vehicle')">Cancel</button><button class="btn btn-primary" onclick="toast('🚗 Vehicle registered. Permit #P-204C issued.','success');closeModal('m-add-vehicle')">Register Vehicle</button></div>
+  </div>
+</div>
+
+<!-- Guest Pass -->
+<div class="overlay" id="m-guest-pass">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Request Guest Parking Pass</div><button class="mh-close" onclick="closeModal('m-guest-pass')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Guest Description</label><input type="text" placeholder="e.g. Mom's Buick"/></div>
+      <div class="form-grid">
+        <div class="fg"><label>License Plate</label><input type="text" placeholder="AZ-XXX-0000"/></div>
+        <div class="fg"><label>State</label><select><option>AZ</option><option>CA</option><option>TX</option><option>NV</option><option>Other</option></select></div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>Start Date</label><input type="date"/></div>
+        <div class="fg"><label>End Date</label><input type="date"/></div>
+      </div>
+      <div class="alert al-blue"><span class="alert-icon">ℹ️</span><div>Guest passes are limited to <strong>3 consecutive days</strong> per month. Requests beyond this require board approval.</div></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-guest-pass')">Cancel</button><button class="btn btn-primary" onclick="toast('✅ Guest pass issued and added to parking system','success');closeModal('m-guest-pass')">Issue Pass</button></div>
+  </div>
+</div>
+
+<!-- Request Detail -->
+<div class="overlay" id="m-req-detail">
+  <div class="modal modal-lg">
+    <div class="mh"><div class="mh-title">Request #MR-047 — Leaking Kitchen Faucet</div><button class="mh-close" onclick="closeModal('m-req-detail')">✕</button></div>
+    <div class="mb">
+      <div class="g2" style="margin-bottom:14px">
+        <div style="font-size:12px"><div style="color:var(--muted);margin-bottom:2px">Unit</div><strong>Unit 204 — Sarah Mitchell</strong></div>
+        <div style="font-size:12px"><div style="color:var(--muted);margin-bottom:2px">Category</div><strong>Plumbing</strong></div>
+        <div style="font-size:12px"><div style="color:var(--muted);margin-bottom:2px">Submitted</div><strong>Mar 25, 2025</strong></div>
+        <div style="font-size:12px"><div style="color:var(--muted);margin-bottom:2px">Status</div><span class="badge b-amber">In Progress</span></div>
+      </div>
+      <div class="fg"><label>Description</label><div style="background:var(--bg);padding:12px;border-radius:var(--r);font-size:13px;color:var(--slate);line-height:1.6">The kitchen sink faucet has been dripping continuously for 2 weeks. Estimated water waste of 30–50 gallons/day. Water bill increased by approximately $30 last month.</div></div>
+      <div class="form-grid">
+        <div class="fg"><label>Assigned Vendor</label><input type="text" value="Ace Plumbing Co." readonly style="background:var(--bg)"/></div>
+        <div class="fg"><label>Scheduled Date</label><input type="date" value="2025-04-18"/></div>
+      </div>
+      <div class="fg"><label>Internal Notes</label><textarea placeholder="Add notes visible to board and vendor only...">Vendor confirmed parts in stock. Entry via front door — resident will be home.</textarea></div>
+      <div class="fg"><label>Estimated Cost</label><input type="text" placeholder="$0.00" value="$280 estimated"/></div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-req-detail')">Close</button><button class="btn btn-success" onclick="toast('✅ Request marked complete. Resident notified.','success');closeModal('m-req-detail')">Mark Complete</button><button class="btn btn-primary" onclick="toast('💾 Updates saved','success')">Save Updates</button></div>
+  </div>
+</div>
+
+<!-- Add Vendor (Board) -->
+<div class="overlay" id="m-add-vendor">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Add Approved Vendor</div><button class="mh-close" onclick="closeModal('m-add-vendor')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Company Name</label><input type="text" placeholder="Business name"/></div>
+      <div class="form-grid">
+        <div class="fg"><label>Service Category</label><select><option>Plumbing</option><option>Electrical</option><option>HVAC</option><option>Landscaping</option><option>General Maintenance</option><option>Pool Service</option><option>Other</option></select></div>
+        <div class="fg"><label>License Number</label><input type="text" placeholder="State license #"/></div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>Contact Name</label><input type="text" placeholder="Primary contact"/></div>
+        <div class="fg"><label>Phone</label><input type="tel" placeholder="(555) 000-0000"/></div>
+      </div>
+      <div class="fg"><label>Email</label><input type="email" placeholder="vendor@company.com"/></div>
+      <div class="form-grid">
+        <div class="fg"><label>Certificate of Insurance</label><input type="file" accept=".pdf"/></div>
+        <div class="fg"><label>W-9 Form</label><input type="file" accept=".pdf"/></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-outline" onclick="closeModal('m-add-vendor')">Cancel</button><button class="btn btn-primary" onclick="toast('✅ Vendor added to approved list','success');closeModal('m-add-vendor')">Add Vendor</button></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Send Notice Modal -->
+<div class="overlay" id="m-send-notice">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Send Violation Notice</div><button class="mh-close" onclick="closeModal('m-send-notice')">✕</button></div>
+    <div class="mb">
+      <div style="background:var(--bg);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px;font-size:13px">
+        <div style="color:var(--muted);font-size:11px;margin-bottom:2px">Sending to</div>
+        <div id="notice-unit-label" style="font-weight:600">Unit 118 · #VIO-0318</div>
+      </div>
+      <div class="fg"><label>Notice Type</label>
+        <select id="notice-type">
+          <option>Courtesy Warning — no fine, informational only</option>
+          <option>First Formal Notice — 10-day cure period begins</option>
+          <option>Second Notice — Fine imposed, 10 days to pay</option>
+          <option>Final Notice before Hearing</option>
+        </select>
+      </div>
+      <div class="fg"><label>Delivery Method</label>
+        <select><option>Email only</option><option>Email + First Class Mail</option><option>Email + Certified Mail (recommended for fines)</option></select>
+      </div>
+      <div class="fg"><label>Notice Body (editable)</label>
+        <textarea style="min-height:110px" id="notice-body">Dear Homeowner,
+
+This notice is to inform you of a violation of the community's Rules & Regulations. Please remedy the situation within the required cure period.
+
+Failure to comply may result in additional fines and/or a formal hearing before the Board of Directors.
+
+Sincerely,
+Sunridge Villas HOA Board</textarea>
+      </div>
+      <div class="alert al-indigo"><span class="alert-icon">⚖️</span><div>Arizona law requires notices include the specific rule violated and cure period. CanHOA appends this automatically.</div></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-outline" onclick="closeModal('m-send-notice')">Cancel</button>
+      <button class="btn btn-outline" onclick="toast('👁️ Notice preview opened','info')">Preview</button>
+      <button class="btn btn-primary" onclick="sendNotice()">Send Notice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Collect Fine Modal -->
+<div class="overlay" id="m-collect-fine">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Collect Fine Payment</div><button class="mh-close" onclick="closeModal('m-collect-fine')">✕</button></div>
+    <div class="mb">
+      <div style="background:var(--bg);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px;font-size:13px">
+        <div style="color:var(--muted);font-size:11px;margin-bottom:2px">Fine for</div>
+        <div id="fine-unit-label" style="font-weight:600">Unit 204 · $150.00 · #VIO-0312</div>
+      </div>
+      <div class="fg"><label>Collection Method</label>
+        <select id="fine-method" onchange="toggleFineMethod(this)">
+          <option value="online">Online Payment Request (email link to resident)</option>
+          <option value="manual">Record Manual Payment (check / cash)</option>
+          <option value="dues">Add to Next Month's Dues Statement</option>
+        </select>
+      </div>
+      <div id="fine-manual-fields" style="display:none">
+        <div class="form-grid">
+          <div class="fg"><label>Payment Date</label><input type="date"/></div>
+          <div class="fg"><label>Payment Method</label><select><option>Check</option><option>Cash</option><option>Money Order</option></select></div>
+        </div>
+        <div class="fg"><label>Check / Reference Number</label><input type="text" placeholder="Check #1234"/></div>
+      </div>
+      <div class="fg"><label>Amount</label>
+        <input type="number" id="fine-amount" value="150" min="0" step="0.01"/>
+      </div>
+      <div class="fg"><label>Notes (internal)</label><textarea placeholder="Optional internal notes..."></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-outline" onclick="closeModal('m-collect-fine')">Cancel</button>
+      <button class="btn btn-primary" onclick="collectFine()">Process Collection</button>
+    </div>
+  </div>
+</div>
+
+<!-- Send Message Modal (Directory) -->
+<div class="overlay" id="m-send-msg">
+  <div class="modal">
+    <div class="mh"><div class="mh-title">Send Message</div><button class="mh-close" onclick="closeModal('m-send-msg')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <label>To</label>
+        <input type="text" id="msg-to" readonly style="background:var(--bg)" value="Sarah Mitchell"/>
+      </div>
+      <div class="fg"><label>Subject</label><input type="text" placeholder="Message subject..."/></div>
+      <div class="fg"><label>Message</label><textarea style="min-height:100px" placeholder="Write your message here..."></textarea></div>
+      <div class="alert al-indigo"><span class="alert-icon">🔒</span><div>Messages are sent through CanHOA — your personal email address is not shared.</div></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-outline" onclick="closeModal('m-send-msg')">Cancel</button>
+      <button class="btn btn-primary" onclick="sendMsg()">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- Vendor Contract Modal -->
+<div class="overlay" id="m-vendor-contract">
+  <div class="modal modal-lg">
+    <div class="mh"><div class="mh-title">Green Valley Landscaping — Service Contract</div><button class="mh-close" onclick="closeModal('m-vendor-contract')">✕</button></div>
+    <div class="mb">
+      <div class="g2" style="margin-bottom:16px">
+        <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">Contract Start</div><strong>January 1, 2024</strong></div>
+        <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">Contract End</div><strong>December 31, 2025</strong></div>
+        <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">Monthly Fee</div><strong>$3,800.00</strong></div>
+        <div><div style="font-size:11px;color:var(--muted);margin-bottom:2px">Annual Value</div><strong>$45,600.00</strong></div>
+      </div>
+      <div class="card mb-16">
+        <div class="card-header"><span class="card-title">Scope of Services</span></div>
+        <div class="card-body" style="font-size:13px;color:var(--slate);line-height:1.8">
+          <div style="margin-bottom:6px">✓ Weekly lawn mowing and edging — all common areas</div>
+          <div style="margin-bottom:6px">✓ Monthly tree trimming and shrub shaping</div>
+          <div style="margin-bottom:6px">✓ Seasonal flower bed planting (Spring & Fall)</div>
+          <div style="margin-bottom:6px">✓ Irrigation system maintenance and repairs up to $200/incident</div>
+          <div style="margin-bottom:6px">✓ Fertilization program — 4x per year</div>
+          <div>✓ Weed control and pest treatment</div>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Month</th><th>Invoice #</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>April 2025</td><td>GVL-0412</td><td>$3,800</td><td>Apr 2</td><td><span class="badge b-green">Paid</span></td></tr>
+          <tr><td>March 2025</td><td>GVL-0388</td><td>$3,800</td><td>Mar 3</td><td><span class="badge b-green">Paid</span></td></tr>
+          <tr><td>February 2025</td><td>GVL-0364</td><td>$3,800</td><td>Feb 4</td><td><span class="badge b-green">Paid</span></td></tr>
+          <tr><td>January 2025</td><td>GVL-0340</td><td>$3,800</td><td>Jan 6</td><td><span class="badge b-green">Paid</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-outline" onclick="closeModal('m-vendor-contract')">Close</button>
+      <button class="btn btn-outline" onclick="toast('📄 Contract PDF downloaded','success')">Download PDF</button>
+      <button class="btn btn-danger" onclick="toast('⚠️ Contract termination requires 30-day written notice','info');closeModal('m-vendor-contract')">Terminate Contract</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+// DATA & CONFIG
+// ════════════════════════════════════════════════════
+const USERS = {
+  'resident@demo.com': {pw:'demo123',role:'resident',name:'Sarah Mitchell',initials:'SM',sub:'Resident · Unit 204'},
+  'board@demo.com':    {pw:'demo123',role:'board',   name:'James Hartwell',initials:'JH',sub:'Board President'},
+  'manager@demo.com':  {pw:'demo123',role:'manager', name:'Linda Chen',    initials:'LC',sub:'Property Manager'},
+};
+const NAV = {
+  resident:[
+    {section:'Main'},
+    {id:'r-dash',     icon:'📊', label:'Dashboard'},
+    {id:'r-payments', icon:'💳', label:'Payments & Dues'},
+    {section:'Community'},
+    {id:'r-maint',    icon:'🔧', label:'Maintenance', badge:2},
+    {id:'r-vote',     icon:'🗳️', label:'Voting & Elections', badge:1},
+    {id:'r-amenities',icon:'🏊', label:'Amenity Booking'},
+    {id:'r-violations',icon:'⚠️',label:'My Violations', badge:1},
+    {section:'Resources'},
+    {id:'r-docs',     icon:'📁', label:'Documents'},
+    {id:'r-parking',  icon:'🚗', label:'Parking Permits'},
+    {id:'r-directory',icon:'👥', label:'Directory'},
+    {section:'Account'},
+    {id:'settings',   icon:'⚙️', label:'Settings'},
+  ],
+  board:[
+    {section:'Overview'},
+    {id:'b-dash',       icon:'📊', label:'Dashboard'},
+    {id:'b-financials', icon:'💰', label:'Financials'},
+    {section:'Management'},
+    {id:'b-violations', icon:'🚨', label:'Violations', badge:7},
+    {id:'b-requests',   icon:'🔧', label:'Maintenance', badge:4},
+    {id:'b-arc',        icon:'🏗️', label:'Architectural Review', badge:2},
+    {id:'b-announce',   icon:'📢', label:'Announcements'},
+    {section:'Resources'},
+    {id:'b-vendors',    icon:'🏭', label:'Vendors'},
+    {id:'r-docs',       icon:'📁', label:'Documents'},
+    {id:'r-vote',       icon:'🗳️', label:'Voting'},
+    {section:'Account'},
+    {id:'settings',     icon:'⚙️', label:'Settings'},
+  ],
+  manager:[
+    {section:'Portfolio'},
+    {id:'m-dash',       icon:'🏘️', label:'Portfolio Dashboard'},
+    {id:'m-reports',    icon:'📊', label:'Reports & Analytics'},
+    {id:'m-compliance', icon:'⚖️', label:'Compliance Center'},
+    {section:'Operations'},
+    {id:'b-violations', icon:'🚨', label:'Violations'},
+    {id:'b-requests',   icon:'🔧', label:'Maintenance'},
+    {id:'b-vendors',    icon:'🏭', label:'Vendors'},
+    {section:'Resources'},
+    {id:'r-docs',       icon:'📁', label:'Documents'},
+    {section:'Account'},
+    {id:'settings',     icon:'⚙️', label:'Settings'},
+  ],
+};
+const PAGE_TITLES = {
+  'r-dash':'Dashboard','r-payments':'Payments & Dues','r-maint':'Maintenance Requests',
+  'r-vote':'Voting & Elections','r-amenities':'Amenity Booking','r-violations':'My Violations',
+  'r-docs':'Document Library','r-parking':'Parking Permits','r-directory':'Community Directory',
+  'b-dash':'Board Dashboard','b-financials':'Financial Reports','b-violations':'Violations',
+  'b-requests':'Maintenance Requests','b-arc':'Architectural Review','b-announce':'Announcements',
+  'b-vendors':'Vendor Management','m-dash':'Portfolio Dashboard','m-reports':'Reports & Analytics',
+  'm-compliance':'Compliance Center','settings':'Settings','profile':'My Profile',
+};
+const NOTIFS = {
+  resident:[
+    {text:'Payment of $285.00 confirmed via ACH',time:'Apr 1 · 9:02 AM'},
+    {text:'Maintenance request #MR-047 assigned to Ace Plumbing',time:'Mar 28 · 2:15 PM'},
+    {text:'New vote: Pool Hours Extension — closes May 10',time:'Mar 10 · 11:30 AM'},
+  ],
+  board:[
+    {text:'Unit 118 is now 90 days overdue — lien eligible',time:'Today · 8:00 AM'},
+    {text:'4 maintenance requests unassigned for 48+ hours',time:'Today · 7:00 AM'},
+    {text:'ARC application from Unit 118 expires in 3 days',time:'Yesterday · 3:00 PM'},
+  ],
+  manager:[
+    {text:'Mesa Ridge collection rate dropped to 88% this month',time:'Today · 9:00 AM'},
+    {text:'Desert Cool HVAC W-9 has expired — action needed',time:'Apr 8 · 10:00 AM'},
+    {text:'Q1 reports ready for all 4 communities',time:'Apr 1 · 12:00 PM'},
+  ],
+};
+
+let CU = null;
+
+// ════════════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════════════
+function pickDemo(role, el) {
+  const emails = {resident:'resident@demo.com',board:'board@demo.com',manager:'manager@demo.com'};
+  document.getElementById('l-email').value = emails[role];
+  document.getElementById('l-pw').value = 'demo123';
+  document.querySelectorAll('.demo-pick').forEach(d => d.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function doLogin() {
+  const email = document.getElementById('l-email').value.trim().toLowerCase();
+  const pw = document.getElementById('l-pw').value;
+  const u = USERS[email];
+  if (!u || u.pw !== pw) { document.getElementById('l-err').style.display='block'; return; }
+  CU = {...u, email};
+  document.getElementById('l-err').style.display = 'none';
+  launchApp();
+}
+function doLogout() {
+  CU = null;
+  document.getElementById('s-app').classList.remove('active');
+  document.getElementById('s-login').classList.add('active');
+  document.querySelectorAll('.demo-pick').forEach(d => d.classList.remove('sel'));
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-pw').value = '';
+}
+
+// ════════════════════════════════════════════════════
+// APP BOOT
+// ════════════════════════════════════════════════════
+function launchApp() {
+  document.getElementById('s-login').classList.remove('active');
+  document.getElementById('s-app').classList.add('active');
+  document.getElementById('sb-ava').textContent = CU.initials;
+  document.getElementById('sb-uname').textContent = CU.name;
+  document.getElementById('sb-urole').textContent = CU.sub;
+  document.getElementById('tb-ava').textContent = CU.initials;
+  document.getElementById('pp-name').textContent = CU.name;
+  document.getElementById('pp-email').textContent = CU.email;
+  document.getElementById('prof-ava').textContent = CU.initials;
+  document.getElementById('prof-name').textContent = CU.name;
+  document.getElementById('prof-role').textContent = CU.sub;
+  // Update settings fields
+  const sn = document.getElementById('set-name');
+  const se = document.getElementById('set-email');
+  if (sn) sn.value = CU.name;
+  if (se) se.value = CU.email;
+  buildNav();
+  buildNotifs();
+  navigate(NAV[CU.role].find(n => n.id).id);
+  setTimeout(() => {
+    renderBarChart('b-chart', ['Jan','Feb','Mar','Apr'], [11115,11400,11685,11970], 12000);
+    renderBarChart('fin-chart', ['Jan','Feb','Mar','Apr'], [11540,11685,11970,11550], 12000);
+    renderBarChart('m-chart', ['Sunridge','Lakewood','Mesa Rdg','Copper'], [11970,36480,37240,11510], 40000);
+  }, 150);
+}
+function buildNav() {
+  const container = document.getElementById('sb-nav');
+  let html = '';
+  NAV[CU.role].forEach(item => {
+    if (item.section) {
+      html += `<div class="sb-section">${item.section}</div>`;
+    } else {
+      const badge = item.badge ? `<span class="ni-badge">${item.badge}</span>` : '';
+      html += `<div class="ni" id="ni-${item.id}" onclick="navigate('${item.id}')">`
+             + `<span class="ni-icon">${item.icon}</span>${item.label}${badge}</div>`;
+    }
+  });
+  container.innerHTML = html;
+}
+function buildNotifs() {
+  const list = document.getElementById('notif-list');
+  const items = NOTIFS[CU.role] || [];
+  list.innerHTML = items.map(n =>
+    `<div class="notif-item" onclick="toast('${n.text}','info')">`
+    + `<div class="notif-dot2"></div>`
+    + `<div><div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div></div>`
+    + `</div>`
+  ).join('');
+}
+
+// ════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════
+function navigate(id) {
+  closePanel('notif-panel'); closePanel('profile-panel');
+  closeMobileMenu();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+  const ni = document.getElementById('ni-' + id);
+  if (ni) ni.classList.add('active');
+  document.getElementById('tb-title').textContent = PAGE_TITLES[id] || 'CanHOA';
+  // Re-render charts if needed
+  if (id === 'b-dash') setTimeout(() => renderBarChart('b-chart', ['Jan','Feb','Mar','Apr'], [11115,11400,11685,11970], 12000), 50);
+  if (id === 'b-financials') setTimeout(() => renderBarChart('fin-chart', ['Jan','Feb','Mar','Apr'], [11540,11685,11970,11550], 12000), 50);
+  if (id === 'm-dash') setTimeout(() => renderBarChart('m-chart', ['Sunridge','Lakewood','Mesa Rdg','Copper'], [11970,36480,37240,11510], 40000), 50);
+}
+function goHome() {
+  if (CU) navigate(NAV[CU.role].find(n => n.id).id);
+}
+
+// ════════════════════════════════════════════════════
+// MODALS
+// ════════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('overlay')) e.target.classList.remove('open');
+});
+
+// ════════════════════════════════════════════════════
+// PANELS
+// ════════════════════════════════════════════════════
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.notif-panel,.profile-panel').forEach(p => p.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+function closePanel(id) { document.getElementById(id)?.classList.remove('open'); }
+function clearNotifications() {
+  document.getElementById('notif-list').innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted)">All caught up! 🎉</div>';
+  document.getElementById('notif-dot').style.display = 'none';
+  closePanel('notif-panel');
+  toast('✅ All notifications marked as read','success');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.tb-notif') && !e.target.closest('.notif-panel')) closePanel('notif-panel');
+  if (!e.target.closest('.tb-avatar') && !e.target.closest('.profile-panel')) closePanel('profile-panel');
+});
+
+// ════════════════════════════════════════════════════
+// MOBILE MENU
+// ════════════════════════════════════════════════════
+function openMobileMenu() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sb-overlay').classList.add('open');
+}
+function closeMobileMenu() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+}
+
+// ════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════
+function switchTab(el) {
+  const page = el.closest('.page');
+  page.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  page.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const idx = Array.from(el.parentElement.children).indexOf(el);
+  const panes = page.querySelectorAll('.tab-pane');
+  if (panes[idx]) panes[idx].classList.add('active');
+}
+
+// ════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════
+function toast(msg, type='info') {
+  const wrap = document.getElementById('toast-wrap');
+  const el = document.createElement('div');
+  el.className = `toast t-${type}`;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3500);
+}
+
+// ════════════════════════════════════════════════════
+// CHARTS
+// ════════════════════════════════════════════════════
+function renderBarChart(id, labels, vals, maxV) {
+  const el = document.getElementById(id); if (!el) return;
+  const m = maxV || Math.max(...vals);
+  el.innerHTML = vals.map((v,i) => {
+    const h = Math.max(4, Math.round((v/m)*90));
+    const fmt = v >= 10000 ? '$'+(v/1000).toFixed(0)+'k' : v >= 1000 ? '$'+(v/1000).toFixed(1)+'k' : '$'+v;
+    return `<div class="bc-col"><div class="bc-val">${fmt}</div><div class="bc-bar" style="height:${h}px"></div><div class="bc-lbl">${labels[i]}</div></div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
+// PAYMENT ACTIONS
+// ════════════════════════════════════════════════════
+function processPayment() {
+  const btn = document.getElementById('pay-btn');
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Processing...'; btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = orig; btn.disabled = false;
+    toast('✅ Payment processed successfully! Confirmation #PMT-0422','success');
+  }, 1800);
+}
+function updatePayAmt(sel) {
+  document.getElementById('custom-amt-row').style.display = sel.value==='custom'?'block':'none';
+  const amts = {285:'$285.00',570:'$570.00',855:'$855.00',custom:'Amount'};
+  const btn = document.getElementById('pay-btn');
+  if (btn) btn.textContent = `Pay ${amts[sel.value]||'Amount'} Now`;
+  const total = document.getElementById('pay-total');
+  if (total && sel.value !== 'custom') total.textContent = '$'+(+sel.value).toFixed(2);
+}
+function selectPM(el) {
+  document.querySelectorAll('.pm-item').forEach(p => { p.classList.remove('sel'); p.querySelector('input[type=radio]').checked=false; });
+  el.classList.add('sel');
+  const r = el.querySelector('input[type=radio]'); if(r) r.checked=true;
+}
+function toggleAutopay(cb) {
+  const status = document.getElementById('autopay-status');
+  if (status) status.textContent = cb.checked ? 'active' : 'disabled';
+  toast(cb.checked ? '✅ Auto-pay enabled. You will be charged $285 on the 1st.' : '⚠️ Auto-pay disabled. You must pay manually each month.', cb.checked ? 'success' : 'warning');
+}
+function addPaymentMethod() {
+  closeModal('m-add-payment');
+  toast('✅ Payment method added and verified successfully','success');
+}
+
+// ════════════════════════════════════════════════════
+// VOTING
+// ════════════════════════════════════════════════════
+function castVote(choice) {
+  document.getElementById('vote-area').style.display='none';
+  document.getElementById('vote-done').style.display='flex';
+  const u={yes:[62,26,12],no:[58,32,10],abs:[58,28,14]}[choice];
+  document.getElementById('v-yes-bar').style.width=u[0]+'%'; document.getElementById('v-yes-pct').textContent=u[0]+'%';
+  document.getElementById('v-no-bar').style.width=u[1]+'%';  document.getElementById('v-no-pct').textContent=u[1]+'%';
+  document.getElementById('v-abs-bar').style.width=u[2]+'%'; document.getElementById('v-abs-pct').textContent=u[2]+'%';
+  const labels = {yes:'Yes — Extend Hours',no:'No — Keep Current Hours',abs:'Abstain'};
+  toast(`✅ Vote recorded: ${labels[choice]}. Thank you!`,'success');
+}
+
+// ════════════════════════════════════════════════════
+// AMENITY BOOKING
+// ════════════════════════════════════════════════════
+function cancelBooking(btn) {
+  if (!confirm('Cancel this reservation? This cannot be undone.')) return;
+  const row = btn.closest('tr');
+  row.style.opacity = '.35';
+  row.style.pointerEvents = 'none';
+  toast('❌ Reservation cancelled. Deposit refunded in 3–5 days.','info');
+}
+function bookAmenity() {
+  closeModal('m-book');
+  toast('🏊 Reservation confirmed! Check your email for details.','success');
+}
+
+// ════════════════════════════════════════════════════
+// MAINTENANCE
+// ════════════════════════════════════════════════════
+function submitReq() {
+  closeModal('m-new-req');
+  toast('✅ Request #MR-052 submitted! Updates via email and SMS.','success');
+}
+function assignVendor() {
+  closeModal('m-assign');
+  toast('🔧 Vendor assigned! Resident and vendor both notified.','success');
+}
+
+// ════════════════════════════════════════════════════
+// VIOLATIONS
+// ════════════════════════════════════════════════════
+function issueVio() {
+  closeModal('m-new-vio');
+  toast('📋 Violation notice issued. 10-day cure period starts today.','success');
+}
+function escalateVio(id, level) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const badge = card.querySelector('.badge');
+  if (badge) { badge.textContent = level; badge.className='badge b-red'; }
+  toast(`⚠️ Escalated to ${level}. Updated notice sent to resident.`,'info');
+}
+function resolveVio(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.style.transition = 'opacity .4s, transform .4s';
+  card.style.opacity = '.3';
+  card.style.pointerEvents = 'none';
+  toast('✅ Violation resolved and archived','success');
+}
+
+// ════════════════════════════════════════════════════
+// NEW MODAL HELPERS
+// ════════════════════════════════════════════════════
+function setNoticeUnit(unit, ref) {
+  const el = document.getElementById('notice-unit-label');
+  if (el) el.textContent = `${unit} · ${ref}`;
+}
+function setHearingUnit(unit, ref) {
+  // Hearing modal title
+  const title = document.querySelector('#m-hearing .mh-title');
+  if (title) title.textContent = `Schedule Violation Hearing — ${unit}`;
+}
+function setFineUnit(unit, amount, ref) {
+  const el = document.getElementById('fine-unit-label');
+  if (el) el.textContent = `${unit} · ${amount} · ${ref}`;
+  const amt = document.getElementById('fine-amount');
+  if (amt) amt.value = parseFloat(amount.replace('$',''));
+}
+function setMsgTo(name, role) {
+  const el = document.getElementById('msg-to');
+  if (el) el.value = `${name} (${role})`;
+}
+function sendNotice() {
+  const type = document.getElementById('notice-type');
+  closeModal('m-send-notice');
+  toast(`📧 ${type ? type.options[type.selectedIndex].text.split('—')[0].trim() : 'Notice'} sent to resident.`,'success');
+}
+function collectFine() {
+  const method = document.getElementById('fine-method');
+  const amt = document.getElementById('fine-amount');
+  closeModal('m-collect-fine');
+  const label = method && method.value === 'manual' ? 'Manual payment recorded' : method && method.value === 'dues' ? 'Added to next dues statement' : 'Payment request email sent';
+  toast(`💰 ${label} — $${amt ? (+amt.value).toFixed(2) : '150.00'}`,'success');
+}
+function sendMsg() {
+  closeModal('m-send-msg');
+  toast('📧 Message sent through CanHOA secure messaging','success');
+}
+function toggleFineMethod(sel) {
+  document.getElementById('fine-manual-fields').style.display = sel.value === 'manual' ? 'block' : 'none';
+}
+function scheduleHearing() {
+  closeModal('m-hearing');
+  toast('📅 Hearing scheduled. Resident notified with required 10-day advance notice.','success');
+}
+function initiateLien() {
+  closeModal('m-lien');
+  toast('⚖️ Lien process initiated for Unit 118. Attorney notified. County filing prepared.','info');
+}
+
+// ════════════════════════════════════════════════════
+// ARC
+// ════════════════════════════════════════════════════
+function approveARC(btn, title) {
+  const card = btn.closest('.arc-card');
+  card.style.transition = 'opacity .3s'; card.style.opacity = '.4'; card.style.pointerEvents = 'none';
+  toast(`✅ ARC approved: ${title}. Applicant notified by email.`,'success');
+}
+function submitARC() {
+  closeModal('m-arc-submit');
+  toast('🏗️ ARC application submitted. 30-day review period begins today.','success');
+}
+
+// ════════════════════════════════════════════════════
+// ANNOUNCEMENTS & COMMS
+// ════════════════════════════════════════════════════
+function sendAnnouncement() {
+  closeModal('m-announcement');
+  toast('📢 Announcement sent to all 42 units via email + in-app','success');
+}
+
+// ════════════════════════════════════════════════════
+// DOCUMENTS SEARCH
+// ════════════════════════════════════════════════════
+function filterDocs(query) {
+  const q = query.toLowerCase().trim();
+  const rows = document.querySelectorAll('#page-r-docs .tab-pane.active table tbody tr');
+  let found = 0;
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const match = !q || text.includes(q);
+    row.style.display = match ? '' : 'none';
+    if (match) found++;
+  });
+  if (q && found === 0) {
+    toast(`🔍 No documents matching "${query}"`, 'info');
+  }
+}
+
+// ════════════════════════════════════════════════════
+// REPORTS
+// ════════════════════════════════════════════════════
+function generateReport() {
+  const btn = event.target;
+  btn.textContent = '⏳ Generating...'; btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Generate Report'; btn.disabled = false;
+    toast('📊 Report generated and ready for download','success');
+  }, 1800);
+}
+
+// ════════════════════════════════════════════════════
+// ENTER KEY LOGIN
+// ════════════════════════════════════════════════════
+document.getElementById('l-pw').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
